@@ -1,0 +1,56 @@
+{
+  "name": "univer-chart-plugin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "pre-commit": "lint-staged",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix"
+  },
+  "peerDependencies": {
+    "@univerjs/core": "^0.1.11",
+    "@univerjs/design": "^0.1.11",
+    "@univerjs/docs": "^0.1.11",
+    "@univerjs/docs-ui": "^0.1.11",
+    "@univerjs/engine-formula": "^0.1.11",
+    "@univerjs/engine-numfmt": "^0.1.11",
+    "@univerjs/engine-render": "^0.1.11",
+    "@univerjs/facade": "^0.1.11",
+    "@univerjs/icons": "^0.1.46",
+    "@univerjs/sheets": "^0.1.11",
+    "@univerjs/sheets-formula": "^0.1.11",
+    "@univerjs/sheets-ui": "^0.1.11",
+    "@univerjs/ui": "^0.1.11",
+    "@wendellhu/redi": "^0.15.1",
+    "clsx": ">=2.0.0",
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "rxjs": ">=7.0.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.18.0",
+    "@eslint-react/eslint-plugin": "^1.5.11",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.2",
+    "@typescript-eslint/parser": "^7.10.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "8.57.0",
+    "eslint-plugin-format": "^0.1.1",
+    "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-no-barrel-import": "^0.0.2",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "less": "^4.2.0",
+    "less-loader": "^12.2.0",
+    "lint-staged": "^15.2.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}
