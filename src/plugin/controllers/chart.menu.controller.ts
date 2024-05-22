@@ -25,10 +25,10 @@ import {
 import type { IDisposable } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
 import type { IMenuItemFactory } from '@univerjs/ui';
-import { ComponentManager, IMenuService, ISidebarService } from '@univerjs/ui';
+import { ComponentManager, IDialogService, IMenuService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface.ts';
 import { ChartSelectorPanel } from '../components/chart-selector-panel/ChartSelectorPanel.tsx';
-import { ChartPanel } from '../components/chart-panel';
+import { ChartSidePanel } from '../components/chart-side-panel';
 import type { IChart } from '../models/types.ts';
 import { ChartSelectorMenuItemFactory } from './menu/chart.menu.ts';
 
@@ -44,6 +44,7 @@ export class ChartMenuController extends Disposable {
         @Inject(ComponentManager) private _componentManager: ComponentManager,
         @Inject(IMenuService) private _menuService: IMenuService,
         @Inject(ISidebarService) private _sidebarService: ISidebarService,
+        @Inject(IDialogService) private _dialogService: IDialogService,
         @Inject(LocaleService) private _localeService: LocaleService
     ) {
         super();
@@ -72,6 +73,10 @@ export class ChartMenuController extends Disposable {
         this._sidebarDisposable = this._sidebarService.open(props);
     }
 
+    createAndOpenSingleChartPanel(conf?: IChart) {
+
+    }
+
     private _initMenu() {
         ([ChartSelectorMenuItemFactory] as IMenuItemFactory[]).forEach((factory) => {
             this.disposeWithMe(this._menuService.addMenuItem(this._injector.invoke(factory)));
@@ -84,6 +89,6 @@ export class ChartMenuController extends Disposable {
     }
 
     private _initPanel() {
-        this._componentManager.register(CHART_PANEL_KEY, ChartPanel);
+        this._componentManager.register(CHART_PANEL_KEY, ChartSidePanel);
     }
 }

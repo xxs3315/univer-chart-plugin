@@ -17,20 +17,20 @@
 import React from 'react';
 import type { IChart } from '../../models/types.ts';
 import styles from './index.module.less';
-import { ChartEdit } from './chart-edit';
+import { ChartSideEdit } from './chart-side-edit';
 
-interface IChartPanelProps {
+interface IChartSidePanelProps {
     conf?: IChart;
 }
 
-export const ChartPanel = (props: IChartPanelProps) => {
+export const ChartSidePanel = (props: IChartSidePanelProps) => {
     const handleCancel = () => {
     };
 
     return (
-        <div className={styles.chartWrap}>
+        <div className={styles.chartSideWrap}>
             {/* eslint-disable-next-line react/prefer-destructuring-assignment */}
-            <ChartEdit onCancel={handleCancel} chart={props.conf} />
+            <ChartSideEdit onCancel={handleCancel} chart={props.conf} />
         </div>
     );
 };

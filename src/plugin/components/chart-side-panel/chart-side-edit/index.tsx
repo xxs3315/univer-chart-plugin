@@ -44,7 +44,7 @@ interface IChartEditProps {
     onCancel: () => void;
 }
 
-export const ChartEdit = (props: IChartEditProps) => {
+export const ChartSideEdit = (props: IChartEditProps) => {
     const localeService = useDependency(LocaleService);
     const commandService = useDependency(ICommandService);
     const univerInstanceService = useDependency(IUniverInstanceService);
@@ -170,7 +170,7 @@ export const ChartEdit = (props: IChartEditProps) => {
     };
 
     return (
-        <div className={styles.chartEditor}>
+        <div className={styles.chartSideEditor}>
             <div className={styleBase.title}>{localeService.t('chart.panel.range')}</div>
             <div className={`${styleBase.mTBase}`}>
                 <RangeSelector
