@@ -31,6 +31,7 @@ import { UniverSheetsFormulaPlugin } from '@univerjs/sheets-formula';
 import { UniverSheetsUIPlugin } from '@univerjs/sheets-ui';
 import { UniverUIPlugin } from '@univerjs/ui';
 import { ChartPlugin } from './plugin';
+import { DEFAULT_WORKBOOK_DATA } from './data.ts';
 
 const univer = new Univer({
     theme: defaultTheme,
@@ -57,4 +58,4 @@ univer.registerPlugin(UniverSheetsFormulaPlugin);
 univer.registerPlugin(ChartPlugin);
 
 // create univer sheet instance
-univer.createUnit(UniverInstanceType.UNIVER_SHEET, {});
+univer.createUnit(UniverInstanceType.UNIVER_SHEET, DEFAULT_WORKBOOK_DATA);
