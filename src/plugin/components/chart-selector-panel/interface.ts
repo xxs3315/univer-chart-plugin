@@ -16,13 +16,15 @@
 
 import type { ICustomComponentProps } from '@univerjs/ui';
 import type { ChartType } from '../../types/enum/chart-types.ts';
+import type { ChartGroupType } from '../../types/enum/chart-group-types.ts';
 
 const COMPONENT_PREFIX = 'UI_PLUGIN_SHEETS';
 
 export const CHART_SELECTOR_PANEL_COMPONENT = `${COMPONENT_PREFIX}_CHART_SELECTOR_PANEL_COMPONENT`;
 
 export interface IChartInfo {
-    type: ChartType;
+    type: ChartGroupType;
+    subType: ChartType;
 }
 
 export interface IChartSelectorPanelProps extends ICustomComponentProps<IChartInfo> {}

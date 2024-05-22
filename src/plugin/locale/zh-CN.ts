@@ -16,15 +16,21 @@
 
 const locale = {
     chart: {
-        title: '图表',
         panel: {
             title: '图表',
             addTitle: '新建图表',
             removeAll: '全部删除',
-            add: '新建规则',
+            add: '新建图表',
             range: '应用范围',
-            type: '条件类型',
+            type: '图表类型',
             options: '高级设置',
+        },
+        form: {
+            lessThan: '该值必须小于 {0}',
+            lessThanOrEqual: '该值必须小于等于 {0}',
+            greaterThan: '该值必大于 {0}',
+            greaterThanOrEqual: '该值必大于等于 {0}',
+            rangeSelector: '选择范围或者输入值',
         },
         category: {
             line: '折线图或面积图',

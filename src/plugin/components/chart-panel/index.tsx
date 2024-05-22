@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-import type { IChart, ILineDefaultChart } from '../models/types.ts';
-import { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import { ChartType } from '../types/enum/chart-types.ts';
+import React from 'react';
+import type { IChart } from '../../models/types.ts';
+import styles from './index.module.less';
+import { ChartEdit } from './chart-edit';
 
-export const SHEET_CHART_PLUGIN = 'SHEET_CHART_PLUGIN';
+interface IChartPanelProps {
+    conf?: IChart;
+}
 
-export const createDefaultRule = () => ({
-    chartId: undefined as unknown as string,
-    ranges: [],
-    conf: { type: ChartGroupType.LINE, subType: ChartType.LINE_DEFAULT } as ILineDefaultChart,
-} as IChart);
+export const ChartPanel = (props: IChartPanelProps) => {
+    const handleCancel = () => {
+    };
+
+    return (
+        <div className={styles.chartWrap}>
+            {/* eslint-disable-next-line react/prefer-destructuring-assignment */}
+            <ChartEdit onCancel={handleCancel} chart={props.conf} />
+        </div>
+    );
+};

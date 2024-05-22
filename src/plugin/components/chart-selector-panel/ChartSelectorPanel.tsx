@@ -17,9 +17,8 @@
 import { ComponentManager } from '@univerjs/ui';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import React from 'react';
-import type { IBorderInfo } from '@univerjs/sheets';
 import { LocaleService } from '@univerjs/core';
-import { CHART_SELECTOR_CHILDREN, type IChartSelectorPanelProps } from './interface.ts';
+import { CHART_SELECTOR_CHILDREN, type IChartInfo, type IChartSelectorPanelProps } from './interface.ts';
 import styles from './index.module.less';
 
 export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
@@ -29,14 +28,11 @@ export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
 
     const { onChange, value } = props;
 
-    function handleClick(v: string | number, type: keyof IBorderInfo) {
-        console.log({
-            ...value,
-            [type]: v,
-        });
+    function handleClick(v: string | number, sv: string | number, type: keyof IChartInfo, subType: keyof IChartInfo) {
         onChange?.({
             ...value,
             [type]: v,
+            [subType]: sv,
         });
     }
 
@@ -62,7 +58,7 @@ export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
                                     className={styles.uiPluginChartPanelPositionItem}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleClick(subItem.value, 'type');
+                                        handleClick(item.value, subItem.value, 'type', 'subType');
                                     }}
                                 >
                                     {renderIcon(subItem.icon)}

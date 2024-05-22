@@ -18,7 +18,6 @@ import type zhCN from './zh-CN';
 
 const locale: typeof zhCN = {
     chart: {
-        title: '',
         panel: {
             title: 'Управление проверкой данных',
             addTitle: 'Создать новую проверку данных',
@@ -27,6 +26,13 @@ const locale: typeof zhCN = {
             range: 'Диапазоны',
             type: 'Тип',
             options: 'Дополнительные параметры',
+        },
+        form: {
+            lessThan: 'Значение должно быть меньше {0}',
+            lessThanOrEqual: 'Значение должно быть меньше или равно {0}',
+            greaterThan: 'Значение должно быть больше {0}',
+            greaterThanOrEqual: 'Значение должно быть больше или равно {0}',
+            rangeSelector: 'Выберите диапазон или введите значение',
         },
         category: {
             line: '折线图或面积图',

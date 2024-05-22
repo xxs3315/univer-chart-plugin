@@ -17,16 +17,43 @@
 import type { ICommand } from '@univerjs/core';
 import { CommandType } from '@univerjs/core';
 import type { IAccessor } from '@wendellhu/redi';
+import { SelectionManagerService } from '@univerjs/sheets';
+import { ChartMenuController } from '../../controllers/chart.menu.controller.ts';
+import { createDefaultRule } from '../../common/const.ts';
+import type { IChart, ILineDefaultChart } from '../../models/types.ts';
 
 interface IOpenChartPanelParams {
-    type: string;
+    value: { type: string; subType: string };
 }
 
 export const OpenChartPanelOperator: ICommand = {
     id: 'sheet.operation.open.chart.panel',
     type: CommandType.OPERATION,
     handler: (accessor: IAccessor, params?: IOpenChartPanelParams) => {
-        console.log(params);
+        // open side panel
+        const chartMenuController = accessor.get(ChartMenuController);
+        const selectionManagerService = accessor.get(SelectionManagerService);
+        const ranges = selectionManagerService.getSelectionRanges() || [];
+        const conf = {
+            ...createDefaultRule,
+            ranges,
+            conf: {
+                type: params?.value.type,
+                subType: params?.value.subType,
+            },
+        } as IChart<ILineDefaultChart>;
+        chartMenuController.openPanel(conf);
+
+        // 获取selection range
+
+        // append到 univer dom中去 这里不直接使用canvas绘图进入univer的main canvas，采用的是chart外挂的模式
+        // 动态增加chart dom
+
+        // 绘制一个chart到这个动态dom中
+
+        // append到 univer dom中去
+
+        // 这样性能有问题吗
         return true;
     },
 };

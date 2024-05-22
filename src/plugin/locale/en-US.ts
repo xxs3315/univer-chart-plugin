@@ -18,7 +18,6 @@ import type zhCN from './zh-CN';
 
 const locale: typeof zhCN = {
     chart: {
-        title: 'Chart',
         panel: {
             title: 'Chart management',
             addTitle: 'Create new chart',
@@ -27,6 +26,13 @@ const locale: typeof zhCN = {
             range: 'Ranges',
             type: 'Type',
             options: 'Advance options',
+        },
+        form: {
+            lessThan: 'The value must be less than {0}',
+            lessThanOrEqual: 'The value must be less than or equal to {0}',
+            greaterThan: 'The value must be greater than {0}',
+            greaterThanOrEqual: 'The value must be greater than or equal to {0}',
+            rangeSelector: 'Select Range or Enter Value',
         },
         category: {
             line: '折线图或面积图',

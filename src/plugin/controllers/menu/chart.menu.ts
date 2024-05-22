@@ -30,7 +30,7 @@ export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelector
         id: OpenChartPanelOperator.id,
         icon: 'ComboChart',
         group: MenuGroup.TOOLBAR_OTHERS,
-        tooltip: localeService.t('chart.title'),
+        tooltip: localeService.t('chart.panel.title'),
         positions: [MenuPosition.TOOLBAR_START],
         type: MenuItemType.SELECTOR,
         selections: [

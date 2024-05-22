@@ -28,7 +28,11 @@ import type { IMenuItemFactory } from '@univerjs/ui';
 import { ComponentManager, IMenuService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface.ts';
 import { ChartSelectorPanel } from '../components/chart-selector-panel/ChartSelectorPanel.tsx';
+import { ChartPanel } from '../components/chart-panel';
+import type { IChart } from '../models/types.ts';
 import { ChartSelectorMenuItemFactory } from './menu/chart.menu.ts';
+
+const CHART_PANEL_KEY = 'sheet.chart.panel';
 
 @OnLifecycle(LifecycleStages.Ready, ChartMenuController)
 export class ChartMenuController extends Disposable {
@@ -55,6 +59,19 @@ export class ChartMenuController extends Disposable {
         );
     }
 
+    openPanel(conf?: IChart) {
+        const props = {
+            header: { title: this._localeService.t('chart.panel.addTitle') },
+            children: {
+                label: CHART_PANEL_KEY,
+                conf,
+            },
+            onClose: () => this._sidebarDisposable = null,
+        };
+
+        this._sidebarDisposable = this._sidebarService.open(props);
+    }
+
     private _initMenu() {
         ([ChartSelectorMenuItemFactory] as IMenuItemFactory[]).forEach((factory) => {
             this.disposeWithMe(this._menuService.addMenuItem(this._injector.invoke(factory)));
@@ -67,6 +84,6 @@ export class ChartMenuController extends Disposable {
     }
 
     private _initPanel() {
-        // this._componentManager.register(CF_PANEL_KEY, ConditionFormattingPanel);
+        this._componentManager.register(CHART_PANEL_KEY, ChartPanel);
     }
 }

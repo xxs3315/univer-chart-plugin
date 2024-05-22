@@ -17,7 +17,7 @@
 import { ICommandService, Plugin, UniverInstanceType } from '@univerjs/core';
 import { ComponentManager, IMenuService } from '@univerjs/ui';
 import { Inject, Injector } from '@wendellhu/redi';
-import { CHART_PLUGIN_NAME } from './common/const.ts';
+import { SHEET_CHART_PLUGIN } from './common/const.ts';
 import ComboChart from './components/icons/combo_chart.tsx';
 import { ChartMenuController } from './controllers/chart.menu.controller.ts';
 import { ChartI18nController } from './controllers/chart.i18n.controller.ts';
@@ -30,7 +30,7 @@ import StackedColumnChart from './components/icons/stacked_column_chart.tsx';
 import { OpenChartPanelOperator } from './commands/operations/open-chart-panel.ts';
 
 export class ChartPlugin extends Plugin {
-    static override pluginName = CHART_PLUGIN_NAME;
+    static override pluginName = SHEET_CHART_PLUGIN;
     static override type = UniverInstanceType.UNIVER_SHEET;
 
     static commandList = [
