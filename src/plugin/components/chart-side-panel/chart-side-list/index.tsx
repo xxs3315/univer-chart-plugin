@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-import type { IChart, ILineDefaultChart } from '../models/types.ts';
-import { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import { ChartType } from '../types/enum/chart-types.ts';
+import React from 'react';
+import type { IChart } from '../../../models/types.ts';
 
-export const SHEET_CHART_PLUGIN = 'SHEET_CHART_PLUGIN';
+interface IChartListProps {
+    onClick: (chart: IChart) => void;
+    onCreate: () => void;
+}
 
-export const createDefaultChartConf = () => ({
-    chartId: undefined as unknown as string,
-    ranges: [],
-    conf: { type: ChartGroupType.LINE, subType: ChartType.LINE_DEFAULT } as ILineDefaultChart,
-} as IChart);
+export const ChartSideList = (props: IChartListProps) => {
+    return (
+        <div>123</div>
+    );
+};

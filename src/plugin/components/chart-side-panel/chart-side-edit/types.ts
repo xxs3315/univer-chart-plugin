@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import type { IChart, ILineDefaultChart } from '../models/types.ts';
-import { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import { ChartType } from '../types/enum/chart-types.ts';
+import type { InterceptorManager } from '@univerjs/core';
+import { createInterceptorKey } from '@univerjs/core';
+import type { IChartConfig } from '../../../models/types.ts';
 
-export const SHEET_CHART_PLUGIN = 'SHEET_CHART_PLUGIN';
+export const beforeSubmit = createInterceptorKey<boolean, null>('beforeSubmit');
+export const submit = createInterceptorKey<any, null>('submit');
 
-export const createDefaultChartConf = () => ({
-    chartId: undefined as unknown as string,
-    ranges: [],
-    conf: { type: ChartGroupType.LINE, subType: ChartType.LINE_DEFAULT } as ILineDefaultChart,
-} as IChart);
+export interface IConfEditorProps<S = any, R = IChartConfig> {
+    onChange: (conf: S) => void;
+    chart?: R;
+    interceptorManager: InterceptorManager<{ beforeSubmit: typeof beforeSubmit; submit: typeof submit }>;
+};

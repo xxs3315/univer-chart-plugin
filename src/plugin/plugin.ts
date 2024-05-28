@@ -16,6 +16,7 @@
 
 import { ICommandService, Plugin, UniverInstanceType } from '@univerjs/core';
 import { ComponentManager, IMenuService } from '@univerjs/ui';
+import type { Dependency } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
 import { SHEET_CHART_PLUGIN } from './common/const.ts';
 import ComboChart from './components/icons/combo_chart.tsx';
@@ -27,14 +28,29 @@ import DoughnutChart from './components/icons/doughnut_chart.tsx';
 import LineChart from './components/icons/line_chart.tsx';
 import PieChart from './components/icons/pie_chart.tsx';
 import StackedColumnChart from './components/icons/stacked_column_chart.tsx';
-import { OpenChartPanelOperator } from './commands/operations/open-chart-panel.ts';
+import { OpenChartPanelOperator } from './commands/operations/open-chart-panel.operation.ts';
+import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
+import { ChartPreviewOperator } from './commands/operations/chart-preview.operation.ts';
+import { ChartConfModel } from './models/chart-conf-model.ts';
+import { ChartViewModel } from './models/chart-view-model.ts';
+import { MoveChartMutation } from './commands/mutations/move-chart.mutation.ts';
+import { SetChartMutation } from './commands/mutations/set-chart.mutation.ts';
+import { DeleteChartMutation } from './commands/mutations/delete-chart.mutation.ts';
+import { AddChartMutation } from './commands/mutations/add-chart.mutation.ts';
+import { SetChartCommand } from './commands/commands/set-chart.command.ts';
+import { AddChartCommand } from './commands/commands/add-chart.command.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
     static override type = UniverInstanceType.UNIVER_SHEET;
 
+    static readonly dependencyList: Dependency[] = [[ChartConfModel], [ChartViewModel]];
+    static readonly mutationList = [AddChartMutation, DeleteChartMutation, SetChartMutation, MoveChartMutation];
     static commandList = [
         OpenChartPanelOperator,
+        ChartPreviewOperator,
+        SetChartCommand,
+        AddChartCommand,
     ];
 
     constructor(
@@ -59,7 +75,7 @@ export class ChartPlugin extends Plugin {
      * The plugin should add its own module to the dependency injection system at this lifecycle.
      * It is not recommended to initialize the internal module of the plugin outside this lifecycle.
      */
-    onStarting() {
+    onStarting(injector: Injector) {
         // register icon component
         this.componentManager.register('ComboChart', ComboChart);
         this.componentManager.register('AreaChart', AreaChart);
@@ -68,9 +84,24 @@ export class ChartPlugin extends Plugin {
         this.componentManager.register('LineChart', LineChart);
         this.componentManager.register('PieChart', PieChart);
         this.componentManager.register('StackedColumnChart', StackedColumnChart);
+
+        ChartPlugin.dependencyList.forEach((dependency) => {
+            this._injector.add(dependency);
+        });
+
+        ([
+            [IChartPreviewService, { useClass: ChartPreviewService }],
+        ] as Dependency[]).forEach(
+            (d) => {
+                injector.add(d);
+            }
+        );
     }
 
     _initCommand() {
+        [...ChartPlugin.mutationList].forEach((m) => {
+            this.commandService.registerCommand(m);
+        });
         [...ChartPlugin.commandList].forEach((m) => {
             this.commandService.registerCommand(m);
         });

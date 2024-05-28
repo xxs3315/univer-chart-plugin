@@ -16,25 +16,30 @@
 
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IRange, IUnitRange, Workbook } from '@univerjs/core';
-import { createInternalEditorID, ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
-
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createInternalEditorID, ICommandService, InterceptorManager, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
+import React, { useEffect, useMemo, useRef } from 'react';
 import type {
     IRemoveSheetMutationParams } from '@univerjs/sheets';
-import {
-    RemoveSheetMutation,
+import { RemoveSheetMutation,
     SelectionManagerService,
-    SetWorksheetActiveOperation,
-} from '@univerjs/sheets';
+    setEndForRange,
+    SetWorksheetActiveOperation } from '@univerjs/sheets';
 import { serializeRange } from '@univerjs/engine-formula';
 import { RangeSelector } from '@univerjs/ui';
-import { Select } from '@univerjs/design';
+import { Button } from '@univerjs/design';
 import type { IChart } from '../../../models/types.ts';
 import styleBase from '../index.module.less';
 import { SHEET_CHART_PLUGIN } from '../../../common/const.ts';
-import { ChartType } from '../../../types/enum/chart-types.ts';
-import type { ChartGroupType } from '../../../types/enum/chart-group-types.ts';
+import { IChartPreviewService } from '../../../services/chart-preview.service.ts';
+import type { ISetChartCommandParams } from '../../../commands/commands/set-chart.command.ts';
+import { SetChartCommand } from '../../../commands/commands/set-chart.command.ts';
+import { ChartConfModel } from '../../../models/chart-conf-model.ts';
+import type { IAddChartCommandParams } from '../../../commands/commands/add-chart.command.ts';
+import { AddChartCommand } from '../../../commands/commands/add-chart.command.ts';
 import styles from './index.module.less';
+import type { IConfEditorProps } from './types.ts';
+import { beforeSubmit, submit } from './types.ts';
+import { ChartConf } from './chart-conf.tsx';
 
 const getUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
 const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
@@ -49,6 +54,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const commandService = useDependency(ICommandService);
     const univerInstanceService = useDependency(IUniverInstanceService);
     const selectionManagerService = useDependency(SelectionManagerService);
+    const chartPreviewService = useDependency(IChartPreviewService);
+    const chartConfModel = useDependency(ChartConfModel);
     const unitId = getUnitId(univerInstanceService);
     const subUnitId = getSubUnitId(univerInstanceService);
 
@@ -67,81 +74,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             const v = serializeRange(range);
             return v === 'NaN' ? '' : v;
         }).filter((r) => !!r).join(',');
-    }, [props.chart]);
-
-    const options = [
-        { label: localeService.t('chart.type.lineDefault'), value: 'line-default' },
-        { label: localeService.t('chart.type.lineArea'), value: 'line-area' },
-        { label: localeService.t('chart.type.barDefault'), value: 'bar-default' },
-        { label: localeService.t('chart.type.barColumn'), value: 'bar-column' },
-        { label: localeService.t('chart.type.pieDefault'), value: 'pie-default' },
-        { label: localeService.t('chart.type.pieDoughnut'), value: 'pie-doughnut' }];
-
-    const [chartType, chartTypeSet] = useState(() => {
-        const type = props.chart?.conf.subType;
-        const defaultType = options[0].value;
-        if (!type) {
-            return defaultType;
-        }
-        switch (type) {
-            case ChartType.LINE_DEFAULT:{
-                return 'line-default';
-            }
-            case ChartType.LINE_AREA:{
-                return 'line-area';
-            }
-            case ChartType.BAR_DEFAULT:{
-                return 'bar-default';
-            }
-            case ChartType.BAR_COLUMN:{
-                return 'bar-column';
-            }
-            case ChartType.PIE_DEFAULT:{
-                return 'pie-default';
-            }
-            case ChartType.PIE_DOUGHNUT:{
-                return 'pie-doughnut';
-            }
-        }
-        return defaultType;
-    });
-
-    const [chartGroupType, chartGroupTypeSet] = useState('line');
-
-    useEffect(() => {
-        let groupType = props.chart?.conf.type;
-        const defaultGroupType = 'line';
-        if (!chartType) {
-            groupType = defaultGroupType as ChartGroupType;
-        }
-        switch (chartType) {
-            case ChartType.LINE_DEFAULT:{
-                groupType = 'line' as ChartGroupType;
-                break;
-            }
-            case ChartType.LINE_AREA:{
-                groupType = 'line' as ChartGroupType;
-                break;
-            }
-            case ChartType.BAR_DEFAULT:{
-                groupType = 'bar' as ChartGroupType;
-                break;
-            }
-            case ChartType.BAR_COLUMN:{
-                groupType = 'bar' as ChartGroupType;
-                break;
-            }
-            case ChartType.PIE_DEFAULT:{
-                groupType = 'pie' as ChartGroupType;
-                break;
-            }
-            case ChartType.PIE_DOUGHNUT:{
-                groupType = 'pie' as ChartGroupType;
-                break;
-            }
-        }
-        chartGroupTypeSet(groupType as string);
-    }, [chartType]);
+    }, [props.chart, selectionManagerService]);
 
     useEffect(() => {
         // If the child table which  the rule being edited is deleted, exit edit mode
@@ -163,10 +96,51 @@ export const ChartSideEdit = (props: IChartEditProps) => {
 
     const onRangeSelectorChange = (ranges: IUnitRange[]) => {
         rangeResult.current = ranges.map((r) => r.range);
+        chartPreviewService.changeRange(rangeResult.current);
+    };
+
+    const interceptorManager = useMemo(() => {
+        const _interceptorManager = new InterceptorManager({ beforeSubmit, submit });
+        return _interceptorManager;
+    }, []);
+
+    const handleSubmit = () => {
+        const beforeSubmitResult = interceptorManager.fetchThroughInterceptors(interceptorManager.getInterceptPoints().beforeSubmit)(true, null);
+        const getRanges = () => {
+            const worksheet = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
+            const ranges = rangeResult.current.map((range) => setEndForRange(range, worksheet.getRowCount(), worksheet.getColumnCount()));
+            const result = ranges.filter((range) => !(Number.isNaN(range.startRow) || Number.isNaN(range.startColumn)));
+            return result;
+        };
+
+        if (beforeSubmitResult) {
+            const result = interceptorManager.fetchThroughInterceptors(interceptorManager.getInterceptPoints().submit)(null, null);
+            const ranges = getRanges();
+            if (result && ranges.length) {
+                const unitId = getUnitId(univerInstanceService);
+                const subUnitId = getSubUnitId(univerInstanceService);
+                let chart = {} as IChart;
+                if (props.chart && props.chart.chartId) {
+                    chart = { ...props.chart, ranges, conf: result };
+                    commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart } as ISetChartCommandParams);
+                    props.onCancel();
+                } else {
+                    const chartId = chartConfModel.createChartId(unitId, subUnitId);
+                    chart = { chartId, ranges, conf: result };
+                    commandService.executeCommand(AddChartCommand.id, { unitId, subUnitId, chart } as IAddChartCommandParams);
+                    props.onCancel();
+                }
+            }
+        }
     };
 
     const handleCancel = () => {
         props.onCancel();
+    };
+
+    const result = useRef < Parameters<IConfEditorProps['onChange']>>();
+    const onConfChange = (config: unknown) => {
+        result.current = config as Parameters<IConfEditorProps['onChange']>;
     };
 
     return (
@@ -184,9 +158,17 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                     onChange={onRangeSelectorChange}
                 />
             </div>
-            <div className={styleBase.title}>{localeService.t('chart.panel.type')}</div>
-            <div className={styleBase.mTBase}>
-                <Select className={styles.width100} value={chartType} options={options} onChange={(e) => chartTypeSet(e)} />
+            <ChartConf onChange={onConfChange} interceptorManager={interceptorManager} chart={props.chart?.conf as any} />
+            <div className={`${styleBase.mTBase} ${styles.btnList}`}>
+                <Button size="small" onClick={handleCancel}>{localeService.t('chart.panel.cancel')}</Button>
+                <Button
+                    className={styleBase.mLSm}
+                    size="small"
+                    type="primary"
+                    onClick={handleSubmit}
+                >
+                    {localeService.t('chart.panel.submit')}
+                </Button>
             </div>
         </div>
     );

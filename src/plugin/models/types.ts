@@ -21,6 +21,7 @@ import type { ChartType } from '../types/enum/chart-types.ts';
 export interface IBaseChart {
     type: string;
     subType: string;
+    title: string;
 }
 
 export interface ILineDefaultChart extends IBaseChart {

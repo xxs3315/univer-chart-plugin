@@ -21,7 +21,7 @@ import { LocaleService } from '@univerjs/core';
 import { CHART_SELECTOR_CHILDREN, type IChartInfo, type IChartSelectorPanelProps } from './interface.ts';
 import styles from './index.module.less';
 
-export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
+export function Index(props: IChartSelectorPanelProps) {
     const componentManager = useDependency(ComponentManager);
 
     const localeService = useDependency(LocaleService);
@@ -41,10 +41,6 @@ export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
         return Icon && <Icon extend={{ colorChannel1: 'rgb(var(--primary-color))' }} />;
     }
 
-    function stopPropagation(e: React.MouseEvent) {
-        e.stopPropagation();
-    }
-
     return (
         <section className={styles.uiPluginChartPanel}>
             <div>
@@ -56,8 +52,7 @@ export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
                                 <div
                                     key={subItem.value}
                                     className={styles.uiPluginChartPanelPositionItem}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
+                                    onClick={(_) => {
                                         handleClick(item.value, subItem.value, 'type', 'subType');
                                     }}
                                 >

@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-import type { IChart, ILineDefaultChart } from '../models/types.ts';
-import { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import { ChartType } from '../types/enum/chart-types.ts';
-
-export const SHEET_CHART_PLUGIN = 'SHEET_CHART_PLUGIN';
-
-export const createDefaultChartConf = () => ({
-    chartId: undefined as unknown as string,
-    ranges: [],
-    conf: { type: ChartGroupType.LINE, subType: ChartType.LINE_DEFAULT } as ILineDefaultChart,
-} as IChart);
+export type MakePropertyOptional<T, K extends keyof T> = {
+    [P in keyof T]: P extends K ? T[P] | undefined : T[P];
+};

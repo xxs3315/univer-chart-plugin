@@ -271,20 +271,20 @@ export const DEFAULT_WORKBOOK_DATA: IWorkbookData = {
                         v: '19',
                         s: 'njh8Q5',
                     },
-                    4: {
-                        v: '20',
-                        s: 'njh8Q5',
-                    },
+                    // 4: {
+                    //     v: '20',
+                    //     s: 'njh8Q5',
+                    // },
                     5: {
                         v: '21',
                         s: 'njh8Q5',
                     },
-                    /*6: {
-                        v: '',
+                    6: {
+                        f: '=C7+D7',
                         s: 'njh8Q5',
-                    },*/
+                    },
                     7: {
-                        v: '23',
+                        f: '=E7+F7',
                         s: 'njh8Q5',
                     },
                     8: {

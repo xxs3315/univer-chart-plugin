@@ -20,12 +20,14 @@ const locale: typeof zhCN = {
     chart: {
         panel: {
             title: 'Chart management',
-            addTitle: 'Create new chart',
+            preview: 'Preview',
             removeAll: 'Remove All',
             add: 'Create chart',
             range: 'Ranges',
             type: 'Type',
             options: 'Advance options',
+            cancel: 'Cancel',
+            submit: 'Submit',
         },
         form: {
             lessThan: 'The value must be less than {0}',
@@ -46,6 +48,9 @@ const locale: typeof zhCN = {
             barColumn: '条形图',
             pieDefault: '饼图',
             pieDoughnut: '圆环图',
+        },
+        conf: {
+            title: 'Title',
         },
     },
 };

@@ -20,12 +20,14 @@ const locale: typeof zhCN = {
     chart: {
         panel: {
             title: 'Управление проверкой данных',
-            addTitle: 'Создать новую проверку данных',
+            preview: 'Preview',
             removeAll: 'Удалить все',
             add: 'Создать проверку данных',
             range: 'Диапазоны',
             type: 'Тип',
             options: 'Дополнительные параметры',
+            cancel: 'Cancel',
+            submit: 'Submit',
         },
         form: {
             lessThan: 'Значение должно быть меньше {0}',
@@ -46,6 +48,9 @@ const locale: typeof zhCN = {
             barColumn: '条形图',
             pieDefault: '饼图',
             pieDoughnut: '圆环图',
+        },
+        conf: {
+            title: 'Title',
         },
     },
 };

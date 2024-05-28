@@ -18,12 +18,14 @@ const locale = {
     chart: {
         panel: {
             title: '图表',
-            addTitle: '新建图表',
+            preview: '预览',
             removeAll: '全部删除',
             add: '新建图表',
             range: '应用范围',
             type: '图表类型',
             options: '高级设置',
+            cancel: '取消',
+            submit: '确认',
         },
         form: {
             lessThan: '该值必须小于 {0}',
@@ -44,6 +46,9 @@ const locale = {
             barColumn: '条形图',
             pieDefault: '饼图',
             pieDoughnut: '圆环图',
+        },
+        conf: {
+            title: '标题',
         },
     },
 };

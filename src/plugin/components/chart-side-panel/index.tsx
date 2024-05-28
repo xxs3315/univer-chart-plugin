@@ -14,23 +14,48 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IChart } from '../../models/types.ts';
+import { ChartMenuController } from '../../controllers/chart.menu.controller.ts';
 import styles from './index.module.less';
 import { ChartSideEdit } from './chart-side-edit';
+import { ChartSideList } from './chart-side-list';
 
 interface IChartSidePanelProps {
     conf?: IChart;
 }
 
 export const ChartSidePanel = (props: IChartSidePanelProps) => {
+    const chartMenuController = useDependency(ChartMenuController);
+    const [currentEditConf, currentEditConfSet] = useState<IChart | undefined>(props.conf);
+    const [isShowChartEditor, isShowChartEditorSet] = useState(!!props.conf);
+
+    const createChart = () => {
+        isShowChartEditorSet(true);
+    };
+
     const handleCancel = () => {
+        isShowChartEditorSet(false);
+        currentEditConfSet(undefined);
+        // 关闭 chart preview
+        chartMenuController.closeChartPreviewDialog();
+    };
+
+    const handleChartClick = (chart: IChart) => {
+        currentEditConfSet(chart);
+        isShowChartEditorSet(true);
     };
 
     return (
         <div className={styles.chartSideWrap}>
-            {/* eslint-disable-next-line react/prefer-destructuring-assignment */}
-            <ChartSideEdit onCancel={handleCancel} chart={props.conf} />
+            {isShowChartEditor
+                ? (
+                    <ChartSideEdit onCancel={handleCancel} chart={currentEditConf} />
+                )
+                : (
+                    <ChartSideList onClick={handleChartClick} onCreate={createChart} />
+                )}
         </div>
     );
 };

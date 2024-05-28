@@ -20,7 +20,7 @@ import { getMenuHiddenObservable, MenuGroup, MenuItemType, MenuPosition } from '
 import type { IAccessor } from '@wendellhu/redi';
 import { LocaleService, UniverInstanceType } from '@univerjs/core';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../../components/chart-selector-panel/interface.ts';
-import { OpenChartPanelOperator } from '../../commands/operations/open-chart-panel.ts';
+import { OpenChartPanelOperator } from '../../commands/operations/open-chart-panel.operation.ts';
 
 export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelectorItem {
     const localeService = accessor.get(LocaleService);
