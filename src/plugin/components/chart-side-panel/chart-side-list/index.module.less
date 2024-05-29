@@ -109,6 +109,11 @@
                 align-items: center;
                 justify-content: center;
             }
+            .view-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
         .delete-item {
             display: none;
@@ -128,6 +133,18 @@
             border-radius: var(--border-radius-base);
             position: absolute;
             right: 30px;
+            width: 24px;
+            height: 24px;
+            &:hover {
+                background-color: rgb(var(--grey-300));
+            }
+        }
+        .view-item {
+            display: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-base);
+            position: absolute;
+            right: 56px;
             width: 24px;
             height: 24px;
             &:hover {

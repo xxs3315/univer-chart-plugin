@@ -32,7 +32,7 @@ export interface IDeleteChartCommandParams {
 }
 export const DeleteChartCommand: ICommand<IDeleteChartCommandParams> = {
     type: CommandType.COMMAND,
-    id: 'sheet.command.delete-conditional-rule',
+    id: 'sheet.command.delete-chart',
     handler(accessor, params) {
         if (!params) {
             return false;

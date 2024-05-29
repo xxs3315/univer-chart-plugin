@@ -43,9 +43,9 @@ export const DeleteChartMutationUndoFactory = (accessor: IAccessor, param: IDele
         }];
         chartConfList.splice(index, 1);
         if (index !== 0) {
-            const firstRule = chartConfList[0];
-            if (firstRule) {
-                const transformResult = transformSupportSymmetryAnchor({ id: firstRule.chartId, type: 'before' }, { id: beforeChart.chartId, type: 'after' }, chartConfList, (chart) => chart.chartId);
+            const firstChart = chartConfList[0];
+            if (firstChart) {
+                const transformResult = transformSupportSymmetryAnchor({ id: firstChart.chartId, type: 'before' }, { id: beforeChart.chartId, type: 'after' }, chartConfList, (chart) => chart.chartId);
                 if (!transformResult) {
                     return result;
                 }

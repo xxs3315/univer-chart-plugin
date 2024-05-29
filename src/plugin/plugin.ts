@@ -40,6 +40,8 @@ import { AddChartMutation } from './commands/mutations/add-chart.mutation.ts';
 import { SetChartCommand } from './commands/commands/set-chart.command.ts';
 import { AddChartCommand } from './commands/commands/add-chart.command.ts';
 import { ChartClearController } from './controllers/chart.clear.controller.ts';
+import { DeleteChartCommand } from './commands/commands/delete-chart.command.ts';
+import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
@@ -52,6 +54,8 @@ export class ChartPlugin extends Plugin {
         ChartPreviewOperator,
         SetChartCommand,
         AddChartCommand,
+        DeleteChartCommand,
+        MoveChartCommand,
     ];
 
     constructor(

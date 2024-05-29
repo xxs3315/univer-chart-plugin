@@ -20,7 +20,7 @@ import { SetWorksheetActiveOperation } from '@univerjs/sheets';
 import type { IRange, Workbook } from '@univerjs/core';
 import { ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
 import { Button } from '@univerjs/design';
-import { DeleteSingle, EditRegionSingle, SequenceSingle } from '@univerjs/icons';
+import { DeleteSingle, EditRegionSingle, EyelashSingle, SequenceSingle, ViweModeSingle } from '@univerjs/icons';
 import GridLayout from 'react-grid-layout';
 import { serializeRange } from '@univerjs/engine-formula';
 import { debounceTime, Observable } from 'rxjs';
@@ -216,6 +216,15 @@ export const ChartSideList = (props: IChartListProps) => {
                                                     }}
                                                 >
                                                     <EditRegionSingle />
+                                                </div>
+                                            )}
+                                            {!chart.disable && (
+                                                <div
+                                                    className={`${styles.viewItem} ${draggingId === index ? styles.active : ''}`}
+                                                    onClick={(e) => {
+                                                    }}
+                                                >
+                                                    {!chart.show ? <EyelashSingle /> : <ViweModeSingle />}
                                                 </div>
                                             )}
                                         </div>
