@@ -31,7 +31,8 @@ export const ChartSidePanel = (props: IChartSidePanelProps) => {
     const [currentEditConf, currentEditConfSet] = useState<IChart | undefined>(props.conf);
     const [isShowChartEditor, isShowChartEditorSet] = useState(!!props.conf);
 
-    const createChart = () => {
+    const createChart = (chart?: IChart) => {
+        currentEditConfSet(chart);
         isShowChartEditorSet(true);
     };
 

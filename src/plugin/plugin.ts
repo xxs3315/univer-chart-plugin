@@ -39,6 +39,7 @@ import { DeleteChartMutation } from './commands/mutations/delete-chart.mutation.
 import { AddChartMutation } from './commands/mutations/add-chart.mutation.ts';
 import { SetChartCommand } from './commands/commands/set-chart.command.ts';
 import { AddChartCommand } from './commands/commands/add-chart.command.ts';
+import { ChartClearController } from './controllers/chart.clear.controller.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
@@ -67,6 +68,7 @@ export class ChartPlugin extends Plugin {
         this._initCommand();
         this._injector.add([ChartMenuController]);
         this._injector.add([ChartI18nController]);
+        this._injector.add([ChartClearController]);
     }
 
     /**

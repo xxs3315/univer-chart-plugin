@@ -35,7 +35,7 @@ export const OpenChartPanelOperator: ICommand = {
         const selectionManagerService = accessor.get(SelectionManagerService);
         const ranges = selectionManagerService.getSelectionRanges() || [];
         const chart = {
-            ...createDefaultChartConf,
+            ...createDefaultChartConf(accessor),
             ranges,
             conf: {
                 type: params?.value.type,

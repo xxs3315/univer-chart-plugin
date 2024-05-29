@@ -14,16 +14,230 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDependency } from '@wendellhu/redi/react-bindings';
+import { SetWorksheetActiveOperation } from '@univerjs/sheets';
+import type { IRange, Workbook } from '@univerjs/core';
+import { ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
+import { Button } from '@univerjs/design';
+import { DeleteSingle, EditRegionSingle, SequenceSingle } from '@univerjs/icons';
+import GridLayout from 'react-grid-layout';
+import { serializeRange } from '@univerjs/engine-formula';
+import { debounceTime, Observable } from 'rxjs';
+import { Injector } from '@wendellhu/redi';
+import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
+import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command.ts';
+import { CHART_PERMISSION_CHECK, ChartClearController } from '../../../controllers/chart.clear.controller.ts';
 import type { IChart } from '../../../models/types.ts';
+import { ChartConfModel } from '../../../models/chart-conf-model.ts';
+import { createDefaultNewChart } from '../../../utils/utils.ts';
+import type { IMoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
+import { MoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
+import styles from './index.module.less';
 
 interface IChartListProps {
     onClick: (chart: IChart) => void;
-    onCreate: () => void;
+    onCreate: (chart: IChart) => void;
 }
-
+let defaultWidth = 0;
 export const ChartSideList = (props: IChartListProps) => {
+    const { onClick, onCreate } = props;
+
+    const chartConfModel = useDependency(ChartConfModel);
+    const univerInstanceService = useDependency(IUniverInstanceService);
+    const commandService = useDependency(ICommandService);
+    const localeService = useDependency(LocaleService);
+    const cvController = useDependency(ChartClearController);
+    const injector = useDependency(Injector);
+
+    const workbook = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
+    const unitId = workbook.getUnitId();
+    const worksheet = workbook.getActiveSheet();
+    const subUnitId = worksheet.getSheetId();
+
+    const layoutContainerRef = useRef<HTMLDivElement>(null);
+
+    const getChartConfList = () => {
+        const chartConfList = chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+        if (!chartConfList || !chartConfList.length) {
+            return [];
+        }
+        return chartConfList;
+    };
+    const [chartConfList, chartConfListSet] = useState(getChartConfList);
+
+    const [layoutWidth, layoutWidthSet] = useState(defaultWidth);
+    const [draggingId, draggingIdSet] = useState<number>(-1);
+    const [currentChartRanges, currentChartRangesSet] = useState<IRange[]>([]);
+    const [fetchChartConfListId, fetchChartConfListIdSet] = useState(0);
+
+    const layout = chartConfList.map((chart, index) => ({ i: chart.chartId, x: 0, w: 12, y: index, h: 1, isResizable: false }));
+
+    const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
+
+    const handleDelete = (chart: IChart) => {
+        const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+        const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+        commandService.executeCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+    };
+
+    const handleDragStart = (_layout: unknown, from: { y: number }) => {
+        draggingIdSet(from.y);
+    };
+
+    const handleDragStop = (_layout: unknown, from: { y: number }, to: { y: number }) => {
+        draggingIdSet(-1);
+        const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+        const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+        const getSaveIndex = (index: number) => {
+            const length = chartConfList.length;
+            return Math.min(length - 1, Math.max(0, index));
+        };
+        const chartId = chartConfList[getSaveIndex(from.y)].chartId;
+        const targetChartId = chartConfList[getSaveIndex(to.y)].chartId;
+        if (chartId !== targetChartId) {
+            commandService.executeCommand(MoveChartCommand.id, { unitId, subUnitId, start: { id: chartId, type: 'self' }, end: { id: targetChartId, type: to.y > from.y ? 'after' : 'before' } } as IMoveChartCommand);
+        }
+    };
+
+    useEffect(() => {
+        chartConfListSet(getChartConfList);
+    }, [fetchChartConfListId, unitId, subUnitId]);
+
+    useEffect(() => {
+        const disposable = commandService.onCommandExecuted((commandInfo) => {
+            if (commandInfo.id === SetWorksheetActiveOperation.id) {
+                fetchChartConfListIdSet(Math.random());
+            }
+        });
+        return () => disposable.dispose();
+    });
+
+    useEffect(() => {
+        // Because univer-sidebar contains animations, accurate width values can not be obtained in real time。
+        // Also set a global width as the default width to avoid a gap before the first calculation.
+        const getWidth = () => {
+            // 8 is padding-left
+            const width = Math.max(0, (layoutContainerRef.current?.getBoundingClientRect().width || 0) - 8);
+            defaultWidth = width;
+            return width;
+        };
+        const observer = new Observable((subscribe) => {
+            const targetElement = document.querySelector('.univer-sidebar');
+            if (targetElement) {
+                let time = setTimeout(() => {
+                    subscribe.next();
+                }, 150);
+                const clearTime = () => {
+                    time && clearTimeout(time);
+                    time = null as any;
+                };
+                const handle: any = (e: TransitionEvent) => {
+                    if (e.propertyName === 'width') {
+                        clearTime();
+                        subscribe.next();
+                    }
+                };
+                targetElement.addEventListener('transitionend', handle);
+                return () => {
+                    clearTime();
+                    targetElement.removeEventListener('transitionend', handle);
+                };
+            }
+        });
+        const subscription = observer.pipe(debounceTime(16)).subscribe(() => {
+            layoutWidthSet(getWidth());
+        });
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+
     return (
-        <div>123</div>
+        <div className={styles.chartConfList}>
+            <div ref={layoutContainerRef} className={styles.gridLayoutWrap}>
+                {layoutWidth
+                    ? (
+                        <GridLayout
+                            onDragStop={handleDragStop}
+                            onDragStart={handleDragStart}
+                            layout={layout}
+                            cols={12}
+                            rowHeight={60}
+                            width={layoutWidth}
+                            margin={[0, 10]}
+                            draggableHandle=".draggableHandle"
+                        >
+                            {chartConfListByPermissionCheck?.map((chart, index) => {
+                                return (
+                                    <div key={`${chart.chartId}`}>
+                                        <div
+                                            onMouseMove={() => {
+                                                chart.ranges !== currentChartRanges && currentChartRangesSet(chart.ranges);
+                                            }}
+                                            onMouseLeave={() => currentChartRangesSet([])}
+                                            onClick={() => {
+                                                // if (chart.disable) return;
+                                                // onClick(chart);
+                                            }}
+                                            className={`${styles.confItem} ${draggingId === index ? styles.active : ''}`}
+                                        >
+                                            <div
+                                                className={`${styles.draggableHandle} draggableHandle`}
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <SequenceSingle />
+                                            </div>
+                                            <div className={styles.confDescribe}>
+                                                <div className={styles.confType}>{chart.conf.title}</div>
+                                                <div
+                                                    className={styles.confRange}
+                                                >
+                                                    {chart.ranges.map((range) => serializeRange(range)).join(',')}
+                                                </div>
+                                            </div>
+                                            {!chart.disable && (
+                                                <div
+                                                    className={`${styles.deleteItem} ${draggingId === index ? styles.active : ''}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(chart);
+                                                    }}
+                                                >
+                                                    <DeleteSingle />
+                                                </div>
+                                            )}
+                                            {!chart.disable && (
+                                                <div
+                                                    className={`${styles.editItem} ${draggingId === index ? styles.active : ''}`}
+                                                    onClick={(e) => {
+                                                        if (chart.disable) return;
+                                                        onClick(chart);
+                                                    }}
+                                                >
+                                                    <EditRegionSingle />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </GridLayout>
+                    )
+                    : null}
+                <div className={styles.listButtons}>
+                    <Button
+                        className={styles.listButton}
+                        type="primary"
+                        onClick={() => {
+                            const chart = createDefaultNewChart(injector);
+                            onCreate(chart);
+                        }}
+                    >
+                        {localeService.t('chart.panel.add')}
+                    </Button>
+                </div>
+            </div>
+        </div>
     );
 };
