@@ -17,100 +17,69 @@
 import React, { forwardRef, useMemo } from 'react';
 import { useObservable } from '@univerjs/ui';
 import { useDependency } from '@wendellhu/redi/react-bindings';
-import { isNullCell, IUniverInstanceService, LocaleService, UniverInstanceType, type Workbook } from '@univerjs/core';
+import { isNullCell, IUniverInstanceService, UniverInstanceType, type Workbook } from '@univerjs/core';
 import { SelectionManagerService } from '@univerjs/sheets';
 import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import styles from './index.module.less';
 import { ReactECharts } from './react-echarts.tsx';
 
 export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_props, ref) {
-    const localeService = useDependency(LocaleService);
     const univerInstanceService = useDependency(IUniverInstanceService);
     const chartPreviewService = useDependency(IChartPreviewService);
     const selectionManagerService = useDependency(SelectionManagerService);
     const state = useObservable(chartPreviewService.state$, undefined, true);
     const { type, range, title } = state;
 
-    const xAxis = useMemo(() => {
+    const [xAxis, seriesName, vs] = useMemo(() => {
         let rangeResult = range;
         if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
             rangeResult = selectionManagerService.getSelectionRanges()!;
         }
         let initXAxis = [];
-        let nextXAxis = [];
-        if (rangeResult && rangeResult.length > 0) {
-            const { startRow, startColumn, endColumn, endRow } = rangeResult[0]; // 多选区的情况下默认取第一个
-
-            initXAxis = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
-            const cellMatrix = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getMatrixWithMergedCells(startRow, startColumn, endRow, endColumn);
-
-            nextXAxis = initXAxis.map((item: any, index: number) => {
-                return cellMatrix.getArrayData()[0][index + 1] && !isNullCell(cellMatrix.getArrayData()[0][index + 1]) ? cellMatrix.getArrayData()[0][index + 1].v : item;
-            });
-            return nextXAxis;
-        }
-    }, [range, selectionManagerService, univerInstanceService]);
-
-    const seriesName = useMemo(() => {
-        let rangeResult = range;
-        if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
-            rangeResult = selectionManagerService.getSelectionRanges()!;
-        }
+        let nextXAxis: any[] = [];
         let initSeriesName = [];
-        let nextSeriesName = [];
-        if (rangeResult && rangeResult.length > 0) {
-            const { startRow, startColumn, endColumn, endRow } = rangeResult[0]; // 多选区的情况下默认取第一个
-
-            initSeriesName = Array.from({ length: endRow - startRow + 1 - 1 }, (_, index) => `未命名${index}`);
-            const cellMatrix = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getMatrixWithMergedCells(startRow, startColumn, endRow, endColumn);
-
-            nextSeriesName = initSeriesName.map((item: any, index: number) => {
-                return cellMatrix.getArrayData()[index + 1][0] && !isNullCell(cellMatrix.getArrayData()[index + 1][0]) ? cellMatrix.getArrayData()[index + 1][0].v : item;
-            });
-
-            return nextSeriesName;
-        }
-    }, [range, selectionManagerService, univerInstanceService]);
-
-    const vs = useMemo(() => {
-        let rangeResult = range;
-        if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
-            rangeResult = selectionManagerService.getSelectionRanges()!;
-        }
+        let nextSeriesName: any[] = [];
         let initData = [];
         let nextData: any[][] = [];
         if (rangeResult && rangeResult.length > 0) {
             const { startRow, startColumn, endColumn, endRow } = rangeResult[0]; // 多选区的情况下默认取第一个
-
-            initData = Array.from({ length: endRow - startRow + 1 - 1 }, () => new Array(endColumn - startColumn + 1 - 1).fill(undefined));
             const cellMatrix = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getMatrixWithMergedCells(startRow, startColumn, endRow, endColumn);
 
-            nextData = initData.map((row: any, rowIndex: number) => {
-                return row.map((cell: any, colIndex: number) => {
-                    return cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1] && !isNullCell(cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1]) ? cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1].v : cell;
+            initXAxis = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
+            if (startColumn !== endColumn) {
+                nextXAxis = initXAxis.map((item: any, index: number) => {
+                    return cellMatrix.getArrayData()[0] && cellMatrix.getArrayData()[0][index + 1] && !isNullCell(cellMatrix.getArrayData()[0][index + 1]) ? cellMatrix.getArrayData()[0][index + 1].v : item;
                 });
-            });
+            }
+            initSeriesName = Array.from({ length: endRow - startRow + 1 - 1 }, (_, index) => `未命名${index}`);
+            if (startRow !== endRow) {
+                nextSeriesName = initSeriesName.map((item: any, index: number) => {
+                    return cellMatrix.getArrayData()[index + 1] && cellMatrix.getArrayData()[index + 1][0] && !isNullCell(cellMatrix.getArrayData()[index + 1][0]) ? cellMatrix.getArrayData()[index + 1][0].v : item;
+                });
+            }
 
-            const nextVs = nextData.map((_: any, index: number) => {
+            initData = Array.from({ length: endRow - startRow + 1 - 1 }, () => new Array(endColumn - startColumn + 1 - 1).fill(undefined));
+            if (startColumn !== endColumn && startRow !== endRow) {
+                nextData = initData.map((row: any, rowIndex: number) => {
+                    return row.map((cell: any, colIndex: number) => {
+                        return cellMatrix.getArrayData()[rowIndex + 1] && cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1] && !isNullCell(cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1]) ? cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1].v : cell;
+                    });
+                });
+            }
+
+            const nextVs: any[] = nextData.map((_: any, index: number) => {
                 return {
-                    name: seriesName?.[index],
+                    name: nextSeriesName?.[index],
                     type: 'line',
                     // areaStyle: {},
                     data: nextData[index],
                 };
             });
 
-            return nextVs;
+            return [nextXAxis, nextSeriesName, nextVs] as any[];
         }
+        return [[], [], []];
     }, [range, selectionManagerService, univerInstanceService]);
-
-    // useEffect(() => {
-    //     console.log(type);
-    // }, [type]);
-    //
-    // useEffect(() => {
-    //     console.log(xAxis, seriesName, vs);
-    // }, [xAxis, seriesName, vs]);
 
     const option: any = useMemo(() => {
         return {
