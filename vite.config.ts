@@ -1,8 +1,9 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { univerPlugin } from '@univerjs/vite-plugin';
 
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), univerPlugin()],
     css: {
         modules: {
             localsConvention: 'camelCaseOnly',
@@ -10,7 +11,7 @@ export default defineConfig({
         },
         preprocessorOptions: {
             less: {
-                math: "always",
+                math: 'always',
                 relativeUrls: true,
                 javascriptEnabled: true,
             },

@@ -22,6 +22,8 @@ import { ChartType } from '../types/enum/chart-types.ts';
 
 export const SHEET_CHART_PLUGIN = 'SHEET_CHART_PLUGIN';
 
+export const CHART_PREVIEW_DIALOG_KEY = 'sheet.chart.preview.dialog';
+
 export const createDefaultChartConf = (accessor: IAccessor) => {
     const localeService = accessor.get(LocaleService);
     return ({

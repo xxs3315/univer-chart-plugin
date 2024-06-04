@@ -19,18 +19,19 @@ import React, { useEffect, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { LocaleService } from '@univerjs/core';
 import type { IChartConfig } from '../../../models/types.ts';
-import { IChartPreviewService } from '../../../services/chart-preview.service.ts';
 import styleBase from '../index.module.less';
 import { ChartType } from '../../../types/enum/chart-types.ts';
 import type { ChartGroupType } from '../../../types/enum/chart-group-types.ts';
+import { IChartPreviewService } from '../../../services/chart-preview.service.ts';
 import type { IConfEditorProps } from './types.ts';
 import styles from './index.module.less';
 
 export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
     const chartPreviewService = useDependency(IChartPreviewService);
     const localeService = useDependency(LocaleService);
-    const { interceptorManager } = props;
-    const [chartConfTitle, chartConfTitleSet] = useState(props.chart?.title);
+    const { interceptorManager, chart } = props;
+
+    const [chartConfTitle, chartConfTitleSet] = useState(chart?.title);
 
     const options = [
         { label: localeService.t('chart.type.lineDefault'), value: 'line-default' },
@@ -41,7 +42,7 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
         { label: localeService.t('chart.type.pieDoughnut'), value: 'pie-doughnut' }];
 
     const [chartType, chartTypeSet] = useState(() => {
-        const type = props.chart?.subType;
+        const type = chart?.subType;
         const defaultType = options[0].value;
         if (!type) {
             return defaultType;
@@ -72,7 +73,7 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
     const [chartGroupType, chartGroupTypeSet] = useState('line');
 
     useEffect(() => {
-        let groupType = props.chart?.type;
+        let groupType = chart?.type;
         const defaultGroupType = 'line';
         if (!chartType) {
             groupType = defaultGroupType as ChartGroupType;
@@ -104,8 +105,8 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
             }
         }
         chartGroupTypeSet(groupType as string);
-        chartPreviewService.changeChartType(chartType);
-    }, [chartType]);
+        chartPreviewService.changeChartType(chartGroupType, chartType);
+    }, [chartType, chartGroupType, chartPreviewService, chart?.type]);
 
     useEffect(() => {
         const dispose = interceptorManager.intercept(interceptorManager.getInterceptPoints().submit, { handler() {
@@ -128,7 +129,7 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
 
     useEffect(() => {
         chartPreviewService.changeChartConfTitle(chartConfTitle || '');
-    }, [chartConfTitle]);
+    }, [chartConfTitle, chartPreviewService]);
 
     return (
         <>

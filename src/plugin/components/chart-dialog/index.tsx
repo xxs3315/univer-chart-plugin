@@ -15,28 +15,25 @@
  */
 
 import React, { forwardRef, useMemo } from 'react';
-import { useObservable } from '@univerjs/ui';
+import type { Workbook } from '@univerjs/core';
+import { isNullCell, IUniverInstanceService, UniverInstanceType } from '@univerjs/core';
 import { useDependency } from '@wendellhu/redi/react-bindings';
-import { isNullCell, IUniverInstanceService, UniverInstanceType, type Workbook } from '@univerjs/core';
 import { SelectionManagerService } from '@univerjs/sheets';
-import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
 import styles from './index.module.less';
 
-interface IPreviewChartDialogProps {
+interface IChartDialogProps {
     chart: IChart;
 }
 
-export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_props: IPreviewChartDialogProps, _ref) {
+export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDialogProps, _ref) {
+    const { chart } = props;
     const univerInstanceService = useDependency(IUniverInstanceService);
-    const chartPreviewService = useDependency(IChartPreviewService);
     const selectionManagerService = useDependency(SelectionManagerService);
-    const state = useObservable(chartPreviewService.state$, undefined, true);
-    const { range, conf } = state;
 
     const [xAxis, seriesName, vs] = useMemo(() => {
-        let rangeResult = range;
+        let rangeResult = chart.ranges;
         if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
             rangeResult = selectionManagerService.getSelectionRanges()!;
         }
@@ -84,13 +81,13 @@ export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_pr
             return [nextXAxis, nextSeriesName, nextVs] as any[];
         }
         return [[], [], []];
-    }, [range, selectionManagerService, univerInstanceService]);
+    }, [chart, selectionManagerService, univerInstanceService]);
 
     const option: any = useMemo(() => {
         return {
             title: {
                 left: 'center',
-                text: conf.title,
+                text: chart.conf.title,
             },
             tooltip: {
                 trigger: 'axis',
@@ -119,7 +116,7 @@ export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_pr
             },
             series: vs,
         };
-    }, [xAxis, seriesName, vs, conf.title]);
+    }, [chart, seriesName, vs, xAxis]);
 
     return (
         <div className={styles.uiPluginChartDialog}>

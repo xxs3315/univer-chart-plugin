@@ -20,7 +20,8 @@ import '@univerjs/ui/lib/index.css';
 import '@univerjs/sheets-ui/lib/index.css';
 import '@univerjs/sheets-formula/lib/index.css';
 
-import { Univer, UniverInstanceType } from '@univerjs/core';
+import { LocaleType, Univer, UniverInstanceType } from '@univerjs/core';
+import { enUS, zhCN } from 'univer:locales';
 import { defaultTheme } from '@univerjs/design';
 import { UniverDocsPlugin } from '@univerjs/docs';
 import { UniverDocsUIPlugin } from '@univerjs/docs-ui';
@@ -35,6 +36,10 @@ import { DEFAULT_WORKBOOK_DATA } from './data.ts';
 
 const univer = new Univer({
     theme: defaultTheme,
+    locales: {
+        [LocaleType.ZH_CN]: zhCN,
+        [LocaleType.EN_US]: enUS,
+    },
 });
 
 univer.registerPlugin(UniverRenderEnginePlugin);

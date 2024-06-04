@@ -21,7 +21,7 @@ import { LocaleService } from '@univerjs/core';
 import { CHART_SELECTOR_CHILDREN, type IChartInfo, type IChartSelectorPanelProps } from './interface.ts';
 import styles from './index.module.less';
 
-export function Index(props: IChartSelectorPanelProps) {
+export function ChartSelectorPanel(props: IChartSelectorPanelProps) {
     const componentManager = useDependency(ComponentManager);
 
     const localeService = useDependency(LocaleService);

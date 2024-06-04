@@ -29,7 +29,6 @@ import LineChart from './components/icons/line_chart.tsx';
 import PieChart from './components/icons/pie_chart.tsx';
 import StackedColumnChart from './components/icons/stacked_column_chart.tsx';
 import { OpenChartPanelOperator } from './commands/operations/open-chart-panel.operation.ts';
-import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
 import { ChartPreviewOperator } from './commands/operations/chart-preview.operation.ts';
 import { ChartConfModel } from './models/chart-conf-model.ts';
 import { ChartViewModel } from './models/chart-view-model.ts';
@@ -42,6 +41,7 @@ import { AddChartCommand } from './commands/commands/add-chart.command.ts';
 import { ChartClearController } from './controllers/chart.clear.controller.ts';
 import { DeleteChartCommand } from './commands/commands/delete-chart.command.ts';
 import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
+import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;

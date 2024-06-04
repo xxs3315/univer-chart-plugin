@@ -25,4 +25,5 @@ export interface IConfEditorProps<S = any, R = IChartConfig> {
     onChange: (conf: S) => void;
     chart?: R;
     interceptorManager: InterceptorManager<{ beforeSubmit: typeof beforeSubmit; submit: typeof submit }>;
+    chartId: string;
 };

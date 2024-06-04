@@ -24,7 +24,6 @@ import { ChartViewModel } from './chart-view-model.ts';
 
 type ChartConfOperatorType = 'delete' | 'set' | 'add' | 'sort';
 export class ChartConfModel {
-    //  Map<unitID ,<sheetId ,IConditionFormattingRule[]>>
     private _model: IChartModel = new Map();
     private _chartConfChange$ = new Subject<{ chart: IChart; unitId: string; subUnitId: string; type: ChartConfOperatorType }>();
     $chartConfChange = this._chartConfChange$.asObservable();
@@ -84,44 +83,7 @@ export class ChartConfModel {
         const list = this._ensureList(unitId, subUnitId);
         const oldChartConf = list.find((item) => item.chartId === oldChartId);
         if (oldChartConf) {
-            // const chartConfPriorityMap = list.map((item) => item.chartId).reduce((map, cur, index) => {
-            //     map.set(cur, index);
-            //     return map;
-            // }, new Map<string, number>());
-            // After each setting, the cache needs to be cleared,
-            // and this cleanup is deferred until the end of the calculation.
-            // Otherwise the render will flash once
-            // const cloneRange = [...oldChartConf.ranges];
-            // const conditionalFormattingService = this._injector.get(ConditionalFormattingService);
-
             Object.assign(oldChartConf, chart);
-
-            // const dispose = conditionalFormattingService.interceptorManager.intercept(conditionalFormattingService.interceptorManager.getInterceptPoints().beforeUpdateRuleResult, {
-            //     handler: (config) => {
-            //         if (unitId === config?.unitId && subUnitId === config.subUnitId && oldRule.cfId === config.cfId) {
-            //             cloneRange.forEach((range) => {
-            //                 Range.foreach(range, (row, col) => {
-            //                     this._conditionalFormattingViewModel.deleteCellCf(unitId, subUnitId, row, col, oldRule.cfId);
-            //                 });
-            //             });
-            //             oldRule.ranges.forEach((range) => {
-            //                 Range.foreach(range, (row, col) => {
-            //                     this._conditionalFormattingViewModel.pushCellCf(unitId, subUnitId, row, col, oldRule.cfId);
-            //                     this._conditionalFormattingViewModel.sortCellCf(unitId, subUnitId, row, col, cfPriorityMap);
-            //                 });
-            //             });
-            //             dispose();
-            //         }
-            //     },
-            // });
-            //
-            // oldRule.ranges.forEach((range) => {
-            //     Range.foreach(range, (row, col) => {
-            //         this._conditionalFormattingViewModel.pushCellCf(unitId, subUnitId, row, col, oldRule.cfId);
-            //     });
-            // });
-
-            // this._conditionalFormattingViewModel.markRuleDirty(unitId, subUnitId, oldRule);
             this._chartConfChange$.next({ chart: oldChartConf, subUnitId, unitId, type: 'set' });
         }
     }
@@ -130,20 +92,9 @@ export class ChartConfModel {
         const list = this._ensureList(unitId, subUnitId);
         const item = list.find((item) => item.chartId === chart.chartId);
         if (!item) {
-            // The new conditional formatting has a higher priority
+            // The new chart has a higher priority
             list.unshift(chart);
         }
-        // const chartConfPriorityMap = list.map((item) => item.chart).reduce((map, cur, index) => {
-        //     map.set(cur, index);
-        //     return map;
-        // }, new Map<string, number>());
-        // cha.ranges.forEach((range) => {
-        //     Range.foreach(range, (row, col) => {
-        //         this._conditionalFormattingViewModel.pushCellCf(unitId, subUnitId, row, col, rule.cfId);
-        //         this._conditionalFormattingViewModel.sortCellCf(unitId, subUnitId, row, col, cfPriorityMap);
-        //     });
-        // });
-        // this._conditionalFormattingViewModel.markRuleDirty(unitId, subUnitId, rule);
         this._chartConfChange$.next({ chart, subUnitId, unitId, type: 'add' });
     }
 
@@ -161,16 +112,6 @@ export class ChartConfModel {
         const chart = list[curIndex];
         if (chart) {
             moveByAnchor(start, end, list, (chart) => chart.chartId);
-
-            // const cfPriorityMap = list.map((item) => item.chartId).reduce((map, cur, index) => {
-            //     map.set(cur, index);
-            //     return map;
-            // }, new Map<string, number>());
-            // chart.ranges.forEach((range) => {
-            //     Range.foreach(range, (row, col) => {
-            //         this._chartViewModel.sortCellCf(unitId, subUnitId, row, col, cfPriorityMap);
-            //     });
-            // });
             this._chartConfChange$.next({ chart, subUnitId, unitId, type: 'sort' });
         }
     }

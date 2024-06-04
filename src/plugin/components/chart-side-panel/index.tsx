@@ -28,24 +28,31 @@ interface IChartSidePanelProps {
 
 export const ChartSidePanel = (props: IChartSidePanelProps) => {
     const chartMenuController = useDependency(ChartMenuController);
-    const [currentEditConf, currentEditConfSet] = useState<IChart | undefined>(props.conf);
-    const [isShowChartEditor, isShowChartEditorSet] = useState(!!props.conf);
+    const { conf } = props;
+    const [currentEditConf, currentEditConfSet] = useState<IChart | undefined>(conf);
+    const [isShowChartEditor, isShowChartEditorSet] = useState(!!conf);
 
     const createChart = (chart?: IChart) => {
         currentEditConfSet(chart);
         isShowChartEditorSet(true);
+        chartMenuController.openPreviewChartDialog(chart);
     };
 
     const handleCancel = () => {
         isShowChartEditorSet(false);
         currentEditConfSet(undefined);
         // 关闭 chart preview
-        chartMenuController.closeChartPreviewDialog();
+        chartMenuController.closeChartDialog();
     };
 
     const handleChartClick = (chart: IChart) => {
         currentEditConfSet(chart);
         isShowChartEditorSet(true);
+        // 进入编辑模式，关闭chart 转而打开 chart preview
+        // 先关闭 chart
+        chartMenuController.closeChartDialog(chart);
+        // 打开preview
+        chartMenuController.openPreviewChartDialog(chart);
     };
 
     return (

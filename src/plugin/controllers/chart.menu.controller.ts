@@ -25,17 +25,15 @@ import { Inject, Injector } from '@wendellhu/redi';
 import type { IMenuItemFactory } from '@univerjs/ui';
 import { ComponentManager, IDialogService, ILayoutService, IMenuService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface.ts';
-import { Index } from '../components/chart-selector-panel';
+import { ChartSelectorPanel } from '../components/chart-selector-panel';
 import { ChartSidePanel } from '../components/chart-side-panel';
 import type { IChart } from '../models/types.ts';
 import { ChartPreviewDialog } from '../components/chart-preview-dialog';
-
-import {
-    IChartPreviewService } from '../services/chart-preview.service.ts';
+import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
+import { ChartDialog } from '../components/chart-dialog';
 import { ChartSelectorMenuItemFactory } from './menu/chart.menu.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
-const CHART_PREVIEW_DIALOG_KEY = 'sheet.chart.preview.dialog';
 
 @OnLifecycle(LifecycleStages.Ready, ChartMenuController)
 export class ChartMenuController extends Disposable {
@@ -51,8 +49,7 @@ export class ChartMenuController extends Disposable {
         @Inject(IDialogService) private readonly _dialogService: IDialogService,
         @Inject(ILayoutService) private readonly _layoutService: ILayoutService,
         @Inject(LocaleService) private _localeService: LocaleService,
-        @Inject(ICommandService) private _commandService: ICommandService,
-        @Inject(IChartPreviewService) private _chartPreviewService: IChartPreviewService
+        @Inject(ICommandService) private _commandService: ICommandService
     ) {
         super();
 
@@ -87,27 +84,58 @@ export class ChartMenuController extends Disposable {
     closeSidePanel() {
         this._sidebarDisposable = null;
         // 同时关闭 chart preview
-        this.closeChartPreviewDialog();
+        this.closeChartDialog();
     }
 
-    openChartPreviewDialog(chart?: IChart) {
+    openPreviewChartDialog(chart?: IChart) {
         // open preview dialog
         this._dialogService.open({
             id: CHART_PREVIEW_DIALOG_KEY,
             draggable: true,
             destroyOnClose: true,
-            children: { label: 'ChartPreviewDialog' },
-            title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
-            onClose: () => {
-                this.closeChartPreviewDialog();
-                // 同时关闭 side panel
-                this._sidebarService.close();
+            children: {
+                label: {
+                    name: 'ChartPreviewDialog',
+                    props: {
+                        chart,
+                    },
+                },
             },
+            title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
+            onClose: () => {},
+            className: 'chart-plugin-preview',
         });
     }
 
-    closeChartPreviewDialog() {
-        this._dialogService.close(CHART_PREVIEW_DIALOG_KEY);
+    openChartDialog(chart?: IChart) {
+        if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
+            // open chart
+            this._dialogService.open({
+                id: chart.chartId,
+                draggable: true,
+                destroyOnClose: true,
+                children: {
+                    label: {
+                        name: 'ChartDialog',
+                        props: {
+                            chart,
+                        },
+                    },
+                },
+                title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
+                onClose: () => {},
+                className: `chart-plugin-${chart.chartId}`,
+            });
+        }
+    }
+
+    closeChartDialog(chart?: IChart) {
+        if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
+            this._dialogService.close(chart.chartId);
+        } else {
+            this._dialogService.close(CHART_PREVIEW_DIALOG_KEY);
+        }
+
         queueMicrotask(() => this._layoutService.focus());
     }
 
@@ -119,93 +147,12 @@ export class ChartMenuController extends Disposable {
 
     private _initComponent() {
         const componentManager = this._componentManager;
-        this.disposeWithMe(componentManager.register(CHART_SELECTOR_PANEL_COMPONENT, Index));
+        this.disposeWithMe(componentManager.register(CHART_SELECTOR_PANEL_COMPONENT, ChartSelectorPanel));
         this.disposeWithMe(componentManager.register('ChartPreviewDialog', ChartPreviewDialog));
+        this.disposeWithMe(componentManager.register('ChartDialog', ChartDialog));
     }
 
     private _initPanel() {
         this._componentManager.register(CHART_SIDE_PANEL_KEY, ChartSidePanel);
     }
 }
-
-// class ChartPreviewProvider extends Disposable implements IChartPreviewProvider {
-//     /**
-//      * Hold all previews in this kind of univer business instances (Workbooks).
-//      */
-//     private readonly _previewModelsByUnitId = new Map<string, SheetChartPreviewModel>();
-//
-//     constructor(
-//         @IUniverInstanceService private readonly _univerInstanceService: IUniverInstanceService,
-//         @Inject(Injector) private readonly _injector: Injector
-//     ) {
-//         super();
-//     }
-//
-//     preview(request: IChartPreviewRequest): Promise<SheetChartPreviewModel[]> {
-//         this._terminate();
-//         // NOTE: If there are multi Workbook instances then we should create `SheetFindModel` for each of them.
-//         // But we don't need to implement that in the foreseeable future.
-//         const currentWorkbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
-//         if (currentWorkbook) {
-//             const sheetPreview = this._injector.createInstance(SheetChartPreviewModel, currentWorkbook);
-//         }
-//
-//         return Promise.resolve([]);
-//     }
-//
-//     terminate(): void {
-//         this._terminate();
-//     }
-//
-//     private _terminate(): void {
-//         this._previewModelsByUnitId.forEach((model) => model.dispose());
-//         this._previewModelsByUnitId.clear();
-//     }
-// }
-//
-// const SHEETS_CHART_PREVIEW_PROVIDER_NAME = 'sheets-chart-preview-provider';
-// const CHART_PREVIEW_Z_INDEX = 10000;
-//
-// export interface ISheetChartPreviewSuccess extends IChartPreviewSuccess {
-//     provider: typeof SHEETS_CHART_PREVIEW_PROVIDER_NAME;
-//     range: {
-//         subUnitId: string;
-//         range: IRange;
-//     };
-// }
-//
-// export class SheetChartPreviewModel extends PreviewModel {
-//     // We can directly inject the `FindReplaceService` here, and call its methods instead of using the observables.
-//     private readonly _previewsUpdate$ = new Subject<ISheetChartPreviewSuccess[]>();
-//     readonly previewsUpdate$ = this._previewsUpdate$.asObservable();
-//
-//     /** Hold all matches in the currently searching scope. */
-//     private _previews: ISheetChartPreviewSuccess[] = [];
-//
-//     constructor(
-//         private readonly _workbook: Workbook,
-//         @IUniverInstanceService private readonly _univerInstanceService: IUniverInstanceService,
-//         @IRenderManagerService private readonly _renderManagerService: IRenderManagerService,
-//         @ICommandService private readonly _commandService: ICommandService,
-//         @IContextService private readonly _contextService: IContextService,
-//         @Inject(ThemeService) private readonly _themeService: ThemeService,
-//         @Inject(SheetSkeletonManagerService) private readonly _sheetSkeletonManagerService: SheetSkeletonManagerService,
-//         @Inject(SelectionManagerService) private readonly _selectionManagerService: SelectionManagerService
-//     ) {
-//         super();
-//     }
-//
-//     get unitId(): string { return this._workbook.getUnitId(); }
-//     get subUnitId(): string { return this._workbook.getActiveSheet().getSheetId(); }
-//
-//     getChartPreviewSuccesses(): IChartPreviewSuccess[] {
-//         return this._previews;
-//     }
-//
-//     start(request: IChartPreviewRequest) {
-//         this._preview(request);
-//     }
-//
-//     private _preview(request: IChartPreviewRequest) {
-//     }
-// }

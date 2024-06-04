@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { getCurrentSheetDisabled$ } from '@univerjs/sheets';
 import type { IMenuSelectorItem } from '@univerjs/ui';
 import { getMenuHiddenObservable, MenuGroup, MenuItemType, MenuPosition } from '@univerjs/ui';
 import type { IAccessor } from '@wendellhu/redi';
@@ -24,7 +23,6 @@ import { OpenChartPanelOperator } from '../../commands/operations/open-chart-pan
 
 export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelectorItem {
     const localeService = accessor.get(LocaleService);
-    const disabled$ = getCurrentSheetDisabled$(accessor);
 
     return {
         id: OpenChartPanelOperator.id,
@@ -42,6 +40,5 @@ export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelector
             },
         ],
         hidden$: getMenuHiddenObservable(accessor, UniverInstanceType.UNIVER_SHEET),
-        disabled$,
     };
 }

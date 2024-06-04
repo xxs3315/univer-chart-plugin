@@ -52,7 +52,7 @@ export class ChartClearController extends Disposable {
 
     private _init() {
         this.disposeWithMe(this._sheetInterceptorService.interceptCommand({
-            getMutations: (commandInfo) => {
+            getMutations: (_commandInfo) => {
                 const redos: IMutationInfo[] = [];
                 const undos: IMutationInfo[] = [];
                 const defaultV = { redos, undos };

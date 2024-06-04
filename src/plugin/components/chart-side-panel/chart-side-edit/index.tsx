@@ -29,7 +29,7 @@ import { RangeSelector } from '@univerjs/ui';
 import { Button } from '@univerjs/design';
 import type { IChart } from '../../../models/types.ts';
 import styleBase from '../index.module.less';
-import { SHEET_CHART_PLUGIN } from '../../../common/const.ts';
+import { CHART_PREVIEW_DIALOG_KEY, SHEET_CHART_PLUGIN } from '../../../common/const.ts';
 import { IChartPreviewService } from '../../../services/chart-preview.service.ts';
 import type { ISetChartCommandParams } from '../../../commands/commands/set-chart.command.ts';
 import { SetChartCommand } from '../../../commands/commands/set-chart.command.ts';
@@ -58,11 +58,11 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const chartConfModel = useDependency(ChartConfModel);
     const unitId = getUnitId(univerInstanceService);
     const subUnitId = getSubUnitId(univerInstanceService);
-
-    const rangeResult = useRef<IRange[]>(props.chart?.ranges ?? []);
+    const { chart, onCancel } = props;
+    const rangeResult = useRef<IRange[]>(chart?.ranges ?? []);
 
     const rangeString = useMemo(() => {
-        let ranges = props.chart?.ranges;
+        let ranges = chart?.ranges;
         if (!ranges?.length) {
             ranges = selectionManagerService.getSelectionRanges() ?? [];
         }
@@ -74,25 +74,25 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             const v = serializeRange(range);
             return v === 'NaN' ? '' : v;
         }).filter((r) => !!r).join(',');
-    }, [props.chart, selectionManagerService]);
+    }, [chart, selectionManagerService]);
 
     useEffect(() => {
         // If the child table which  the rule being edited is deleted, exit edit mode
-        if (props.chart?.chartId !== undefined) {
+        if (chart?.chartId !== undefined) {
             const disposable = commandService.onCommandExecuted((commandInfo) => {
                 if (commandInfo.id === RemoveSheetMutation.id) {
                     const params = commandInfo.params as IRemoveSheetMutationParams;
                     if (params.subUnitId === subUnitId && params.unitId === unitId) {
-                        props.onCancel();
+                        onCancel();
                     }
                 }
                 if (commandInfo.id === SetWorksheetActiveOperation.id) {
-                    props.onCancel();
+                    onCancel();
                 }
             });
             return () => disposable.dispose();
         }
-    }, [props.chart?.chartId]);
+    }, [chart?.chartId]);
 
     const onRangeSelectorChange = (ranges: IUnitRange[]) => {
         rangeResult.current = ranges.map((r) => r.range);
@@ -119,23 +119,23 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             if (result && ranges.length) {
                 const unitId = getUnitId(univerInstanceService);
                 const subUnitId = getSubUnitId(univerInstanceService);
-                let chart = {} as IChart;
-                if (props.chart && props.chart.chartId) {
-                    chart = { ...props.chart, ranges, conf: result };
-                    commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart } as ISetChartCommandParams);
-                    props.onCancel();
+                let c = {} as IChart;
+                if (chart && chart.chartId) {
+                    c = { ...chart, ranges, conf: result };
+                    commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart: c } as ISetChartCommandParams);
+                    onCancel();
                 } else {
                     const chartId = chartConfModel.createChartId(unitId, subUnitId);
-                    chart = { chartId, ranges, conf: result };
-                    commandService.executeCommand(AddChartCommand.id, { unitId, subUnitId, chart } as IAddChartCommandParams);
-                    props.onCancel();
+                    c = { chartId, ranges, conf: result };
+                    commandService.executeCommand(AddChartCommand.id, { unitId, subUnitId, chart: c } as IAddChartCommandParams);
+                    onCancel();
                 }
             }
         }
     };
 
     const handleCancel = () => {
-        props.onCancel();
+        onCancel();
     };
 
     const result = useRef < Parameters<IConfEditorProps['onChange']>>();
@@ -153,12 +153,12 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                     openForSheetSubUnitId={subUnitId}
                     openForSheetUnitId={unitId}
                     value={rangeString}
-                    isSingleChoice={true}
+                    isSingleChoice
                     id={createInternalEditorID(`${SHEET_CHART_PLUGIN}_rangeSelector`)}
                     onChange={onRangeSelectorChange}
                 />
             </div>
-            <ChartConf onChange={onConfChange} interceptorManager={interceptorManager} chart={props.chart?.conf as any} />
+            <ChartConf onChange={onConfChange} interceptorManager={interceptorManager} chart={chart?.conf as any} chartId={chart && chart.chartId ? chart.chartId : CHART_PREVIEW_DIALOG_KEY} />
             <div className={`${styleBase.mTBase} ${styles.btnList}`}>
                 <Button size="small" onClick={handleCancel}>{localeService.t('chart.panel.cancel')}</Button>
                 <Button

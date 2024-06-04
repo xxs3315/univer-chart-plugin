@@ -33,6 +33,7 @@ import { ChartConfModel } from '../../../models/chart-conf-model.ts';
 import { createDefaultNewChart } from '../../../utils/utils.ts';
 import type { IMoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
 import { MoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
+import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
 import styles from './index.module.less';
 
 interface IChartListProps {
@@ -49,6 +50,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const localeService = useDependency(LocaleService);
     const cvController = useDependency(ChartClearController);
     const injector = useDependency(Injector);
+    const chartMenuController = useDependency(ChartMenuController);
 
     const workbook = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
     const unitId = workbook.getUnitId();
@@ -66,6 +68,15 @@ export const ChartSideList = (props: IChartListProps) => {
     };
     const [chartConfList, chartConfListSet] = useState(getChartConfList);
 
+    const getAllChartConfMap = () => {
+        const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
+        if (!allChartConfMap || !allChartConfMap.size) {
+            return null;
+        }
+        return allChartConfMap;
+    };
+    const [allChartConfMap, allChartConfMapSet] = useState(getAllChartConfMap);
+
     const [layoutWidth, layoutWidthSet] = useState(defaultWidth);
     const [draggingId, draggingIdSet] = useState<number>(-1);
     const [currentChartRanges, currentChartRangesSet] = useState<IRange[]>([]);
@@ -75,7 +86,24 @@ export const ChartSideList = (props: IChartListProps) => {
 
     const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
 
+    useEffect(() => {
+        if (allChartConfMap) {
+            // 关闭所有chart
+            allChartConfMap.forEach((value, _key) => {
+                value.forEach((chart) => {
+                    chartMenuController.closeChartDialog(chart);
+                });
+            });
+        }
+        chartConfListByPermissionCheck?.forEach((chart) => {
+            // 打开所有的chart（当前sheet的）
+            chartMenuController.openChartDialog(chart);
+        });
+    }, [chartMenuController, allChartConfMap, chartConfListByPermissionCheck, fetchChartConfListId, unitId, subUnitId]);
+
     const handleDelete = (chart: IChart) => {
+        // 关闭对应的chart
+        chartMenuController.closeChartDialog(chart);
         const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
         const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
         commandService.executeCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
@@ -112,6 +140,13 @@ export const ChartSideList = (props: IChartListProps) => {
         });
         return () => disposable.dispose();
     });
+
+    useEffect(() => {
+        const dispose = chartConfModel.$chartConfChange.subscribe(() => {
+            fetchChartConfListIdSet(Math.random());
+        });
+        return () => dispose.unsubscribe();
+    }, [chartConfModel]);
 
     useEffect(() => {
         // Because univer-sidebar contains animations, accurate width values can not be obtained in real time。
@@ -210,7 +245,7 @@ export const ChartSideList = (props: IChartListProps) => {
                                             {!chart.disable && (
                                                 <div
                                                     className={`${styles.editItem} ${draggingId === index ? styles.active : ''}`}
-                                                    onClick={(e) => {
+                                                    onClick={(_e) => {
                                                         if (chart.disable) return;
                                                         onClick(chart);
                                                     }}
@@ -221,7 +256,7 @@ export const ChartSideList = (props: IChartListProps) => {
                                             {!chart.disable && (
                                                 <div
                                                     className={`${styles.viewItem} ${draggingId === index ? styles.active : ''}`}
-                                                    onClick={(e) => {
+                                                    onClick={(_e) => {
                                                     }}
                                                 >
                                                     {!chart.show ? <EyelashSingle /> : <ViweModeSingle />}

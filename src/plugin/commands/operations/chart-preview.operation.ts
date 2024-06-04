@@ -17,15 +17,12 @@
 import { CommandType } from '@univerjs/core';
 import type { ICommand } from '@univerjs/core';
 import type { IAccessor } from '@wendellhu/redi';
-import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import type { IChart } from '../../models/types.ts';
 
 export const ChartPreviewOperator: ICommand = {
     id: 'sheet.operation.chart.preview',
     type: CommandType.OPERATION,
-    handler: (accessor: IAccessor, params?: IChart) => {
-        const chartPreviewService = accessor.get(IChartPreviewService);
-        chartPreviewService.start(params?.conf.subType);
+    handler: (_accessor: IAccessor, _params?: IChart) => {
         return true;
     },
 };
