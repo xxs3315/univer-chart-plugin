@@ -38,7 +38,6 @@ const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
 @OnLifecycle(LifecycleStages.Ready, ChartMenuController)
 export class ChartMenuController extends Disposable {
     private _sidebarDisposable: IDisposable | null = null;
-    // private _provider!: ChartPreviewProvider;
 
     constructor(
         @IUniverInstanceService private readonly _univerInstanceService: IUniverInstanceService,
@@ -52,10 +51,6 @@ export class ChartMenuController extends Disposable {
         @Inject(ICommandService) private _commandService: ICommandService
     ) {
         super();
-
-        // const provider = this._injector.createInstance(ChartPreviewProvider);
-        // this._provider = provider;
-        // this._chartPreviewService.registerFindReplaceProvider(provider);
 
         this._initMenu();
         this._initComponent();

@@ -16,13 +16,14 @@
 
 import { Subject } from 'rxjs';
 import { Inject, Injector } from '@wendellhu/redi';
+import { Rectangle } from '@univerjs/core';
 import { createChartId } from '../utils/create-chart-id.ts';
 import type { IAnchor } from '../utils/anchor.ts';
 import { findIndexByAnchor, moveByAnchor } from '../utils/anchor.ts';
 import type { IChart, IChartModel } from './types.ts';
 import { ChartViewModel } from './chart-view-model.ts';
 
-type ChartConfOperatorType = 'delete' | 'set' | 'add' | 'sort';
+type ChartConfOperatorType = 'delete' | 'set' | 'add' | 'sort' | 'redraw';
 export class ChartConfModel {
     private _model: IChartModel = new Map();
     private _chartConfChange$ = new Subject<{ chart: IChart; unitId: string; subUnitId: string; type: ChartConfOperatorType }>();
@@ -98,6 +99,15 @@ export class ChartConfModel {
         this._chartConfChange$.next({ chart, subUnitId, unitId, type: 'add' });
     }
 
+    markDirty(unitId: string, subUnitId: string, chart: IChart) {
+        const list = this._ensureList(unitId, subUnitId);
+        const oldChartConf = list.find((item) => item.chartId === chart.chartId);
+        if (oldChartConf) {
+            Object.assign(oldChartConf, chart);
+            this._chartConfChange$.next({ chart: oldChartConf, subUnitId, unitId, type: 'redraw' });
+        }
+    }
+
     /**
      * example [1,2,3,4,5,6],if you move behind 5 to 2, then cfId=5,targetId=2.
      * if targetId does not exist, it defaults to top
@@ -122,5 +132,9 @@ export class ChartConfModel {
 
     deleteUnitId(unitId: string) {
         this._model.delete(unitId);
+    }
+
+    getIntersectCharts(unitId: string, subUnitId: string, row: number, col: number) {
+        return this.getSubunitChartConfs(unitId, subUnitId)?.filter((chart) => Rectangle.intersects(chart.ranges?.[0], { startRow: row, endRow: row, startColumn: col, endColumn: col }));
     }
 }

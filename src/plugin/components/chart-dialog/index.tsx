@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef, useEffect, useMemo, useState } from 'react';
 import type { Workbook } from '@univerjs/core';
 import { isNullCell, IUniverInstanceService, UniverInstanceType } from '@univerjs/core';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { SelectionManagerService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
+import { ChartConfModel } from '../../models/chart-conf-model.ts';
 import styles from './index.module.less';
 
 interface IChartDialogProps {
@@ -29,8 +30,10 @@ interface IChartDialogProps {
 
 export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDialogProps, _ref) {
     const { chart } = props;
+    const chartConfModel = useDependency(ChartConfModel);
     const univerInstanceService = useDependency(IUniverInstanceService);
     const selectionManagerService = useDependency(SelectionManagerService);
+    const [fetchChartConfRedraw, fetchChartConfRedrawSet] = useState(0);
 
     const [xAxis, seriesName, vs] = useMemo(() => {
         let rangeResult = chart.ranges;
@@ -81,7 +84,14 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
             return [nextXAxis, nextSeriesName, nextVs] as any[];
         }
         return [[], [], []];
-    }, [chart, selectionManagerService, univerInstanceService]);
+    }, [chart, fetchChartConfRedraw, selectionManagerService, univerInstanceService]);
+
+    useEffect(() => {
+        const dispose = chartConfModel.$chartConfChange.subscribe(() => {
+            fetchChartConfRedrawSet(Math.random());
+        });
+        return () => dispose.unsubscribe();
+    });
 
     const option: any = useMemo(() => {
         return {
