@@ -606,4 +606,10 @@ export const DEFAULT_WORKBOOK_DATA: IWorkbookData = {
             rightToLeft: 0,
         },
     },
+    resources: [
+        {
+            name: 'SHEET_CHART_PLUGIN',
+            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","conf":{"type":"line","subType":"line-default","title":"这是一个图"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}]}',
+        },
+    ],
 };

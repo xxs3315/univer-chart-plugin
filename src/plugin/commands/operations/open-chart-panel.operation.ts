@@ -45,8 +45,6 @@ export const OpenChartPanelOperator: ICommand = {
         } as IChart;
         // open side panel
         chartMenuController.openSidePanel(chart);
-        // 打开chart preview dialog
-        chartMenuController.openPreviewChartDialog(chart);
         return true;
     },
 };

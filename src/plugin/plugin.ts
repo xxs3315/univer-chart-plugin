@@ -42,12 +42,13 @@ import { ChartClearController } from './controllers/chart.clear.controller.ts';
 import { DeleteChartCommand } from './commands/commands/delete-chart.command.ts';
 import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
 import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
+import { ChartService } from './services/chart.service.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
     static override type = UniverInstanceType.UNIVER_SHEET;
 
-    static readonly dependencyList: Dependency[] = [[ChartConfModel], [ChartViewModel]];
+    static readonly dependencyList: Dependency[] = [[ChartService], [ChartConfModel], [ChartViewModel]];
     static readonly mutationList = [AddChartMutation, DeleteChartMutation, SetChartMutation, MoveChartMutation];
     static commandList = [
         OpenChartPanelOperator,
