@@ -70,6 +70,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         if (!ranges?.length) {
             return '';
         }
+        chartPreviewService.changeRange(ranges || []);
         return ranges.map((range) => {
             const v = serializeRange(range);
             return v === 'NaN' ? '' : v;

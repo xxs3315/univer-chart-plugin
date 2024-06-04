@@ -33,10 +33,10 @@ export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_pr
     const chartPreviewService = useDependency(IChartPreviewService);
     const selectionManagerService = useDependency(SelectionManagerService);
     const state = useObservable(chartPreviewService.state$, undefined, true);
-    const { range, conf } = state;
+    const { ranges, conf } = state;
 
     const [xAxis, seriesName, vs] = useMemo(() => {
-        let rangeResult = range;
+        let rangeResult = ranges;
         if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
             rangeResult = selectionManagerService.getSelectionRanges()!;
         }
@@ -84,7 +84,7 @@ export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_pr
             return [nextXAxis, nextSeriesName, nextVs] as any[];
         }
         return [[], [], []];
-    }, [range, selectionManagerService, univerInstanceService]);
+    }, [ranges, selectionManagerService, univerInstanceService]);
 
     const option: any = useMemo(() => {
         return {

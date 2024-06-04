@@ -57,7 +57,7 @@ export const ChartSidePanel = (props: IChartSidePanelProps) => {
 
     useEffect(() => {
         // 当是编辑面板时，同时打开chart preview dialog
-        if (isShowChartEditor) chartMenuController.openPreviewChartDialog(conf);
+        if (isShowChartEditor) chartMenuController.openPreviewChartDialog(currentEditConf);
     }, [isShowChartEditor]);
 
     return (

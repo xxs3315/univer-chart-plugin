@@ -28,7 +28,7 @@ import { ChartType } from '../types/enum/chart-types.ts';
 
 export interface IChartPreviewState {
     chartId: string;
-    range: IRange[];
+    ranges: IRange[];
     conf: Partial<IChartConfig>;
 }
 
@@ -43,10 +43,10 @@ export class ChartPreviewState {
     }
 
     private _chartId = '';
-    private _range = [] as IRange[];
+    private _ranges = [] as IRange[];
     private _conf = {} as IChartConfig;
     get chartId(): string { return this._chartId; }
-    get range(): IRange[] { return this._range; }
+    get ranges(): IRange[] { return this._ranges; }
     get conf(): IChartConfig { return this._conf; }
 
     changeState(changes: Partial<IChartPreviewState>): void {
@@ -71,9 +71,9 @@ export class ChartPreviewState {
                 changed = true;
             }
 
-            if (typeof changes.range !== 'undefined' && this._range !== changes.range) {
-                this._range = changes.range;
-                changedState.range = changes.range;
+            if (typeof changes.ranges !== 'undefined' && this._ranges !== changes.ranges) {
+                this._ranges = changes.ranges;
+                changedState.ranges = changes.ranges;
                 changed = true;
             }
 
@@ -85,7 +85,7 @@ export class ChartPreviewState {
             if (changed) {
                 this._state$.next({
                     chartId: this._chartId,
-                    range: this._range,
+                    ranges: this._ranges,
                     conf: this._conf,
                 });
                 this._stateUpdates$.next(changedState);
@@ -102,14 +102,14 @@ export interface IChartPreviewService {
 
     changeChartType(type: string, subType: string): void;
 
-    changeRange(range: IRange[]): void;
+    changeRange(ranges: IRange[]): void;
 
     changeChartConfTitle(title: string): void;
 }
 
 function createInitChartPreviewState(): IChartPreviewState {
     return {
-        range: [],
+        ranges: [],
         chartId: CHART_PREVIEW_DIALOG_KEY,
         conf: {
             type: ChartGroupType.LINE,
@@ -148,7 +148,7 @@ export class ChartPreviewService extends Disposable implements IChartPreviewServ
         this._state.changeState({ conf: { type, subType } as IChartConfig });
     }
 
-    changeRange(range: IRange[]): void {
-        this._state.changeState({ range });
+    changeRange(ranges: IRange[]): void {
+        this._state.changeState({ ranges });
     }
 }
