@@ -103,7 +103,7 @@ export class ChartMenuController extends Disposable {
             },
             title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
             onClose: () => {},
-            className: 'chart-plugin-preview',
+            className: 'chart-plugin-preview-dialog',
         });
     }
 
@@ -124,7 +124,7 @@ export class ChartMenuController extends Disposable {
                 },
                 title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
                 onClose: () => {},
-                className: `chart-plugin-${chart.chartId}`,
+                className: `chart-plugin-dialog-${chart.chartId}`,
             });
         }
     }
