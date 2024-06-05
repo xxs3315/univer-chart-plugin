@@ -48,3 +48,13 @@ export const OpenChartPanelOperator: ICommand = {
         return true;
     },
 };
+
+export const OpenChartManagePanelOperator: ICommand = {
+    id: 'sheet.operation.open.chart.panel.manage',
+    type: CommandType.OPERATION,
+    handler: (accessor: IAccessor, params?: IOpenChartPanelParams) => {
+        const chartMenuController = accessor.get(ChartMenuController);
+        chartMenuController.openSidePanel(undefined, false);
+        return true;
+    },
+};

@@ -24,13 +24,14 @@ import { ChartSideList } from './chart-side-list';
 
 interface IChartSidePanelProps {
     conf?: IChart;
+    showChartEditor?: boolean;
 }
 
 export const ChartSidePanel = (props: IChartSidePanelProps) => {
     const chartMenuController = useDependency(ChartMenuController);
-    const { conf } = props;
+    const { conf, showChartEditor } = props;
     const [currentEditConf, currentEditConfSet] = useState<IChart | undefined>(conf);
-    const [isShowChartEditor, isShowChartEditorSet] = useState(!!conf);
+    const [isShowChartEditor, isShowChartEditorSet] = useState(!!showChartEditor);
 
     const createChart = (chart?: IChart) => {
         currentEditConfSet(chart);

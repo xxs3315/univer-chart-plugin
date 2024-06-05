@@ -31,7 +31,7 @@ import type { IChart } from '../models/types.ts';
 import { ChartPreviewDialog } from '../components/chart-preview-dialog';
 import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
 import { ChartDialog } from '../components/chart-dialog';
-import { ChartSelectorMenuItemFactory } from './menu/chart.menu.ts';
+import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
 
@@ -63,12 +63,14 @@ export class ChartMenuController extends Disposable {
         );
     }
 
-    openSidePanel(chart?: IChart) {
+    openSidePanel(chart?: IChart, showChartEditor = true) {
         const props = {
             header: { title: this._localeService.t('chart.panel.title') },
             children: {
                 label: CHART_SIDE_PANEL_KEY,
                 conf: chart,
+                showChartEditor,
+
             },
             onClose: () => this.closeSidePanel(),
         };
@@ -135,7 +137,7 @@ export class ChartMenuController extends Disposable {
     }
 
     private _initMenu() {
-        ([ChartSelectorMenuItemFactory] as IMenuItemFactory[]).forEach((factory) => {
+        ([ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory] as IMenuItemFactory[]).forEach((factory) => {
             this.disposeWithMe(this._menuService.addMenuItem(this._injector.invoke(factory), {}));
         });
     }

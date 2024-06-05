@@ -28,6 +28,7 @@ const locale: typeof zhCN = {
             options: 'Advance options',
             cancel: 'Cancel',
             submit: 'Submit',
+            manage: 'Manage Charts',
         },
         form: {
             lessThan: 'The value must be less than {0}',
@@ -37,9 +38,9 @@ const locale: typeof zhCN = {
             rangeSelector: 'Select Range or Enter Value',
         },
         category: {
-            line: '折线图或面积图',
-            bar: '柱状图或条形图',
-            pie: '饼图或圆环图',
+            line: '新建折线图或面积图',
+            bar: '新建柱状图或条形图',
+            pie: '新建饼图或圆环图',
         },
         type: {
             lineDefault: '折线图',

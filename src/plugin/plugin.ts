@@ -28,7 +28,7 @@ import DoughnutChart from './components/icons/doughnut_chart.tsx';
 import LineChart from './components/icons/line_chart.tsx';
 import PieChart from './components/icons/pie_chart.tsx';
 import StackedColumnChart from './components/icons/stacked_column_chart.tsx';
-import { OpenChartPanelOperator } from './commands/operations/open-chart-panel.operation.ts';
+import { OpenChartManagePanelOperator, OpenChartPanelOperator } from './commands/operations/open-chart-panel.operation.ts';
 import { ChartPreviewOperator } from './commands/operations/chart-preview.operation.ts';
 import { ChartConfModel } from './models/chart-conf-model.ts';
 import { ChartViewModel } from './models/chart-view-model.ts';
@@ -52,6 +52,7 @@ export class ChartPlugin extends Plugin {
     static readonly mutationList = [AddChartMutation, DeleteChartMutation, SetChartMutation, MoveChartMutation];
     static commandList = [
         OpenChartPanelOperator,
+        OpenChartManagePanelOperator,
         ChartPreviewOperator,
         SetChartCommand,
         AddChartCommand,

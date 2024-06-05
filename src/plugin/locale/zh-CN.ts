@@ -26,6 +26,7 @@ const locale = {
             options: '高级设置',
             cancel: '取消',
             submit: '确认',
+            manage: '管理图表',
         },
         form: {
             lessThan: '该值必须小于 {0}',
@@ -35,9 +36,9 @@ const locale = {
             rangeSelector: '选择范围或者输入值',
         },
         category: {
-            line: '折线图或面积图',
-            bar: '柱状图或条形图',
-            pie: '饼图或圆环图',
+            line: '新建折线图或面积图',
+            bar: '新建柱状图或条形图',
+            pie: '新建饼图或圆环图',
         },
         type: {
             lineDefault: '折线图',
