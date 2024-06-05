@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IChart } from '../../models/types.ts';
 import { ChartMenuController } from '../../controllers/chart.menu.controller.ts';
@@ -56,9 +56,11 @@ export const ChartSidePanel = (props: IChartSidePanelProps) => {
         chartMenuController.openPreviewChartDialog(chart);
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         // 当是编辑面板时，同时打开chart preview dialog
-        if (isShowChartEditor) chartMenuController.openPreviewChartDialog(currentEditConf);
+        if (isShowChartEditor) {
+            chartMenuController.openPreviewChartDialog(currentEditConf);
+        }
     }, [isShowChartEditor]);
 
     return (
