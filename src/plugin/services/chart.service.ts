@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-import type { IMutationInfo, Workbook } from '@univerjs/core';
-import { afterInitApply,
-    createInterceptorKey,
+import type { IMutationInfo, IRange, Workbook } from '@univerjs/core';
+import { afterInitApply, createInterceptorKey,
     Disposable,
-    ICommandService, IResourceManagerService,
-    IUniverInstanceService,
+    ICommandService,
+    IResourceManagerService, IUniverInstanceService,
     LifecycleStages,
     ObjectMatrix,
-    OnLifecycle, UniverInstanceType,
+    OnLifecycle,
+    Rectangle, UniverInstanceType,
 } from '@univerjs/core';
 import { Inject, Injector } from '@wendellhu/redi';
-import type { IRemoveSheetCommandParams, ISetRangeValuesMutationParams } from '@univerjs/sheets';
-import { RemoveSheetCommand, SetRangeValuesMutation, SheetInterceptorService } from '@univerjs/sheets';
+import type {
+    IInsertColMutationParams, IMoveColumnsMutationParams, IMoveRangeMutationParams, IMoveRowsMutationParams, IRemoveRowsMutationParams,
+    IRemoveSheetCommandParams,
+    ISetRangeValuesMutationParams } from '@univerjs/sheets';
+import {
+    InsertColMutation, InsertRowMutation, MoveColsMutation, MoveRangeMutation, MoveRowsMutation,
+    RemoveColMutation, RemoveRowMutation,
+    RemoveSheetCommand, SetRangeValuesMutation, SheetInterceptorService } from '@univerjs/sheets';
 import { ChartConfModel } from '../models/chart-conf-model.ts';
 import { ChartViewModel } from '../models/chart-view-model.ts';
 import type { IChart, IChartModelJson } from '../models/types.ts';
@@ -41,7 +47,6 @@ import {
 
 const beforeUpdateChartResult = createInterceptorKey<{ subUnitId: string; unitId: string; chartId: string }, undefined>('chart-before-update-chart-result');
 @OnLifecycle(LifecycleStages.Starting, ChartService)
-
 export class ChartService extends Disposable {
     private _afterInitApplyPromise: Promise<void>;
 
@@ -173,87 +178,82 @@ export class ChartService extends Disposable {
                         });
                         break;
                     }
-                    // case InsertColMutation.id:
-                    // case RemoveColMutation.id: {
-                    //     const { range, unitId, subUnitId } = commandInfo.params as IInsertColMutationParams;
-                    //     const allRules = this._conditionalFormattingRuleModel.getSubunitRules(unitId, subUnitId);
-                    //     const effectRange: IRange = { ...range, endColumn: Number.MAX_SAFE_INTEGER };
-                    //     if (allRules) {
-                    //         const effectRule = allRules.filter((rule) => rule.ranges.some((ruleRange) => Rectangle.intersects(ruleRange, effectRange)));
-                    //         effectRule.forEach((rule) => {
-                    //             this._conditionalFormattingViewModel.markRuleDirty(unitId, subUnitId, rule);
-                    //             this._deleteComputeCache(unitId, subUnitId, rule.cfId);
-                    //         });
-                    //     }
-                    //     break;
-                    // }
-                    // case RemoveRowMutation.id:
-                    // case InsertRowMutation.id: {
-                    //     const { range, unitId, subUnitId } = commandInfo.params as IRemoveRowsMutationParams;
-                    //     const allRules = this._conditionalFormattingRuleModel.getSubunitRules(unitId, subUnitId);
-                    //     const effectRange: IRange = { ...range, endRow: Number.MAX_SAFE_INTEGER };
-                    //     if (allRules) {
-                    //         const effectRule = allRules.filter((rule) => rule.ranges.some((ruleRange) => Rectangle.intersects(ruleRange, effectRange)));
-                    //         effectRule.forEach((rule) => {
-                    //             this._conditionalFormattingViewModel.markRuleDirty(unitId, subUnitId, rule);
-                    //             this._deleteComputeCache(unitId, subUnitId, rule.cfId);
-                    //         });
-                    //     }
-                    //     break;
-                    // }
-                    // case MoveRowsMutation.id: {
-                    //     const { sourceRange, targetRange, unitId, subUnitId } = commandInfo.params as IMoveRowsMutationParams;
-                    //     const allRules = this._conditionalFormattingRuleModel.getSubunitRules(unitId, subUnitId);
-                    //     const effectRange: IRange = {
-                    //         startRow: Math.min(sourceRange.startRow, targetRange.startRow),
-                    //         endRow: Number.MAX_SAFE_INTEGER,
-                    //         startColumn: 0,
-                    //         endColumn: Number.MAX_SAFE_INTEGER,
-                    //     };
-                    //     if (allRules) {
-                    //         const effectRule = allRules.filter((rule) => rule.ranges.some((ruleRange) => Rectangle.intersects(ruleRange, effectRange)));
-                    //         effectRule.forEach((rule) => {
-                    //             this._conditionalFormattingViewModel.markRuleDirty(unitId, subUnitId, rule);
-                    //             this._deleteComputeCache(unitId, subUnitId, rule.cfId);
-                    //         });
-                    //     }
-                    //     break;
-                    // }
-                    // case MoveColsMutation.id: {
-                    //     const { sourceRange, targetRange, unitId, subUnitId } = commandInfo.params as IMoveColumnsMutationParams;
-                    //     const allRules = this._conditionalFormattingRuleModel.getSubunitRules(unitId, subUnitId);
-                    //     const effectRange: IRange = {
-                    //         startRow: 0,
-                    //         endRow: Number.MAX_SAFE_INTEGER,
-                    //         startColumn: Math.min(sourceRange.startColumn, targetRange.startColumn),
-                    //         endColumn: Number.MAX_SAFE_INTEGER,
-                    //     };
-                    //     if (allRules) {
-                    //         const effectRule = allRules.filter((rule) => rule.ranges.some((ruleRange) => Rectangle.intersects(ruleRange, effectRange)));
-                    //         effectRule.forEach((rule) => {
-                    //             this._conditionalFormattingViewModel.markRuleDirty(unitId, subUnitId, rule);
-                    //             this._deleteComputeCache(unitId, subUnitId, rule.cfId);
-                    //         });
-                    //     }
-                    //     break;
-                    // }
-                    // case MoveRangeMutation.id: {
-                    //     const { unitId, to, from } = commandInfo.params as IMoveRangeMutationParams;
-                    //     const handleSubUnit = (value: IMoveRangeMutationParams['from']) => {
-                    //         const cellMatrix: [number, number][] = [];
-                    //         new ObjectMatrix(value.value).forValue((row, col) => {
-                    //             cellMatrix.push([row, col]);
-                    //         });
-                    //         const rules = collectRule(unitId, value.subUnitId, cellMatrix);
-                    //         rules.forEach((rule) => {
-                    //             this._conditionalFormattingViewModel.markRuleDirty(unitId, value.subUnitId, rule);
-                    //             this._deleteComputeCache(unitId, value.subUnitId, rule.cfId);
-                    //         });
-                    //     };
-                    //     handleSubUnit(to);
-                    //     handleSubUnit(from);
-                    //     break;
-                    // }
+                    case InsertColMutation.id:
+                    case RemoveColMutation.id: {
+                        const { range, unitId, subUnitId } = commandInfo.params as IInsertColMutationParams;
+                        const allCharts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                        const effectRange: IRange = { ...range, endColumn: Number.MAX_SAFE_INTEGER };
+                        if (allCharts) {
+                            const effectChart = allCharts.filter((chart) => chart.ranges.some((chartRange) => Rectangle.intersects(chartRange, effectRange)));
+                            effectChart.forEach((chart) => {
+                                this._chartConfModel.markDirty(unitId, subUnitId, chart);
+                            });
+                        }
+                        break;
+                    }
+                    case RemoveRowMutation.id:
+                    case InsertRowMutation.id: {
+                        const { range, unitId, subUnitId } = commandInfo.params as IRemoveRowsMutationParams;
+                        const allCharts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                        const effectRange: IRange = { ...range, endRow: Number.MAX_SAFE_INTEGER };
+                        if (allCharts) {
+                            const effectChart = allCharts.filter((chart) => chart.ranges.some((chartRange) => Rectangle.intersects(chartRange, effectRange)));
+                            effectChart.forEach((chart) => {
+                                this._chartConfModel.markDirty(unitId, subUnitId, chart);
+                            });
+                        }
+                        break;
+                    }
+                    case MoveRowsMutation.id: {
+                        const { sourceRange, targetRange, unitId, subUnitId } = commandInfo.params as IMoveRowsMutationParams;
+                        const allCharts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                        const effectRange: IRange = {
+                            startRow: Math.min(sourceRange.startRow, targetRange.startRow),
+                            endRow: Number.MAX_SAFE_INTEGER,
+                            startColumn: 0,
+                            endColumn: Number.MAX_SAFE_INTEGER,
+                        };
+                        if (allCharts) {
+                            const effectChart = allCharts.filter((chart) => chart.ranges.some((chartRange) => Rectangle.intersects(chartRange, effectRange)));
+                            effectChart.forEach((chart) => {
+                                this._chartConfModel.markDirty(unitId, subUnitId, chart);
+                            });
+                        }
+                        break;
+                    }
+                    case MoveColsMutation.id: {
+                        const { sourceRange, targetRange, unitId, subUnitId } = commandInfo.params as IMoveColumnsMutationParams;
+                        const allCharts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                        const effectRange: IRange = {
+                            startRow: 0,
+                            endRow: Number.MAX_SAFE_INTEGER,
+                            startColumn: Math.min(sourceRange.startColumn, targetRange.startColumn),
+                            endColumn: Number.MAX_SAFE_INTEGER,
+                        };
+                        if (allCharts) {
+                            const effectChart = allCharts.filter((chart) => chart.ranges.some((chartRange) => Rectangle.intersects(chartRange, effectRange)));
+                            effectChart.forEach((chart) => {
+                                this._chartConfModel.markDirty(unitId, subUnitId, chart);
+                            });
+                        }
+                        break;
+                    }
+                    case MoveRangeMutation.id: {
+                        const { unitId, to, from } = commandInfo.params as IMoveRangeMutationParams;
+                        const handleSubUnit = (value: IMoveRangeMutationParams['from']) => {
+                            const cellMatrix: [number, number][] = [];
+                            new ObjectMatrix(value.value).forValue((row, col) => {
+                                cellMatrix.push([row, col]);
+                            });
+                            const charts = collectChart(unitId, value.subUnitId, cellMatrix);
+                            charts.forEach((chart) => {
+                                this._chartConfModel.markDirty(unitId, value.subUnitId, chart);
+                            });
+                        };
+                        handleSubUnit(to);
+                        handleSubUnit(from);
+                        break;
+                    }
                 }
             }));
     }
