@@ -23,7 +23,7 @@ import { Disposable, ICommandService, IUniverInstanceService,
 import type { IDisposable } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
 import type { IMenuItemFactory } from '@univerjs/ui';
-import { ComponentManager, IDialogService, ILayoutService, IMenuService, ISidebarService } from '@univerjs/ui';
+import { ComponentManager, ILayoutService, IMenuService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface.ts';
 import { ChartSelectorPanel } from '../components/chart-selector-panel';
 import { ChartSidePanel } from '../components/chart-side-panel';
@@ -31,6 +31,7 @@ import type { IChart } from '../models/types.ts';
 import { ChartPreviewDialog } from '../components/chart-preview-dialog';
 import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
 import { ChartDialog } from '../components/chart-dialog';
+import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service.ts';
 import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
@@ -45,7 +46,7 @@ export class ChartMenuController extends Disposable {
         @Inject(ComponentManager) private _componentManager: ComponentManager,
         @Inject(IMenuService) private _menuService: IMenuService,
         @Inject(ISidebarService) private _sidebarService: ISidebarService,
-        @Inject(IDialogService) private readonly _dialogService: IDialogService,
+        @Inject(IDialogPlusService) private readonly _dialogPlusService: IDialogPlusService,
         @Inject(ILayoutService) private readonly _layoutService: ILayoutService,
         @Inject(LocaleService) private _localeService: LocaleService,
         @Inject(ICommandService) private _commandService: ICommandService
@@ -86,7 +87,7 @@ export class ChartMenuController extends Disposable {
 
     openPreviewChartDialog(chart?: IChart) {
         // open preview dialog
-        this._dialogService.open({
+        this._dialogPlusService.open({
             id: CHART_PREVIEW_DIALOG_KEY,
             draggable: true,
             destroyOnClose: true,
@@ -102,17 +103,24 @@ export class ChartMenuController extends Disposable {
             title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
             onClose: () => {},
             className: 'chart-plugin-preview-dialog',
+            onResized: (width, height) => {
+                console.log(width, height);
+            },
+            onMoved: (left, top) => {
+                console.log(left, top);
+            },
         });
     }
 
     openChartDialog(chart?: IChart) {
         if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
             // open chart
-            this._dialogService.open({
+            this._dialogPlusService.open({
                 id: chart.chartId,
                 draggable: true,
                 destroyOnClose: true,
                 preservePositionOnDestroy: true,
+                width: 600,
                 children: {
                     label: {
                         name: 'ChartDialog',
@@ -124,15 +132,21 @@ export class ChartMenuController extends Disposable {
                 title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
                 onClose: () => {},
                 className: `chart-plugin-dialog-${chart.chartId}`,
+                onResized: (width, height) => {
+                    console.log(width, height);
+                },
+                onMoved: (left, top) => {
+                    console.log(left, top);
+                },
             });
         }
     }
 
     closeChartDialog(chart?: IChart) {
         if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
-            this._dialogService.close(chart.chartId);
+            this._dialogPlusService.close(chart.chartId);
         } else {
-            this._dialogService.close(CHART_PREVIEW_DIALOG_KEY);
+            this._dialogPlusService.close(CHART_PREVIEW_DIALOG_KEY);
         }
 
         queueMicrotask(() => this._layoutService.focus());

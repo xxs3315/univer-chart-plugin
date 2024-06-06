@@ -22,7 +22,6 @@ import { SelectionManagerService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
 import { ChartConfModel } from '../../models/chart-conf-model.ts';
-import styles from './index.module.less';
 
 interface IChartDialogProps {
     chart: IChart;
@@ -129,8 +128,8 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     }, [chart, seriesName, vs, xAxis]);
 
     return (
-        <div className={styles.uiPluginChartDialog}>
-            <ReactECharts option={option} settings={{ notMerge: true }} />
-        </div>
+        // <div className={styles.uiPluginChartDialog}>
+        <ReactECharts option={option} settings={{ notMerge: true }} />
+        // </div>
     );
 });

@@ -35,6 +35,7 @@ import type { IMoveChartCommand } from '../../../commands/commands/move-chart.co
 import { MoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
 import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
 import styles from './index.module.less';
+import 'react-grid-layout/css/styles.css';
 
 interface IChartListProps {
     onClick: (chart: IChart) => void;

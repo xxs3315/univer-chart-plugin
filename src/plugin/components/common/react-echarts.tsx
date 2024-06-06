@@ -44,18 +44,19 @@ export function ReactECharts({
         }
 
         // Add chart resize listener
-        // ResizeObserver is leading to a bit janky UX
-        function resizeChart() {
-            chart?.resize();
-        }
-        window.addEventListener('resize', resizeChart);
+        let observer: ResizeObserver | null;
+        if (chartRef.current) {
+            observer = new ResizeObserver(() => {
+                chart?.resize();
+            });
 
-        // Return cleanup function
+            observer.observe(chartRef.current);
+        }
+
         return () => {
-            chart?.dispose();
-            window.removeEventListener('resize', resizeChart);
+            observer?.disconnect();
         };
-    }, [theme]);
+    }, [theme, chartRef.current]);
 
     useEffect(() => {
         // Update chart

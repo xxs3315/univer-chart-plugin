@@ -44,6 +44,8 @@ import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
 import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
 import { ChartService } from './services/chart.service.ts';
 import { ChartInitService } from './services/chart-init.service.ts';
+import { DesktopDialogPlusService } from './services/dialog-plus/desktop-dialog-plus.service.ts';
+import { IDialogPlusService } from './services/dialog-plus/dialog-plus.service.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
@@ -97,6 +99,7 @@ export class ChartPlugin extends Plugin {
             [ChartService],
             [ChartInitService],
             [IChartPreviewService, { useClass: ChartPreviewService }],
+            [IDialogPlusService, { useClass: DesktopDialogPlusService }],
             // controller
             [ChartMenuController],
             [ChartI18nController],
