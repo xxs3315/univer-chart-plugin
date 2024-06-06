@@ -90,6 +90,7 @@ export class ChartMenuController extends Disposable {
             id: CHART_PREVIEW_DIALOG_KEY,
             draggable: true,
             destroyOnClose: true,
+            preservePositionOnDestroy: true,
             children: {
                 label: {
                     name: 'ChartPreviewDialog',
@@ -111,6 +112,7 @@ export class ChartMenuController extends Disposable {
                 id: chart.chartId,
                 draggable: true,
                 destroyOnClose: true,
+                preservePositionOnDestroy: true,
                 children: {
                     label: {
                         name: 'ChartDialog',

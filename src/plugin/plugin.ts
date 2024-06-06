@@ -49,7 +49,6 @@ export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
     static override type = UniverInstanceType.UNIVER_SHEET;
 
-    static readonly dependencyList: Dependency[] = [[ChartService], [ChartInitService], [ChartConfModel], [ChartViewModel]];
     static readonly mutationList = [AddChartMutation, DeleteChartMutation, SetChartMutation, MoveChartMutation];
     static commandList = [
         OpenChartPanelOperator,
@@ -72,10 +71,6 @@ export class ChartPlugin extends Plugin {
         @Inject(ComponentManager) private readonly componentManager: ComponentManager
     ) {
         super();
-        this._initCommand();
-        this._injector.add([ChartMenuController]);
-        this._injector.add([ChartI18nController]);
-        this._injector.add([ChartClearController]);
     }
 
     /**
@@ -94,17 +89,30 @@ export class ChartPlugin extends Plugin {
         this.componentManager.register('PieChart', PieChart);
         this.componentManager.register('StackedColumnChart', StackedColumnChart);
 
-        ChartPlugin.dependencyList.forEach((dependency) => {
-            this._injector.add(dependency);
-        });
-
         ([
+            // model
+            [ChartConfModel],
+            [ChartViewModel],
+            // service
+            [ChartService],
+            [ChartInitService],
             [IChartPreviewService, { useClass: ChartPreviewService }],
+            // controller
+            [ChartMenuController],
+            [ChartI18nController],
+            [ChartClearController],
         ] as Dependency[]).forEach(
             (d) => {
                 injector.add(d);
             }
         );
+
+        [...ChartPlugin.mutationList].forEach((m) => {
+            this.commandService.registerCommand(m);
+        });
+        [...ChartPlugin.commandList].forEach((m) => {
+            this.commandService.registerCommand(m);
+        });
     }
 
     onReady() {
@@ -113,14 +121,5 @@ export class ChartPlugin extends Plugin {
 
     onRendered() {
         super.onRendered();
-    }
-
-    _initCommand() {
-        [...ChartPlugin.mutationList].forEach((m) => {
-            this.commandService.registerCommand(m);
-        });
-        [...ChartPlugin.commandList].forEach((m) => {
-            this.commandService.registerCommand(m);
-        });
     }
 }
