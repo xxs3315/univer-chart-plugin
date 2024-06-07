@@ -22,7 +22,7 @@ import { SelectionManagerService } from '@univerjs/sheets';
 import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
-import styles from './index.module.less';
+import './index.module.less';
 
 interface IPreviewChartDialogProps {
     chart: IChart;
@@ -122,8 +122,8 @@ export const ChartPreviewDialog = forwardRef(function ChartPreviewDialogImpl(_pr
     }, [xAxis, seriesName, vs, conf.title]);
 
     return (
-        <div className={styles.uiPluginChartDialog}>
-            <ReactECharts option={option} settings={{ notMerge: true }} />
-        </div>
+        // <div className={styles.uiPluginChartDialog}>
+        <ReactECharts option={option} settings={{ notMerge: true }} />
+        // </div>
     );
 });

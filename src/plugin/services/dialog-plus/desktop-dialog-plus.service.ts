@@ -24,9 +24,12 @@ import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-
 import { DialogPartPlus } from '../../components/dialog-part-plus';
 import type { IDialogPlusService } from './dialog-plus.service.ts';
 
+export const DESKTOP_DIALOG_PLUS_BASE_Z_INDEX = 1050;
 export class DesktopDialogPlusService extends Disposable implements IDialogPlusService {
     protected _dialogOptions: IDialogPlusPartMethodOptions[] = [];
     protected readonly _dialogOptions$ = new Subject<IDialogPlusPartMethodOptions[]>();
+
+    protected cz = DESKTOP_DIALOG_PLUS_BASE_Z_INDEX;
 
     constructor(
         @Inject(Injector) protected readonly _injector: Injector,
@@ -41,6 +44,11 @@ export class DesktopDialogPlusService extends Disposable implements IDialogPlusS
         super.dispose();
 
         this._dialogOptions$.complete();
+    }
+
+    getZIndex() {
+        this.cz += 1;
+        return this.cz;
     }
 
     open(option: IDialogPlusPartMethodOptions): IDisposable {

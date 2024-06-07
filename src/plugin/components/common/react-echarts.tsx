@@ -42,10 +42,13 @@ export function ReactECharts({
         if (chartRef.current !== null) {
             chart = init(chartRef.current, theme);
         }
+    }, [theme]);
 
-        // Add chart resize listener
+    useEffect(() => {
         let observer: ResizeObserver | null;
-        if (chartRef.current) {
+        if (chartRef.current !== null) {
+            // Add chart resize listener
+            const chart = getInstanceByDom(chartRef.current);
             observer = new ResizeObserver(() => {
                 chart?.resize();
             });
@@ -56,7 +59,7 @@ export function ReactECharts({
         return () => {
             observer?.disconnect();
         };
-    }, [theme, chartRef.current]);
+    }, [chartRef.current]);
 
     useEffect(() => {
         // Update chart

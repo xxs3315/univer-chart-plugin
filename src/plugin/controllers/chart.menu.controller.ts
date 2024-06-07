@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { Disposable, ICommandService, IUniverInstanceService,
+import {
+    Disposable, ICommandService, IUniverInstanceService,
     LifecycleStages,
     LocaleService,
     OnLifecycle,
-    UniverInstanceType,
+    UniverInstanceType, type Workbook,
 } from '@univerjs/core';
 import type { IDisposable } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
@@ -32,9 +33,12 @@ import { ChartPreviewDialog } from '../components/chart-preview-dialog';
 import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
 import { ChartDialog } from '../components/chart-dialog';
 import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service.ts';
+import { type ISetChartCommandParams, SetChartCommand } from '../commands/commands/set-chart.command.ts';
 import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
+const getUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
 
 @OnLifecycle(LifecycleStages.Ready, ChartMenuController)
 export class ChartMenuController extends Disposable {
@@ -102,13 +106,16 @@ export class ChartMenuController extends Disposable {
             },
             title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
             onClose: () => {},
-            className: 'chart-plugin-preview-dialog',
-            onResized: (width, height) => {
+            className: 'chart-plugin-preview-dialog-plus',
+            /*onResized: (width, height) => {
                 console.log(width, height);
             },
             onMoved: (left, top) => {
                 console.log(left, top);
             },
+            onMouseDown: (currentZIndex: number) => {
+                console.log('darg handler mousedown: ', currentZIndex);
+            },*/
         });
     }
 
@@ -120,7 +127,10 @@ export class ChartMenuController extends Disposable {
                 draggable: true,
                 destroyOnClose: true,
                 preservePositionOnDestroy: true,
-                width: 600,
+                defaultPosition: chart.left && chart.top ? { x: chart.left, y: chart.top } : undefined,
+                width: chart.width,
+                height: chart.height,
+                zIndex: chart.zIndex,
                 children: {
                     label: {
                         name: 'ChartDialog',
@@ -131,12 +141,18 @@ export class ChartMenuController extends Disposable {
                 },
                 title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
                 onClose: () => {},
-                className: `chart-plugin-dialog-${chart.chartId}`,
+                className: `chart-plugin-dialog-plus-${chart.chartId}`,
                 onResized: (width, height) => {
-                    console.log(width, height);
+                    const c = { ...chart, width, height };
+                    this._commandService.executeCommand(SetChartCommand.id, { unitId: getUnitId(this._univerInstanceService), subUnitId: getSubUnitId(this._univerInstanceService), chart: c } as ISetChartCommandParams);
                 },
                 onMoved: (left, top) => {
-                    console.log(left, top);
+                    const c = { ...chart, left, top };
+                    this._commandService.executeCommand(SetChartCommand.id, { unitId: getUnitId(this._univerInstanceService), subUnitId: getSubUnitId(this._univerInstanceService), chart: c } as ISetChartCommandParams);
+                },
+                onMouseDown: (currentZIndex: number) => {
+                    const c = { ...chart, zIndex: currentZIndex };
+                    this._commandService.executeCommand(SetChartCommand.id, { unitId: getUnitId(this._univerInstanceService), subUnitId: getSubUnitId(this._univerInstanceService), chart: c } as ISetChartCommandParams);
                 },
             });
         }

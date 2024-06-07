@@ -22,6 +22,7 @@ import { SelectionManagerService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
 import { ChartConfModel } from '../../models/chart-conf-model.ts';
+import './index.module.less';
 
 interface IChartDialogProps {
     chart: IChart;

@@ -1,23 +1,22 @@
-//.ui-plugin-chart-dialog {
-//    width: 100%;
-//    height: 300px;
-//}
-
-[class*='chart-plugin-dialog'] .univer-dialog-plus-close {
+[class*='chart-plugin-dialog-plus'] .univer-dialog-plus-close {
     display: none;
 }
-[class*='chart-plugin-dialog'] .univer-dialog-plus-header {
+[class*='chart-plugin-dialog-plus'] .univer-dialog-plus-title-content > span {
     display: none;
 }
-[class*='chart-plugin-dialog'] .univer-dialog-plus-body {
-    padding-top: 20px;
+[class*='chart-plugin-dialog-plus'] .univer-dialog-plus-body {
+    padding-top: 0;
 }
-:global([class*='chart-plugin-dialog'] .univer-dialog-plus-close) {
+:global([class*='chart-plugin-dialog-plus'] .univer-dialog-plus-close) {
     display: none;
 }
-:global([class*='chart-plugin-dialog'] .univer-dialog-plus-header) {
+:global(
+        [class*='chart-plugin-dialog-plus']
+            .univer-dialog-plus-title-content
+            > span
+    ) {
     display: none;
 }
-:global([class*='chart-plugin-dialog'] .univer-dialog-plus-body) {
-    padding-top: 20px;
+:global([class*='chart-plugin-dialog-plus'] .univer-dialog-plus-body) {
+    padding-top: 0;
 }

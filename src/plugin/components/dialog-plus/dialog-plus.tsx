@@ -24,6 +24,8 @@ import { ResizableBox } from 'react-resizable';
 
 import { ConfigContext } from '@univerjs/design';
 import './resize.css';
+import { useDependency } from '@wendellhu/redi/react-bindings';
+import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service.ts';
 import styles from './index.module.less';
 
 export interface IDialogPlusProps {
@@ -105,10 +107,15 @@ export interface IDialogPlusProps {
      */
     onMoved?: (left: number, top: number) => void;
 
+    onMouseDown?: (currentZIndex: number) => void;
+
     className?: string;
+
+    zIndex?: number;
 }
 
 export function DialogPlus(props: IDialogPlusProps) {
+    const dialogPlusService = useDependency(IDialogPlusService);
     const {
         className,
         children,
@@ -123,9 +130,11 @@ export function DialogPlus(props: IDialogPlusProps) {
         destroyOnClose = false,
         preservePositionOnDestroy = false,
         footer,
+        zIndex,
         onClose,
         onResized,
         onMoved,
+        onMouseDown,
     } = props;
     const [dragDisabled, setDragDisabled] = useState(false);
     const [positionOffset, setPositionOffset] = useState<{ x: number; y: number } | null>(null);
@@ -134,10 +143,8 @@ export function DialogPlus(props: IDialogPlusProps) {
     const [calcHeight, calcHeightSet] = useState((height || 400) + 60);
     const initHeight = height || 400;
     const { clientWidth, clientHeight } = window.document.documentElement;
-
-    const elementRef = useRef<HTMLDivElement>(null);
-
     const { mountContainer } = useContext(ConfigContext);
+    const [currentZIndex, currentZIndexSet] = useState(zIndex || dialogPlusService.getZIndex());
 
     const TitleIfDraggable = draggable
         ? (
@@ -183,6 +190,12 @@ export function DialogPlus(props: IDialogPlusProps) {
             }
         }
 
+        function handleMouseDown(e: MouseEvent) {
+            const zIndex = dialogPlusService.getZIndex();
+            currentZIndexSet(zIndex);
+            onMouseDown?.(zIndex);
+        }
+
         const position = positionOffset || defaultPosition || { x: 0, y: 0 };
 
         const onStart = (_event: DraggableEvent, uiData: DraggableData) => {
@@ -210,6 +223,7 @@ export function DialogPlus(props: IDialogPlusProps) {
                     handle=".univer-dialog-plus-title"
                     onStart={(event, uiData) => onStart(event, uiData)}
                     onStop={handleStop as DraggableEventHandler}
+                    onMouseDown={handleMouseDown}
                 >
                     <div ref={draggleRef}>{modal}</div>
                 </Draggable>
@@ -243,6 +257,7 @@ export function DialogPlus(props: IDialogPlusProps) {
             mask={!draggable}
             style={style}
             onClose={onClose}
+            zIndex={currentZIndex}
         >
             <ResizableBox
                 width={initWidth}

@@ -89,6 +89,15 @@ export class ChartConfModel {
         }
     }
 
+    setChartConfSize(unitId: string, subUnitId: string, chart: IChart, oldChartId: string, width: number, height: number) {
+        const list = this._ensureList(unitId, subUnitId);
+        const oldChartConf = list.find((item) => item.chartId === oldChartId);
+        if (oldChartConf) {
+            Object.assign(oldChartConf, { width, height });
+            this._chartConfChange$.next({ chart: oldChartConf, subUnitId, unitId, type: 'set' });
+        }
+    }
+
     addChartConf(unitId: string, subUnitId: string, chart: IChart) {
         const list = this._ensureList(unitId, subUnitId);
         const item = list.find((item) => item.chartId === chart.chartId);

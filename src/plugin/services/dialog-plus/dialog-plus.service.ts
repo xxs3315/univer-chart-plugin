@@ -24,4 +24,5 @@ export interface IDialogPlusService {
     open(params: IDialogPlusPartMethodOptions): IDisposable;
     close(id: string): void;
     getDialogs$(): Observable<IDialogPlusPartMethodOptions[]>;
+    getZIndex(): number;
 }

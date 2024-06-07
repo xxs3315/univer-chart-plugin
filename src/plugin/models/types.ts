@@ -60,6 +60,11 @@ export interface IChart<C = IChartConfig> {
     ranges: IRange [];
     chartId: string;
     conf: C;
+    left?: number;
+    top?: number;
+    width?: number;
+    height?: number;
+    zIndex?: number;
 }
 
 export type IChartModel = Map<string, Map<string, IChart[]>>;
