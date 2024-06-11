@@ -28,7 +28,7 @@ import { filter } from 'rxjs';
 import { ChartConfModel } from '../models/chart-conf-model.ts';
 import { ChartMenuController } from '../controllers/chart.menu.controller.ts';
 
-@OnLifecycle(LifecycleStages.Steady, ChartInitService)
+@OnLifecycle(LifecycleStages.Rendered, ChartInitService)
 export class ChartInitService extends Disposable {
     constructor(
         @Inject(ChartConfModel) private _chartConfModel: ChartConfModel,

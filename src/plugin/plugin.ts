@@ -82,14 +82,16 @@ export class ChartPlugin extends Plugin {
      * It is not recommended to initialize the internal module of the plugin outside this lifecycle.
      */
     onStarting(injector: Injector) {
+        super.onStarting(injector);
+
         // register icon component
-        this.componentManager.register('ComboChart', ComboChart);
-        this.componentManager.register('AreaChart', AreaChart);
-        this.componentManager.register('BarChart', BarChart);
-        this.componentManager.register('DoughnutChart', DoughnutChart);
-        this.componentManager.register('LineChart', LineChart);
-        this.componentManager.register('PieChart', PieChart);
-        this.componentManager.register('StackedColumnChart', StackedColumnChart);
+        this.disposeWithMe(this.componentManager.register('ComboChart', ComboChart));
+        this.disposeWithMe(this.componentManager.register('AreaChart', AreaChart));
+        this.disposeWithMe(this.componentManager.register('BarChart', BarChart));
+        this.disposeWithMe(this.componentManager.register('DoughnutChart', DoughnutChart));
+        this.disposeWithMe(this.componentManager.register('LineChart', LineChart));
+        this.disposeWithMe(this.componentManager.register('PieChart', PieChart));
+        this.disposeWithMe(this.componentManager.register('StackedColumnChart', StackedColumnChart));
 
         ([
             // model
