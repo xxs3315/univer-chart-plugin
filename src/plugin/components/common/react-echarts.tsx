@@ -17,7 +17,7 @@
 import React, { useEffect, useRef } from 'react';
 import { getInstanceByDom, init } from 'echarts';
 import type { CSSProperties } from 'react';
-import type { ECharts, EChartsOption, SetOptionOpts } from 'echarts';
+import type { EChartsOption, SetOptionOpts } from 'echarts';
 
 export interface ReactEChartsProps {
     option: EChartsOption;
@@ -38,9 +38,8 @@ export function ReactECharts({
 
     useEffect(() => {
         // Initialize chart
-        let chart: ECharts | undefined;
         if (chartRef.current !== null) {
-            chart = init(chartRef.current, theme);
+            init(chartRef.current, theme);
         }
     }, [theme]);
 
@@ -52,7 +51,6 @@ export function ReactECharts({
             observer = new ResizeObserver(() => {
                 chart?.resize();
             });
-
             observer.observe(chartRef.current);
         }
 

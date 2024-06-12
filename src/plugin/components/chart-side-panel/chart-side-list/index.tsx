@@ -16,7 +16,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
-import { SetWorksheetActiveOperation } from '@univerjs/sheets';
+import { SelectionManagerService, SetWorksheetActiveOperation } from '@univerjs/sheets';
 import type { IRange, Workbook } from '@univerjs/core';
 import { ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
 import { Button } from '@univerjs/design';
@@ -34,6 +34,7 @@ import { createDefaultNewChart } from '../../../utils/utils.ts';
 import type { IMoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
 import { MoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
 import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../../common/const.ts';
 import styles from './index.module.less';
 import 'react-grid-layout/css/styles.css';
 
@@ -52,6 +53,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const cvController = useDependency(ChartClearController);
     const injector = useDependency(Injector);
     const chartMenuController = useDependency(ChartMenuController);
+    const selectionManagerService = useDependency(SelectionManagerService);
 
     const workbook = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
     const unitId = workbook.getUnitId();
@@ -76,7 +78,7 @@ export const ChartSideList = (props: IChartListProps) => {
         }
         return allChartConfMap;
     };
-    const [allChartConfMap, allChartConfMapSet] = useState(getAllChartConfMap);
+    const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
 
     const [layoutWidth, layoutWidthSet] = useState(defaultWidth);
     const [draggingId, draggingIdSet] = useState<number>(-1);
@@ -107,7 +109,7 @@ export const ChartSideList = (props: IChartListProps) => {
         chartMenuController.closeChartDialog(chart);
         const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
         const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
-        commandService.executeCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+        commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
     };
 
     const handleDragStart = (_layout: unknown, from: { y: number }) => {
@@ -275,7 +277,12 @@ export const ChartSideList = (props: IChartListProps) => {
                         className={styles.listButton}
                         type="primary"
                         onClick={() => {
-                            const chart = createDefaultNewChart(injector);
+                            const ranges = selectionManagerService.getSelectionRanges() || [];
+                            const chart = {
+                                ...createDefaultNewChart(injector),
+                                ranges,
+                                chartId: CHART_PREVIEW_DIALOG_KEY,
+                            };
                             onCreate(chart);
                         }}
                     >

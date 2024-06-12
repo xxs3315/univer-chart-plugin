@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IChart } from '../../models/types.ts';
-import { ChartMenuController } from '../../controllers/chart.menu.controller.ts';
+import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import styles from './index.module.less';
 import { ChartSideEdit } from './chart-side-edit';
 import { ChartSideList } from './chart-side-list';
@@ -28,7 +28,7 @@ interface IChartSidePanelProps {
 }
 
 export const ChartSidePanel = (props: IChartSidePanelProps) => {
-    const chartMenuController = useDependency(ChartMenuController);
+    const chartPreviewService = useDependency(IChartPreviewService);
     const { conf, showChartEditor } = props;
     const [currentEditConf, currentEditConfSet] = useState<IChart | undefined>(conf);
     const [isShowChartEditor, isShowChartEditorSet] = useState(!!showChartEditor);
@@ -36,32 +36,22 @@ export const ChartSidePanel = (props: IChartSidePanelProps) => {
     const createChart = (chart?: IChart) => {
         currentEditConfSet(chart);
         isShowChartEditorSet(true);
-        chartMenuController.openPreviewChartDialog(chart);
     };
 
     const handleCancel = () => {
         isShowChartEditorSet(false);
         currentEditConfSet(undefined);
-        // 关闭 chart preview
-        chartMenuController.closeChartDialog();
     };
 
     const handleChartClick = (chart: IChart) => {
         currentEditConfSet(chart);
         isShowChartEditorSet(true);
-        // 进入编辑模式，关闭chart 转而打开 chart preview
-        // 先关闭 chart
-        chartMenuController.closeChartDialog(chart);
-        // 打开preview
-        chartMenuController.openPreviewChartDialog(chart);
+        // 将当前chart属性设置进 preview state
+        chartPreviewService.changeChartId(chart.chartId);
+        chartPreviewService.changeChartType(chart.conf.type, chart.conf.subType);
+        chartPreviewService.changeRange(chart.ranges);
+        chartPreviewService.changeChartConfTitle(chart.conf.title);
     };
-
-    useLayoutEffect(() => {
-        // 当是编辑面板时，同时打开chart preview dialog
-        if (isShowChartEditor) {
-            chartMenuController.openPreviewChartDialog(currentEditConf);
-        }
-    }, [isShowChartEditor]);
 
     return (
         <div className={styles.chartSideWrap}>

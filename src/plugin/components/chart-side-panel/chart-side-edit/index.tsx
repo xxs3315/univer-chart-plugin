@@ -17,7 +17,7 @@
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IRange, IUnitRange, Workbook } from '@univerjs/core';
 import { createInternalEditorID, ICommandService, InterceptorManager, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type {
     IRemoveSheetMutationParams } from '@univerjs/sheets';
 import { RemoveSheetMutation,
@@ -36,6 +36,9 @@ import { SetChartCommand } from '../../../commands/commands/set-chart.command.ts
 import { ChartConfModel } from '../../../models/chart-conf-model.ts';
 import type { IAddChartCommandParams } from '../../../commands/commands/add-chart.command.ts';
 import { AddChartCommand } from '../../../commands/commands/add-chart.command.ts';
+import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
+import { CHART_PERMISSION_CHECK, ChartClearController } from '../../../controllers/chart.clear.controller.ts';
+import { DeleteChartCommand, type IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
 import styles from './index.module.less';
 import type { IConfEditorProps } from './types.ts';
 import { beforeSubmit, submit } from './types.ts';
@@ -60,6 +63,9 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const subUnitId = getSubUnitId(univerInstanceService);
     const { chart, onCancel } = props;
     const rangeResult = useRef<IRange[]>(chart?.ranges ?? []);
+    const chartMenuController = useDependency(ChartMenuController);
+    const cvController = useDependency(ChartClearController);
+    const [fetchChartConfListId, fetchChartConfListIdSet] = useState(0);
 
     const rangeString = useMemo(() => {
         let ranges = chart?.ranges;
@@ -70,12 +76,22 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         if (!ranges?.length) {
             return '';
         }
-        chartPreviewService.changeRange(ranges || []);
         return ranges.map((range) => {
             const v = serializeRange(range);
             return v === 'NaN' ? '' : v;
         }).filter((r) => !!r).join(',');
     }, [chart, selectionManagerService]);
+
+    useLayoutEffect(() => {
+        let ranges = chart?.ranges;
+        if (!ranges?.length) {
+            ranges = selectionManagerService.getSelectionRanges() ?? [];
+        }
+        rangeResult.current = ranges;
+        if (ranges?.length) {
+            chartPreviewService.changeRange(ranges || []);
+        }
+    }, []);
 
     useEffect(() => {
         // If the child table which  the rule being edited is deleted, exit edit mode
@@ -121,11 +137,17 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                 const unitId = getUnitId(univerInstanceService);
                 const subUnitId = getSubUnitId(univerInstanceService);
                 let c = {} as IChart;
-                if (chart && chart.chartId) {
+                if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
                     c = { ...chart, ranges, conf: result };
                     commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart: c } as ISetChartCommandParams);
                     onCancel();
                 } else {
+                    // 维护chart conf model, 去掉preview chart conf
+                    chartMenuController.closeChartDialog(chart);
+                    const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+                    commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+
                     const chartId = chartConfModel.createChartId(unitId, subUnitId);
                     c = { chartId, ranges, conf: result };
                     commandService.executeCommand(AddChartCommand.id, { unitId, subUnitId, chart: c } as IAddChartCommandParams);
@@ -136,6 +158,14 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     };
 
     const handleCancel = () => {
+        // 取消编辑时，将chart conf model中的preview conf delete掉
+        if (chart && chart.chartId === CHART_PREVIEW_DIALOG_KEY) {
+            // 关闭对应的preview chart
+            chartMenuController.closeChartDialog(chart);
+            const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+            const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+            commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+        }
         onCancel();
     };
 
@@ -143,6 +173,76 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const onConfChange = (config: unknown) => {
         result.current = config as Parameters<IConfEditorProps['onChange']>;
     };
+
+    const getAllChartConfMap = () => {
+        const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
+        if (!allChartConfMap || !allChartConfMap.size) {
+            return null;
+        }
+        return allChartConfMap;
+    };
+    const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
+    const getChartConfList = () => {
+        const chartConfList = chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+        if (!chartConfList || !chartConfList.length) {
+            return [];
+        }
+        return chartConfList;
+    };
+    const [chartConfList, chartConfListSet] = useState(getChartConfList);
+    const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
+
+    useEffect(() => {
+        // console.log(1)
+        // console.log(allChartConfMap)
+        if (allChartConfMap) {
+            // 关闭所有chart
+            allChartConfMap.forEach((value, _key) => {
+                value.forEach((chart) => {
+                    chartMenuController.closeChartDialog(chart);
+                });
+            });
+        }
+        chartConfListByPermissionCheck?.forEach((chart) => {
+            // 打开所有的chart（当前sheet的）
+            chartMenuController.openChartDialog(chart);
+        });
+    }, [chartMenuController, allChartConfMap, chartConfListByPermissionCheck, fetchChartConfListId, unitId, subUnitId]);
+
+    // 编辑面板打开时，向chart conf model中加入一个preview dialog的conf
+    useLayoutEffect(() => {
+        // console.log(chart)
+        const unitId = getUnitId(univerInstanceService);
+        const subUnitId = getSubUnitId(univerInstanceService);
+        commandService.syncExecuteCommand(AddChartCommand.id, { unitId, subUnitId, chart } as IAddChartCommandParams);
+        // 将当前chart属性设置进 preview state
+        if (chart) {
+            chartPreviewService.changeChartId(chart.chartId);
+            chartPreviewService.changeChartType(chart.conf.type, chart.conf.subType);
+            chartPreviewService.changeRange(chart.ranges);
+            chartPreviewService.changeChartConfTitle(chart.conf.title);
+        }
+    }, []);
+
+    useEffect(() => {
+        chartConfListSet(getChartConfList);
+    }, [fetchChartConfListId, unitId, subUnitId]);
+
+    useEffect(() => {
+        const disposable = commandService.onCommandExecuted((commandInfo) => {
+            if (commandInfo.id === SetWorksheetActiveOperation.id) {
+                fetchChartConfListIdSet(Math.random());
+            }
+        });
+        return () => disposable.dispose();
+    });
+
+    useEffect(() => {
+        const dispose = chartConfModel.$chartConfChange.subscribe(() => {
+            fetchChartConfListIdSet(Math.random());
+        });
+        return () => dispose.unsubscribe();
+    }, [chartConfModel]);
 
     return (
         <div className={styles.chartSideEditor}>

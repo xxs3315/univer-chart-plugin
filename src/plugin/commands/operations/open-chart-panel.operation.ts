@@ -19,15 +19,15 @@ import { CommandType, LocaleService } from '@univerjs/core';
 import type { IAccessor } from '@wendellhu/redi';
 import { SelectionManagerService } from '@univerjs/sheets';
 import { ChartMenuController } from '../../controllers/chart.menu.controller.ts';
-import { createDefaultChartConf } from '../../common/const.ts';
+import { CHART_PREVIEW_DIALOG_KEY, createDefaultChartConf } from '../../common/const.ts';
 import type { IChart } from '../../models/types.ts';
 
 interface IOpenChartPanelParams {
     value: { type: string; subType: string };
 }
 
-export const OpenChartPanelOperator: ICommand = {
-    id: 'sheet.operation.open.chart.panel',
+export const OpenChartEditPanelOperator: ICommand = {
+    id: 'sheet.operation.open.chart.panel.edit',
     type: CommandType.OPERATION,
     handler: (accessor: IAccessor, params?: IOpenChartPanelParams) => {
         const chartMenuController = accessor.get(ChartMenuController);
@@ -42,8 +42,8 @@ export const OpenChartPanelOperator: ICommand = {
                 subType: params?.value.subType,
                 title: localeService.t('chart.conf.title'),
             },
+            chartId: CHART_PREVIEW_DIALOG_KEY,
         } as IChart;
-        // open side panel
         chartMenuController.openSidePanel(chart);
         return true;
     },
@@ -52,8 +52,9 @@ export const OpenChartPanelOperator: ICommand = {
 export const OpenChartManagePanelOperator: ICommand = {
     id: 'sheet.operation.open.chart.panel.manage',
     type: CommandType.OPERATION,
-    handler: (accessor: IAccessor, params?: IOpenChartPanelParams) => {
+    handler: (accessor: IAccessor, _params?: IOpenChartPanelParams) => {
         const chartMenuController = accessor.get(ChartMenuController);
+        // open side panel to manage
         chartMenuController.openSidePanel(undefined, false);
         return true;
     },

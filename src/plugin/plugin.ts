@@ -28,10 +28,9 @@ import DoughnutChart from './components/icons/doughnut_chart.tsx';
 import LineChart from './components/icons/line_chart.tsx';
 import PieChart from './components/icons/pie_chart.tsx';
 import StackedColumnChart from './components/icons/stacked_column_chart.tsx';
-import { OpenChartManagePanelOperator, OpenChartPanelOperator } from './commands/operations/open-chart-panel.operation.ts';
-import { ChartPreviewOperator } from './commands/operations/chart-preview.operation.ts';
+import { OpenChartEditPanelOperator, OpenChartManagePanelOperator } from './commands/operations/open-chart-panel.operation.ts';
+// import { ChartPreviewOperator } from './commands/operations/chart-preview.operation.ts';
 import { ChartConfModel } from './models/chart-conf-model.ts';
-import { ChartViewModel } from './models/chart-view-model.ts';
 import { MoveChartMutation } from './commands/mutations/move-chart.mutation.ts';
 import { SetChartMutation } from './commands/mutations/set-chart.mutation.ts';
 import { DeleteChartMutation } from './commands/mutations/delete-chart.mutation.ts';
@@ -41,11 +40,11 @@ import { AddChartCommand } from './commands/commands/add-chart.command.ts';
 import { ChartClearController } from './controllers/chart.clear.controller.ts';
 import { DeleteChartCommand } from './commands/commands/delete-chart.command.ts';
 import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
-import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
 import { ChartService } from './services/chart.service.ts';
 import { ChartInitService } from './services/chart-init.service.ts';
 import { DesktopDialogPlusService } from './services/dialog-plus/desktop-dialog-plus.service.ts';
 import { IDialogPlusService } from './services/dialog-plus/dialog-plus.service.ts';
+import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
 
 export class ChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
@@ -53,9 +52,9 @@ export class ChartPlugin extends Plugin {
 
     static readonly mutationList = [AddChartMutation, DeleteChartMutation, SetChartMutation, MoveChartMutation];
     static commandList = [
-        OpenChartPanelOperator,
+        OpenChartEditPanelOperator,
         OpenChartManagePanelOperator,
-        ChartPreviewOperator,
+        // ChartPreviewOperator,
         SetChartCommand,
         AddChartCommand,
         DeleteChartCommand,
@@ -96,7 +95,7 @@ export class ChartPlugin extends Plugin {
         ([
             // model
             [ChartConfModel],
-            [ChartViewModel],
+            // [ChartViewModel],
             // service
             [ChartService],
             [ChartInitService],
@@ -118,13 +117,5 @@ export class ChartPlugin extends Plugin {
         [...ChartPlugin.commandList].forEach((m) => {
             this.commandService.registerCommand(m);
         });
-    }
-
-    onReady() {
-        super.onReady();
-    }
-
-    onRendered() {
-        super.onRendered();
     }
 }

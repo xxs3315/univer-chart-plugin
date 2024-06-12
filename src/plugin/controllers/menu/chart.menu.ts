@@ -20,15 +20,15 @@ import type { IAccessor } from '@wendellhu/redi';
 import { LocaleService, UniverInstanceType } from '@univerjs/core';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../../components/chart-selector-panel/interface.ts';
 import {
+    OpenChartEditPanelOperator,
     OpenChartManagePanelOperator,
-    OpenChartPanelOperator,
 } from '../../commands/operations/open-chart-panel.operation.ts';
 
 export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelectorItem {
     const localeService = accessor.get(LocaleService);
 
     return {
-        id: OpenChartPanelOperator.id,
+        id: OpenChartEditPanelOperator.id,
         icon: 'ComboChart',
         group: MenuGroup.TOOLBAR_OTHERS,
         tooltip: localeService.t('chart.panel.title'),
@@ -53,6 +53,6 @@ export function ManageChartsMenuItemFactory(accessor: IAccessor): IMenuButtonIte
         id: OpenChartManagePanelOperator.id,
         type: MenuItemType.BUTTON,
         title: localeService.t('chart.panel.manage'),
-        positions: OpenChartPanelOperator.id,
+        positions: OpenChartEditPanelOperator.id,
     };
 }

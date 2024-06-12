@@ -38,9 +38,9 @@ const locale: typeof zhCN = {
             rangeSelector: 'Select Range or Enter Value',
         },
         category: {
-            line: '新建折线图或面积图',
-            bar: '新建柱状图或条形图',
-            pie: '新建饼图或圆环图',
+            line: 'new折线图或面积图',
+            bar: 'new柱状图或条形图',
+            pie: 'new饼图或圆环图',
         },
         type: {
             lineDefault: '折线图',

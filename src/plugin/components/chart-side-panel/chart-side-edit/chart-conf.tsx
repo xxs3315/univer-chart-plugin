@@ -118,15 +118,6 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
         };
     }, [chartType, chartGroupType, chartConfTitle, interceptorManager]);
 
-    // useEffect(() => {
-    //     const dispose = interceptorManager.intercept(interceptorManager.getInterceptPoints().beforeSubmit, { handler() {
-    //         return true;
-    //     } });
-    //     return () => {
-    //         dispose();
-    //     };
-    // }, [chartConfTitle, interceptorManager]);
-
     useEffect(() => {
         chartPreviewService.changeChartConfTitle(chartConfTitle || '');
     }, [chartConfTitle, chartPreviewService]);

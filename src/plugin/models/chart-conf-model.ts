@@ -21,7 +21,6 @@ import { createChartId } from '../utils/create-chart-id.ts';
 import type { IAnchor } from '../utils/anchor.ts';
 import { findIndexByAnchor, moveByAnchor } from '../utils/anchor.ts';
 import type { IChart, IChartModel } from './types.ts';
-import { ChartViewModel } from './chart-view-model.ts';
 
 type ChartConfOperatorType = 'delete' | 'set' | 'add' | 'sort' | 'redraw';
 export class ChartConfModel {
@@ -30,7 +29,6 @@ export class ChartConfModel {
     $chartConfChange = this._chartConfChange$.asObservable();
 
     constructor(
-        @Inject(ChartViewModel) private _chartViewModel: ChartViewModel,
         @Inject(Injector) private _injector: Injector
     ) {
         // empty

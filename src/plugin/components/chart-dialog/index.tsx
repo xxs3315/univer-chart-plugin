@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useObservable } from '@univerjs/ui';
 import React, { forwardRef, useEffect, useMemo, useState } from 'react';
 import type { Workbook } from '@univerjs/core';
 import { isNullCell, IUniverInstanceService, UniverInstanceType } from '@univerjs/core';
@@ -22,6 +23,7 @@ import { SelectionManagerService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
 import { ChartConfModel } from '../../models/chart-conf-model.ts';
+import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import './index.module.less';
 
 interface IChartDialogProps {
@@ -34,9 +36,12 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     const univerInstanceService = useDependency(IUniverInstanceService);
     const selectionManagerService = useDependency(SelectionManagerService);
     const [fetchChartConfRedraw, fetchChartConfRedrawSet] = useState(0);
+    const chartPreviewService = useDependency(IChartPreviewService);
+    const state = useObservable(chartPreviewService.state$, undefined, true);
+    const { chartId, ranges, conf } = state;
 
-    const [xAxis, seriesName, vs] = useMemo(() => {
-        let rangeResult = chart.ranges;
+    const [xAxis, seriesName, vs, title] = useMemo(() => {
+        let rangeResult = chartId === chart.chartId ? ranges : chart.ranges;
         if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
             rangeResult = selectionManagerService.getSelectionRanges()!;
         }
@@ -81,10 +86,12 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
                 };
             });
 
-            return [nextXAxis, nextSeriesName, nextVs] as any[];
+            const title = chartId === chart.chartId ? conf.title : chart.conf.title;
+
+            return [nextXAxis, nextSeriesName, nextVs, title] as any[];
         }
-        return [[], [], []];
-    }, [chart, fetchChartConfRedraw, selectionManagerService, univerInstanceService]);
+        return [[], [], [], ''];
+    }, [chart, fetchChartConfRedraw, selectionManagerService, univerInstanceService, state]);
 
     useEffect(() => {
         const dispose = chartConfModel.$chartConfChange.subscribe(() => {
@@ -97,7 +104,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         return {
             title: {
                 left: 'center',
-                text: chart.conf.title,
+                text: title,
             },
             tooltip: {
                 trigger: 'axis',
@@ -126,7 +133,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
             },
             series: vs,
         };
-    }, [chart, seriesName, vs, xAxis]);
+    }, [seriesName, vs, xAxis, title]);
 
     return (
         // <div className={styles.uiPluginChartDialog}>

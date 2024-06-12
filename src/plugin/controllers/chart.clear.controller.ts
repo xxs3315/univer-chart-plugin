@@ -31,7 +31,7 @@ import {
 import type { IChart, IChartConfig } from '../models/types.ts';
 import { ChartConfModel } from '../models/chart-conf-model.ts';
 
-export const CHART_PERMISSION_CHECK = createInterceptorKey<(IChart<IChartConfig> & { disable?: boolean; show?: boolean })[], (IChart<IChartConfig> & { disable?: boolean })[]>('chartPermissionCheck');
+export const CHART_PERMISSION_CHECK = createInterceptorKey<(IChart<IChartConfig> & { disable?: boolean; show?: boolean })[], (IChart<IChartConfig> & { disable?: boolean; show?: boolean })[]>('chartPermissionCheck');
 
 @OnLifecycle(LifecycleStages.Rendered, ChartClearController)
 export class ChartClearController extends Disposable {
@@ -56,47 +56,6 @@ export class ChartClearController extends Disposable {
                 const redos: IMutationInfo[] = [];
                 const undos: IMutationInfo[] = [];
                 const defaultV = { redos, undos };
-                // if ([ClearSelectionFormatCommand.id, ClearSelectionAllCommand.id].includes(commandInfo.id)) {
-                //     const ranges = this._selectionManagerService.getSelectionRanges();
-                //     if (!ranges) {
-                //         return defaultV;
-                //     }
-                //     const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
-                //     const worksheet = workbook.getActiveSheet();
-                //     const allCharts = this._chartConfModel.getSubunitChartConfs(workbook.getUnitId(), worksheet.getSheetId());
-                //     if (!allCharts || !allCharts.length) {
-                //         return defaultV;
-                //     }
-                //     allCharts.forEach((rule) => {
-                //         const mergeUtil = new RangeMergeUtil();
-                //         const mergeRanges = mergeUtil.add(...rule.ranges).subtract(...ranges).merge();
-                //         if (mergeRanges.length) {
-                //             const redo: IMutationInfo<ISetConditionalRuleMutationParams> = {
-                //                 id: SetConditionalRuleMutation.id,
-                //                 params: {
-                //                     unitId: workbook.getUnitId(),
-                //                     subUnitId: worksheet.getSheetId(),
-                //                     rule: { ...rule, ranges: mergeRanges },
-                //                 },
-                //             };
-                //             const undo = setConditionalRuleMutationUndoFactory(this._injector, redo.params);
-                //             redos.push(redo);
-                //             undos.push(...undo);
-                //         } else {
-                //             const redo: IMutationInfo<IDeleteConditionalRuleMutationParams> = {
-                //                 id: DeleteConditionalRuleMutation.id,
-                //                 params: {
-                //                     unitId: workbook.getUnitId(),
-                //                     subUnitId: worksheet.getSheetId(),
-                //                     cfId: rule.cfId,
-                //                 },
-                //             };
-                //             const undo = DeleteConditionalRuleMutationUndoFactory(this._injector, redo.params);
-                //             redos.push(redo);
-                //             undos.push(...undo);
-                //         }
-                //     });
-                // }
                 return defaultV;
             },
         }));

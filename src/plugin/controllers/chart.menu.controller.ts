@@ -15,11 +15,14 @@
  */
 
 import {
-    Disposable, ICommandService, IUniverInstanceService,
+    Disposable,
+    ICommandService,
+    IUniverInstanceService,
     LifecycleStages,
     LocaleService,
     OnLifecycle,
-    UniverInstanceType, type Workbook,
+    UniverInstanceType,
+    type Workbook,
 } from '@univerjs/core';
 import type { IDisposable } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
@@ -29,7 +32,6 @@ import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-pan
 import { ChartSelectorPanel } from '../components/chart-selector-panel';
 import { ChartSidePanel } from '../components/chart-side-panel';
 import type { IChart } from '../models/types.ts';
-import { ChartPreviewDialog } from '../components/chart-preview-dialog';
 import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
 import { ChartDialog } from '../components/chart-dialog';
 import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service.ts';
@@ -85,42 +87,12 @@ export class ChartMenuController extends Disposable {
 
     closeSidePanel() {
         this._sidebarDisposable = null;
-        // 同时关闭 chart preview
-        this.closeChartDialog();
-    }
-
-    openPreviewChartDialog(chart?: IChart) {
-        // open preview dialog
-        this._dialogPlusService.open({
-            id: CHART_PREVIEW_DIALOG_KEY,
-            draggable: true,
-            destroyOnClose: true,
-            preservePositionOnDestroy: true,
-            children: {
-                label: {
-                    name: 'ChartPreviewDialog',
-                    props: {
-                        chart,
-                    },
-                },
-            },
-            title: { title: this._localeService.t('chart.panel.title') + this._localeService.t('chart.panel.preview') },
-            onClose: () => {},
-            className: 'chart-plugin-preview-dialog-plus',
-            /*onResized: (width, height) => {
-                console.log(width, height);
-            },
-            onMoved: (left, top) => {
-                console.log(left, top);
-            },
-            onMouseDown: (currentZIndex: number) => {
-                console.log('darg handler mousedown: ', currentZIndex);
-            },*/
-        });
+        // // 同时关闭 chart preview
+        // this.closeChartDialog();
     }
 
     openChartDialog(chart?: IChart) {
-        if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
+        if (chart && chart.chartId) {
             // open chart
             this._dialogPlusService.open({
                 id: chart.chartId,
@@ -177,7 +149,6 @@ export class ChartMenuController extends Disposable {
     private _initComponent() {
         const componentManager = this._componentManager;
         this.disposeWithMe(componentManager.register(CHART_SELECTOR_PANEL_COMPONENT, ChartSelectorPanel));
-        this.disposeWithMe(componentManager.register('ChartPreviewDialog', ChartPreviewDialog));
         this.disposeWithMe(componentManager.register('ChartDialog', ChartDialog));
     }
 

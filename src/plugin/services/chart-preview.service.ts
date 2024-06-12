@@ -78,6 +78,7 @@ export class ChartPreviewState {
             }
 
             if (typeof changes.chartId !== 'undefined' && this._chartId !== changes.chartId) {
+                this._chartId = changes.chartId;
                 changedState.chartId = changes.chartId;
                 changed = true;
             }
@@ -99,6 +100,8 @@ export interface IChartPreviewService {
     readonly state$: Observable<IChartPreviewState>;
 
     readonly focusSignal$: Observable<void>;
+
+    changeChartId(chartId: string): void;
 
     changeChartType(type: string, subType: string): void;
 
@@ -138,6 +141,10 @@ export class ChartPreviewService extends Disposable implements IChartPreviewServ
         super.dispose();
 
         this._focusSignal$.complete();
+    }
+
+    changeChartId(chartId: string) {
+        this._state.changeState({ chartId });
     }
 
     changeChartConfTitle(title: string): void {

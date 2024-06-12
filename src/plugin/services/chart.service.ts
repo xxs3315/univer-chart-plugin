@@ -15,7 +15,7 @@
  */
 
 import type { IMutationInfo, IRange, Workbook } from '@univerjs/core';
-import { afterInitApply, createInterceptorKey,
+import { afterInitApply,
     Disposable,
     ICommandService,
     IResourceManagerService, IUniverInstanceService,
@@ -34,7 +34,6 @@ import {
     RemoveColMutation, RemoveRowMutation,
     RemoveSheetCommand, SetRangeValuesMutation, SheetInterceptorService } from '@univerjs/sheets';
 import { ChartConfModel } from '../models/chart-conf-model.ts';
-import { ChartViewModel } from '../models/chart-view-model.ts';
 import type { IChart, IChartModelJson } from '../models/types.ts';
 import { SHEET_CHART_PLUGIN } from '../common/const.ts';
 import type {
@@ -45,7 +44,9 @@ import {
     DeleteChartMutationUndoFactory,
 } from '../commands/mutations/delete-chart.mutation.ts';
 
-const beforeUpdateChartResult = createInterceptorKey<{ subUnitId: string; unitId: string; chartId: string }, undefined>('chart-before-update-chart-result');
+const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+
 @OnLifecycle(LifecycleStages.Starting, ChartService)
 export class ChartService extends Disposable {
     private _afterInitApplyPromise: Promise<void>;
@@ -53,7 +54,6 @@ export class ChartService extends Disposable {
     constructor(
         @Inject(ChartConfModel) private _chartConfModel: ChartConfModel,
         @Inject(Injector) private _injector: Injector,
-        @Inject(ChartViewModel) private _chartViewModel: ChartViewModel,
         @Inject(IUniverInstanceService) private _univerInstanceService: IUniverInstanceService,
         @Inject(IResourceManagerService) private _resourceManagerService: IResourceManagerService,
         @Inject(SheetInterceptorService) private _sheetInterceptorService: SheetInterceptorService,
@@ -117,18 +117,18 @@ export class ChartService extends Disposable {
                         const params = commandInfo.params as IRemoveSheetCommandParams;
                         const unitId = params.unitId || getUnitId(this._univerInstanceService);
                         const subUnitId = params.subUnitId || getSubUnitId(this._univerInstanceService);
-                        const confList = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
-                        if (!confList) {
+                        const chartList = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                        if (!chartList) {
                             return { redos: [], undos: [] };
                         }
 
                         const redos: IMutationInfo[] = [];
                         const undos: IMutationInfo[] = [];
 
-                        confList.forEach((item) => {
+                        chartList.forEach((chart) => {
                             const params: IDeleteChartMutationParams = {
                                 unitId, subUnitId,
-                                chartId: item.chartId,
+                                chartId: chart.chartId,
                             };
                             redos.push({
                                 id: DeleteChartMutation.id, params,
@@ -258,6 +258,3 @@ export class ChartService extends Disposable {
             }));
     }
 }
-
-const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
