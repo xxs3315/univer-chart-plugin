@@ -48,10 +48,12 @@ export function ReactECharts({
         if (chartRef.current !== null) {
             // Add chart resize listener
             const chart = getInstanceByDom(chartRef.current);
-            observer = new ResizeObserver(() => {
-                chart?.resize();
-            });
-            observer.observe(chartRef.current);
+            if (chart) {
+                observer = new ResizeObserver(() => {
+                    chart?.resize();
+                });
+                observer.observe(chartRef.current);
+            }
         }
 
         return () => {

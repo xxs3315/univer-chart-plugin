@@ -17,4 +17,4 @@
 import { Tools } from '@univerjs/core';
 
 // Given that unit and sunUnit will change in the case of replica creation, the ID will not be spelled in here
-export const createChartId = () => `${Tools.generateRandomId(8)}`;
+export const createChartId = () => `${Tools.generateRandomId(12)}`;

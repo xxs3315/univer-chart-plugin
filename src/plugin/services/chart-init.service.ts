@@ -15,7 +15,7 @@
  */
 
 import {
-    Disposable, fromCallback, ICommandService,
+    Disposable,
     IUniverInstanceService,
     LifecycleStages,
     OnLifecycle,
@@ -23,8 +23,6 @@ import {
     type Workbook,
 } from '@univerjs/core';
 import { Inject } from '@wendellhu/redi';
-import { SetWorksheetActiveOperation } from '@univerjs/sheets';
-import { filter } from 'rxjs';
 import { ChartConfModel } from '../models/chart-conf-model.ts';
 import { ChartMenuController } from '../controllers/chart.menu.controller.ts';
 
@@ -33,12 +31,10 @@ export class ChartInitService extends Disposable {
     constructor(
         @Inject(ChartConfModel) private _chartConfModel: ChartConfModel,
         @Inject(IUniverInstanceService) private _univerInstanceService: IUniverInstanceService,
-        @Inject(ChartMenuController) private _chartMenuController: ChartMenuController,
-        @Inject(ICommandService) private _commandService: ICommandService
+        @Inject(ChartMenuController) private _chartMenuController: ChartMenuController
     ) {
         super();
         this._initCharts();
-        this._commandExecutedListener();
     }
 
     private _initCharts() {
@@ -49,31 +45,5 @@ export class ChartInitService extends Disposable {
         charts?.forEach((chart) => {
             this._chartMenuController.openChartDialog(chart);
         });
-    }
-
-    private _commandExecutedListener() {
-        this.disposeWithMe(
-            fromCallback(this._commandService.onCommandExecuted)
-                .pipe(
-                    filter(([command, options]) => command.id === SetWorksheetActiveOperation.id && !options?.fromFindReplace)
-                )
-                .subscribe(() => {
-                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet.getSheetId();
-                    // 关闭所有chart
-                    const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
-                    allCharts?.forEach((value, _key) => {
-                        value.forEach((chart) => {
-                            this._chartMenuController.closeChartDialog(chart);
-                        });
-                    });
-                    // 打开current active sheet charts
-                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
-                    charts?.forEach((chart) => {
-                        this._chartMenuController.openChartDialog(chart);
-                    });
-                })
-        );
     }
 }

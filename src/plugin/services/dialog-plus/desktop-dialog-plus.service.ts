@@ -24,7 +24,7 @@ import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-
 import { DialogPartPlus } from '../../components/dialog-part-plus';
 import type { IDialogPlusService } from './dialog-plus.service.ts';
 
-export const DESKTOP_DIALOG_PLUS_BASE_Z_INDEX = 1050;
+export const DESKTOP_DIALOG_PLUS_BASE_Z_INDEX = 200;
 export class DesktopDialogPlusService extends Disposable implements IDialogPlusService {
     protected _dialogOptions: IDialogPlusPartMethodOptions[] = [];
     protected readonly _dialogOptions$ = new Subject<IDialogPlusPartMethodOptions[]>();
@@ -46,8 +46,12 @@ export class DesktopDialogPlusService extends Disposable implements IDialogPlusS
         this._dialogOptions$.complete();
     }
 
-    getZIndex() {
-        this.cz += 1;
+    getZIndex(zIndex?: number) {
+        if (zIndex && zIndex >= this.cz) {
+            this.cz = zIndex + 1;
+        } else {
+            this.cz += 1;
+        }
         return this.cz;
     }
 

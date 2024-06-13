@@ -609,7 +609,7 @@ export const DEFAULT_WORKBOOK_DATA: IWorkbookData = {
     resources: [
         {
             name: 'SHEET_CHART_PLUGIN',
-            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","zIndex":1060,"width":800,"height":600,"conf":{"type":"line","subType":"line-default","title":"这是一个图"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}]}',
+            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","zIndex":760,"width":800,"height":600,"conf":{"type":"line","subType":"line-default","title":"测试chart"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}]}',
         },
     ],
 };

@@ -27,7 +27,7 @@ import { debounceTime, Observable } from 'rxjs';
 import { Injector } from '@wendellhu/redi';
 import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
 import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command.ts';
-import { CHART_PERMISSION_CHECK, ChartClearController } from '../../../controllers/chart.clear.controller.ts';
+import { ChartClearController } from '../../../controllers/chart.clear.controller.ts';
 import type { IChart } from '../../../models/types.ts';
 import { ChartConfModel } from '../../../models/chart-conf-model.ts';
 import { createDefaultNewChart } from '../../../utils/utils.ts';
@@ -71,14 +71,14 @@ export const ChartSideList = (props: IChartListProps) => {
     };
     const [chartConfList, chartConfListSet] = useState(getChartConfList);
 
-    const getAllChartConfMap = () => {
-        const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
-        if (!allChartConfMap || !allChartConfMap.size) {
-            return null;
-        }
-        return allChartConfMap;
-    };
-    const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
+    // const getAllChartConfMap = () => {
+    //     const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
+    //     if (!allChartConfMap || !allChartConfMap.size) {
+    //         return null;
+    //     }
+    //     return allChartConfMap;
+    // };
+    // const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
 
     const [layoutWidth, layoutWidthSet] = useState(defaultWidth);
     const [draggingId, draggingIdSet] = useState<number>(-1);
@@ -87,22 +87,22 @@ export const ChartSideList = (props: IChartListProps) => {
 
     const layout = chartConfList.map((chart, index) => ({ i: chart.chartId, x: 0, w: 12, y: index, h: 1, isResizable: false }));
 
-    const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
+    // const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
 
-    useEffect(() => {
-        if (allChartConfMap) {
-            // 关闭所有chart
-            allChartConfMap.forEach((value, _key) => {
-                value.forEach((chart) => {
-                    chartMenuController.closeChartDialog(chart);
-                });
-            });
-        }
-        chartConfListByPermissionCheck?.forEach((chart) => {
-            // 打开所有的chart（当前sheet的）
-            chartMenuController.openChartDialog(chart);
-        });
-    }, [chartMenuController, allChartConfMap, chartConfListByPermissionCheck, fetchChartConfListId, unitId, subUnitId]);
+    // useEffect(() => {
+    //     if (allChartConfMap) {
+    //         // 关闭所有chart
+    //         allChartConfMap.forEach((value, _key) => {
+    //             value.forEach((chart) => {
+    //                 chartMenuController.closeChartDialog(chart);
+    //             });
+    //         });
+    //     }
+    //     chartConfList?.forEach((chart) => {
+    //         // 打开所有的chart（当前sheet的）
+    //         chartMenuController.openChartDialog(chart);
+    //     });
+    // }, [chartMenuController, allChartConfMap, chartConfList, fetchChartConfListId, unitId, subUnitId]);
 
     const handleDelete = (chart: IChart) => {
         // 关闭对应的chart
@@ -206,7 +206,7 @@ export const ChartSideList = (props: IChartListProps) => {
                             margin={[0, 10]}
                             draggableHandle=".draggableHandle"
                         >
-                            {chartConfListByPermissionCheck?.map((chart, index) => {
+                            {chartConfList?.map((chart, index) => {
                                 return (
                                     <div key={`${chart.chartId}`}>
                                         <div
@@ -234,37 +234,37 @@ export const ChartSideList = (props: IChartListProps) => {
                                                     {chart.ranges.map((range) => serializeRange(range)).join(',')}
                                                 </div>
                                             </div>
-                                            {!chart.disable && (
-                                                <div
-                                                    className={`${styles.deleteItem} ${draggingId === index ? styles.active : ''}`}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDelete(chart);
-                                                    }}
-                                                >
-                                                    <DeleteSingle />
-                                                </div>
-                                            )}
-                                            {!chart.disable && (
-                                                <div
-                                                    className={`${styles.editItem} ${draggingId === index ? styles.active : ''}`}
-                                                    onClick={(_e) => {
-                                                        if (chart.disable) return;
-                                                        onClick(chart);
-                                                    }}
-                                                >
-                                                    <EditRegionSingle />
-                                                </div>
-                                            )}
-                                            {!chart.disable && (
-                                                <div
-                                                    className={`${styles.viewItem} ${draggingId === index ? styles.active : ''}`}
-                                                    onClick={(_e) => {
-                                                    }}
-                                                >
-                                                    {!chart.show ? <EyelashSingle /> : <ViweModeSingle />}
-                                                </div>
-                                            )}
+                                            {/*{!chart.disable && (*/}
+                                            <div
+                                                className={`${styles.deleteItem} ${draggingId === index ? styles.active : ''}`}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete(chart);
+                                                }}
+                                            >
+                                                <DeleteSingle />
+                                            </div>
+                                            {/*)}*/}
+                                            {/*{!chart.disable && (*/}
+                                            <div
+                                                className={`${styles.editItem} ${draggingId === index ? styles.active : ''}`}
+                                                onClick={(_e) => {
+                                                        // if (chart.disable) return;
+                                                    onClick(chart);
+                                                }}
+                                            >
+                                                <EditRegionSingle />
+                                            </div>
+                                            {/*)}*/}
+                                            {/*{!chart.disable && (*/}
+                                            <div
+                                                className={`${styles.viewItem} ${draggingId === index ? styles.active : ''}`}
+                                                onClick={(_e) => {
+                                                }}
+                                            >
+                                                {!chart.show ? <EyelashSingle /> : <ViweModeSingle />}
+                                            </div>
+                                            {/*)}*/}
                                         </div>
                                     </div>
                                 );

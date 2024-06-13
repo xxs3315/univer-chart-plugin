@@ -15,8 +15,8 @@
  */
 
 import type { IMutationInfo, IRange, Workbook } from '@univerjs/core';
-import { afterInitApply,
-    Disposable,
+import { afterInitApply, Disposable,
+    fromCallback,
     ICommandService,
     IResourceManagerService, IUniverInstanceService,
     LifecycleStages,
@@ -26,16 +26,24 @@ import { afterInitApply,
 } from '@univerjs/core';
 import { Inject, Injector } from '@wendellhu/redi';
 import type {
-    IInsertColMutationParams, IMoveColumnsMutationParams, IMoveRangeMutationParams, IMoveRowsMutationParams, IRemoveRowsMutationParams,
+    IInsertColMutationParams,
+    IMoveColumnsMutationParams,
+    IMoveRangeMutationParams,
+    IMoveRowsMutationParams,
+    IRemoveRowsMutationParams,
     IRemoveSheetCommandParams,
     ISetRangeValuesMutationParams } from '@univerjs/sheets';
 import {
-    InsertColMutation, InsertRowMutation, MoveColsMutation, MoveRangeMutation, MoveRowsMutation,
-    RemoveColMutation, RemoveRowMutation,
-    RemoveSheetCommand, SetRangeValuesMutation, SheetInterceptorService } from '@univerjs/sheets';
+    InsertColMutation,
+
+    InsertRowMutation, MoveColsMutation, MoveRangeMutation, MoveRowsMutation, RemoveColMutation,
+    RemoveRowMutation, RemoveSheetCommand,
+    SetRangeValuesMutation, SetWorksheetActiveOperation, SheetInterceptorService } from '@univerjs/sheets';
+import { ISidebarService } from '@univerjs/ui';
+import { filter } from 'rxjs';
 import { ChartConfModel } from '../models/chart-conf-model.ts';
 import type { IChart, IChartModelJson } from '../models/types.ts';
-import { SHEET_CHART_PLUGIN } from '../common/const.ts';
+import { CHART_PREVIEW_DIALOG_KEY, SHEET_CHART_PLUGIN } from '../common/const.ts';
 import type {
     IDeleteChartMutationParams,
 } from '../commands/mutations/delete-chart.mutation.ts';
@@ -43,6 +51,8 @@ import {
     DeleteChartMutation,
     DeleteChartMutationUndoFactory,
 } from '../commands/mutations/delete-chart.mutation.ts';
+import { ChartMenuController } from '../controllers/chart.menu.controller.ts';
+import { DeleteChartCommand, type IDeleteChartCommandParams } from '../commands/commands/delete-chart.command.ts';
 
 const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
 const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
@@ -57,12 +67,16 @@ export class ChartService extends Disposable {
         @Inject(IUniverInstanceService) private _univerInstanceService: IUniverInstanceService,
         @Inject(IResourceManagerService) private _resourceManagerService: IResourceManagerService,
         @Inject(SheetInterceptorService) private _sheetInterceptorService: SheetInterceptorService,
-        @Inject(ICommandService) private _commandService: ICommandService
+        @Inject(ICommandService) private _commandService: ICommandService,
+        @Inject(ISidebarService) private _sidebarService: ISidebarService,
+        @Inject(ChartMenuController) private _chartMenuController: ChartMenuController
     ) {
         super();
         this._initCellChange();
         this._initSnapshot();
         this._initSheetChange();
+        this._initChartConfListener();
+        this._initSidebarChangeListener();
         this._afterInitApplyPromise = afterInitApply(_commandService);
     }
 
@@ -117,23 +131,55 @@ export class ChartService extends Disposable {
                         const params = commandInfo.params as IRemoveSheetCommandParams;
                         const unitId = params.unitId || getUnitId(this._univerInstanceService);
                         const subUnitId = params.subUnitId || getSubUnitId(this._univerInstanceService);
+                        // const allChartConfMap = this._chartConfModel.getUnitChartConfs(unitId);
+                        // allChartConfMap?.forEach((value, _key) => {
+                        //     value.forEach((chart) => {
+                        //         this._chartMenuController.closeChartDialog(chart);
+                        //         this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+                        //     });
+                        // });
                         const chartList = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                        // console.log('to delete', subUnitId, JSON.stringify(chartList));
                         if (!chartList) {
                             return { redos: [], undos: [] };
                         }
 
+                        // console.log('before', JSON.stringify(this._chartConfModel.getSubunitChartConfs(unitId, subUnitId)));
+
+                        // chartList?.forEach((chart) => {
+                        //     this._chartMenuController.closeChartDialog(chart);
+                        // });
+                        // chartList?.forEach((chart) => {
+                        //     this._chartMenuController.closeChartDialog(chart);
+                        //     this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+                        // });
+
+                        // console.log('after', JSON.stringify(this._chartConfModel.getSubunitChartConfs(unitId, subUnitId)));
+
+                        // // 关闭preview chart
+                        // this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
+                        // this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+
                         const redos: IMutationInfo[] = [];
                         const undos: IMutationInfo[] = [];
-
+                        // 删除sheet时，同时删除该sheet下的所有charts
                         chartList.forEach((chart) => {
-                            const params: IDeleteChartMutationParams = {
-                                unitId, subUnitId,
-                                chartId: chart.chartId,
-                            };
-                            redos.push({
-                                id: DeleteChartMutation.id, params,
-                            });
-                            undos.push(...DeleteChartMutationUndoFactory(this._injector, params));
+                            if (chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
+                                const params: IDeleteChartMutationParams = {
+                                    unitId, subUnitId,
+                                    chartId: chart.chartId,
+                                };
+                                redos.push({
+                                    id: DeleteChartMutation.id, params,
+                                });
+                                undos.push(...DeleteChartMutationUndoFactory(this._injector, params));
+                            }
+                        });
+
+                        // TODO 循环删除 似乎...有问题
+                        chartList.forEach((chart) => {
+                            this._chartMenuController.closeChartDialog(chart);
+                            this._commandService.executeCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
                         });
 
                         return {
@@ -145,10 +191,84 @@ export class ChartService extends Disposable {
                 },
             })
         );
+        this.disposeWithMe(
+            fromCallback(this._commandService.beforeCommandExecuted)
+                .pipe(
+                    filter(([command, _options]) => command.id === SetWorksheetActiveOperation.id)
+                )
+                .subscribe(() => {
+                    // 切换sheet前，管理当前sheet的charts
+                    // 切换sheet前，清除所有的preview chart conf，即切换sheet前所有的预览chart都会被清除
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
+                    const activeSheetId = activeSheet.getSheetId();
+                    this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
+                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, activeSheetId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+                })
+        );
+        this.disposeWithMe(
+            fromCallback(this._commandService.onCommandExecuted)
+                .pipe(
+                    filter(([command, _options]) => command.id === SetWorksheetActiveOperation.id)
+                )
+                .subscribe(() => {
+                    // 切换sheet后，管理当前sheet的charts
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
+                    const activeSheetId = activeSheet.getSheetId();
+                    // 关闭所有chart
+                    const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
+                    allCharts?.forEach((value, _key) => {
+                        value.forEach((chart) => {
+                            this._chartMenuController.closeChartDialog(chart);
+                        });
+                    });
+                    // 打开current active sheet charts
+                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
+                    charts?.forEach((chart) => {
+                        this._chartMenuController.openChartDialog(chart);
+                    });
+                })
+        );
+    }
+
+    private _initChartConfListener() {
+        // chart conf 变化时， 管理charts的行为
+        this.disposeWithMe(
+            this._chartConfModel.$chartConfChange.subscribe(() => {
+                const unitId = getUnitId(this._univerInstanceService);
+                const subUnitId = getSubUnitId(this._univerInstanceService);
+                const allChartConfMap = this._chartConfModel.getUnitChartConfs(unitId);
+                allChartConfMap?.forEach((value, _key) => {
+                    value.forEach((chart) => {
+                        this._chartMenuController.closeChartDialog(chart);
+                    });
+                });
+                const charts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
+                charts?.forEach((chart) => {
+                    this._chartMenuController.openChartDialog(chart);
+                });
+            })
+        );
+    }
+
+    private _initSidebarChangeListener() {
+        // sidebar 变化时，管理charts的行为
+        this.disposeWithMe(
+            this._sidebarService.sidebarOptions$.subscribe(() => {
+                this._sidebarService.sidebarOptions$.forEach((item) => {
+                    // 关闭preview chart
+                    this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+                });
+            })
+        );
     }
 
     private _initCellChange() {
-        // sheet 发生变化时， 重绘制chart
+        // sheet cell 发生变化时， 重绘制相关的chart
         this.disposeWithMe(
             this._commandService.onCommandExecuted((commandInfo) => {
                 const collectChart = (unitId: string, subUnitId: string, cellData: [number, number][]) => {

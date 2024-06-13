@@ -36,6 +36,7 @@ import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
 import { ChartDialog } from '../components/chart-dialog';
 import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service.ts';
 import { type ISetChartCommandParams, SetChartCommand } from '../commands/commands/set-chart.command.ts';
+import { ChartConfModel } from '../models/chart-conf-model.ts';
 import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
@@ -55,7 +56,8 @@ export class ChartMenuController extends Disposable {
         @Inject(IDialogPlusService) private readonly _dialogPlusService: IDialogPlusService,
         @Inject(ILayoutService) private readonly _layoutService: ILayoutService,
         @Inject(LocaleService) private _localeService: LocaleService,
-        @Inject(ICommandService) private _commandService: ICommandService
+        @Inject(ICommandService) private _commandService: ICommandService,
+        @Inject(ChartConfModel) private _chartConfModel: ChartConfModel
     ) {
         super();
 
@@ -87,8 +89,6 @@ export class ChartMenuController extends Disposable {
 
     closeSidePanel() {
         this._sidebarDisposable = null;
-        // // 同时关闭 chart preview
-        // this.closeChartDialog();
     }
 
     openChartDialog(chart?: IChart) {
@@ -130,14 +130,20 @@ export class ChartMenuController extends Disposable {
         }
     }
 
-    closeChartDialog(chart?: IChart) {
+    closeChartDialog(chart?: Partial<IChart>) {
         if (chart && chart.chartId && chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
             this._dialogPlusService.close(chart.chartId);
         } else {
             this._dialogPlusService.close(CHART_PREVIEW_DIALOG_KEY);
+            // const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+            // const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+            // const previewChart = this._chartConfModel.getChartConf(unitId, subUnitId, CHART_PREVIEW_DIALOG_KEY);
+            // if (previewChart) {
+            //     this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+            // }
         }
 
-        queueMicrotask(() => this._layoutService.focus());
+        // queueMicrotask(() => this._layoutService.focus());
     }
 
     private _initMenu() {

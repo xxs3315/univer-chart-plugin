@@ -65,6 +65,7 @@ export interface IChart<C = IChartConfig> {
     width?: number;
     height?: number;
     zIndex?: number;
+    show?: boolean;
 }
 
 export type IChartModel = Map<string, Map<string, IChart[]>>;

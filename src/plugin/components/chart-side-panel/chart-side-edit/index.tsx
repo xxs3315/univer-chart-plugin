@@ -37,7 +37,6 @@ import { ChartConfModel } from '../../../models/chart-conf-model.ts';
 import type { IAddChartCommandParams } from '../../../commands/commands/add-chart.command.ts';
 import { AddChartCommand } from '../../../commands/commands/add-chart.command.ts';
 import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
-import { CHART_PERMISSION_CHECK, ChartClearController } from '../../../controllers/chart.clear.controller.ts';
 import { DeleteChartCommand, type IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
 import styles from './index.module.less';
 import type { IConfEditorProps } from './types.ts';
@@ -64,8 +63,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const { chart, onCancel } = props;
     const rangeResult = useRef<IRange[]>(chart?.ranges ?? []);
     const chartMenuController = useDependency(ChartMenuController);
-    const cvController = useDependency(ChartClearController);
-    const [fetchChartConfListId, fetchChartConfListIdSet] = useState(0);
+    // const cvController = useDependency(ChartClearController);
+    // const [fetchChartConfListId, fetchChartConfListIdSet] = useState(0);
 
     const rangeString = useMemo(() => {
         let ranges = chart?.ranges;
@@ -142,7 +141,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                     commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart: c } as ISetChartCommandParams);
                     onCancel();
                 } else {
-                    // 维护chart conf model, 去掉preview chart conf
+                    // 维护chart conf model, 去掉preview chart conf 因model中删除之后再无sheet.chart.preview.dialog为key的记录,所以这里先关闭预览
                     chartMenuController.closeChartDialog(chart);
                     const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
@@ -174,14 +173,14 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         result.current = config as Parameters<IConfEditorProps['onChange']>;
     };
 
-    const getAllChartConfMap = () => {
-        const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
-        if (!allChartConfMap || !allChartConfMap.size) {
-            return null;
-        }
-        return allChartConfMap;
-    };
-    const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
+    // const getAllChartConfMap = () => {
+    //     const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
+    //     if (!allChartConfMap || !allChartConfMap.size) {
+    //         return null;
+    //     }
+    //     return allChartConfMap;
+    // };
+    // const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
     const getChartConfList = () => {
         const chartConfList = chartConfModel.getSubunitChartConfs(unitId, subUnitId);
         if (!chartConfList || !chartConfList.length) {
@@ -190,24 +189,23 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         return chartConfList;
     };
     const [chartConfList, chartConfListSet] = useState(getChartConfList);
-    const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
 
-    useEffect(() => {
-        // console.log(1)
-        // console.log(allChartConfMap)
-        if (allChartConfMap) {
-            // 关闭所有chart
-            allChartConfMap.forEach((value, _key) => {
-                value.forEach((chart) => {
-                    chartMenuController.closeChartDialog(chart);
-                });
-            });
-        }
-        chartConfListByPermissionCheck?.forEach((chart) => {
-            // 打开所有的chart（当前sheet的）
-            chartMenuController.openChartDialog(chart);
-        });
-    }, [chartMenuController, allChartConfMap, chartConfListByPermissionCheck, fetchChartConfListId, unitId, subUnitId]);
+    // useEffect(() => {
+    //     // console.log(1)
+    //     // console.log(allChartConfMap)
+    //     if (allChartConfMap) {
+    //         // 关闭所有chart
+    //         allChartConfMap.forEach((value, _key) => {
+    //             value.forEach((chart) => {
+    //                 chartMenuController.closeChartDialog(chart);
+    //             });
+    //         });
+    //     }
+    //     chartConfList?.forEach((chart) => {
+    //         // 打开所有的chart（当前sheet的）
+    //         chartMenuController.openChartDialog(chart);
+    //     });
+    // }, [chartMenuController, allChartConfMap, chartConfList, fetchChartConfListId, unitId, subUnitId]);
 
     // 编辑面板打开时，向chart conf model中加入一个preview dialog的conf
     useLayoutEffect(() => {
@@ -224,25 +222,25 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         }
     }, []);
 
-    useEffect(() => {
-        chartConfListSet(getChartConfList);
-    }, [fetchChartConfListId, unitId, subUnitId]);
+    // useEffect(() => {
+    //     chartConfListSet(getChartConfList);
+    // }, [fetchChartConfListId, unitId, subUnitId]);
 
-    useEffect(() => {
-        const disposable = commandService.onCommandExecuted((commandInfo) => {
-            if (commandInfo.id === SetWorksheetActiveOperation.id) {
-                fetchChartConfListIdSet(Math.random());
-            }
-        });
-        return () => disposable.dispose();
-    });
-
-    useEffect(() => {
-        const dispose = chartConfModel.$chartConfChange.subscribe(() => {
-            fetchChartConfListIdSet(Math.random());
-        });
-        return () => dispose.unsubscribe();
-    }, [chartConfModel]);
+    // useEffect(() => {
+    //     const disposable = commandService.onCommandExecuted((commandInfo) => {
+    //         if (commandInfo.id === SetWorksheetActiveOperation.id) {
+    //             fetchChartConfListIdSet(Math.random());
+    //         }
+    //     });
+    //     return () => disposable.dispose();
+    // });
+    //
+    // useEffect(() => {
+    //     const dispose = chartConfModel.$chartConfChange.subscribe(() => {
+    //         fetchChartConfListIdSet(Math.random());
+    //     });
+    //     return () => dispose.unsubscribe();
+    // }, [chartConfModel]);
 
     return (
         <div className={styles.chartSideEditor}>

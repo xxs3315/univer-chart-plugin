@@ -132,9 +132,9 @@ export function DialogPlus(props: IDialogPlusProps) {
         footer,
         zIndex,
         onClose,
-        onResized,
-        onMoved,
-        onMouseDown,
+        onResized = () => {},
+        onMoved = () => {},
+        onMouseDown = () => {},
     } = props;
     const [dragDisabled, setDragDisabled] = useState(false);
     const [positionOffset, setPositionOffset] = useState<{ x: number; y: number } | null>(null);
@@ -144,7 +144,7 @@ export function DialogPlus(props: IDialogPlusProps) {
     const initHeight = height || 400;
     const { clientWidth, clientHeight } = window.document.documentElement;
     const { mountContainer } = useContext(ConfigContext);
-    const [currentZIndex, currentZIndexSet] = useState(zIndex || dialogPlusService.getZIndex());
+    const [currentZIndex, currentZIndexSet] = useState(dialogPlusService.getZIndex(zIndex));
 
     const TitleIfDraggable = draggable
         ? (
@@ -232,8 +232,8 @@ export function DialogPlus(props: IDialogPlusProps) {
     };
 
     const onResize = (event: React.SyntheticEvent, { node, size, handle }: ResizeCallbackData) => {
-        calcWidthSet(size.width + 60);
-        calcHeightSet(size.height + 60);
+        calcWidthSet(size.width + 56);
+        calcHeightSet(size.height + 56);
     };
 
     const onResizeStop = (event: React.SyntheticEvent, { node, size, handle }: ResizeCallbackData) => {
