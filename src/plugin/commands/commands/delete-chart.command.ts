@@ -28,7 +28,7 @@ import {
 export interface IDeleteChartCommandParams {
     unitId?: string;
     subUnitId?: string;
-    chartId: string;
+    chartIds: string[];
 }
 export const DeleteChartCommand: ICommand<IDeleteChartCommandParams> = {
     type: CommandType.COMMAND,
@@ -44,7 +44,7 @@ export const DeleteChartCommand: ICommand<IDeleteChartCommandParams> = {
         if (!target) return false;
 
         const { unitId, subUnitId } = target;
-        const config: IDeleteChartMutationParams = { unitId, subUnitId, chartId: params.chartId };
+        const config: IDeleteChartMutationParams = { unitId, subUnitId, chartIds: params.chartIds };
         const undos = DeleteChartMutationUndoFactory(accessor, config);
         const result = commandService.syncExecuteCommand(DeleteChartMutation.id, config);
         if (result) {

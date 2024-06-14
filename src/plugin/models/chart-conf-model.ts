@@ -20,12 +20,19 @@ import { Rectangle } from '@univerjs/core';
 import { createChartId } from '../utils/create-chart-id.ts';
 import type { IAnchor } from '../utils/anchor.ts';
 import { findIndexByAnchor, moveByAnchor } from '../utils/anchor.ts';
-import type { IChart, IChartModel } from './types.ts';
+import type { IChart, IChartConfig, IChartModel } from './types.ts';
 
 type ChartConfOperatorType = 'delete' | 'set' | 'add' | 'sort' | 'redraw';
+
 export class ChartConfModel {
     private _model: IChartModel = new Map();
-    private _chartConfChange$ = new Subject<{ chart: IChart; unitId: string; subUnitId: string; type: ChartConfOperatorType }>();
+    private _chartConfChange$ = new Subject<{
+        charts: IChart[];
+        unitId: string;
+        subUnitId: string;
+        type: ChartConfOperatorType;
+    }>();
+
     $chartConfChange = this._chartConfChange$.asObservable();
 
     constructor(
@@ -66,15 +73,19 @@ export class ChartConfModel {
         return list || null;
     }
 
-    deleteChartConf(unitId: string, subUnitId: string, chartId: string) {
+    deleteChartConf(unitId: string, subUnitId: string, chartIds: string[]) {
         const list = this.getSubunitChartConfs(unitId, subUnitId);
         if (list) {
-            const index = list.findIndex((e) => e.chartId === chartId);
-            const chart = list[index];
-            if (chart) {
-                list.splice(index, 1);
-                this._chartConfChange$.next({ chart, subUnitId, unitId, type: 'delete' });
-            }
+            const chartsToDelete: IChart<IChartConfig>[] = [];
+            chartIds.forEach((chartId) => {
+                const index = list.findIndex((e) => e.chartId === chartId);
+                const chart = list[index];
+                if (chart) {
+                    list.splice(index, 1);
+                    chartsToDelete.push(chart);
+                }
+            });
+            this._chartConfChange$.next({ charts: chartsToDelete, subUnitId, unitId, type: 'delete' });
         }
     }
 
@@ -83,7 +94,7 @@ export class ChartConfModel {
         const oldChartConf = list.find((item) => item.chartId === oldChartId);
         if (oldChartConf) {
             Object.assign(oldChartConf, chart);
-            this._chartConfChange$.next({ chart: oldChartConf, subUnitId, unitId, type: 'set' });
+            this._chartConfChange$.next({ charts: [oldChartConf], subUnitId, unitId, type: 'set' });
         }
     }
 
@@ -92,7 +103,7 @@ export class ChartConfModel {
         const oldChartConf = list.find((item) => item.chartId === oldChartId);
         if (oldChartConf) {
             Object.assign(oldChartConf, { width, height });
-            this._chartConfChange$.next({ chart: oldChartConf, subUnitId, unitId, type: 'set' });
+            this._chartConfChange$.next({ charts: [oldChartConf], subUnitId, unitId, type: 'set' });
         }
     }
 
@@ -103,7 +114,7 @@ export class ChartConfModel {
             // The new chart has a higher priority
             list.unshift(chart);
         }
-        this._chartConfChange$.next({ chart, subUnitId, unitId, type: 'add' });
+        this._chartConfChange$.next({ charts: [chart], subUnitId, unitId, type: 'add' });
     }
 
     markDirty(unitId: string, subUnitId: string, chart: IChart) {
@@ -111,7 +122,7 @@ export class ChartConfModel {
         const oldChartConf = list.find((item) => item.chartId === chart.chartId);
         if (oldChartConf) {
             Object.assign(oldChartConf, chart);
-            this._chartConfChange$.next({ chart: oldChartConf, subUnitId, unitId, type: 'redraw' });
+            this._chartConfChange$.next({ charts: [oldChartConf], subUnitId, unitId, type: 'redraw' });
         }
     }
 
@@ -129,7 +140,7 @@ export class ChartConfModel {
         const chart = list[curIndex];
         if (chart) {
             moveByAnchor(start, end, list, (chart) => chart.chartId);
-            this._chartConfChange$.next({ chart, subUnitId, unitId, type: 'sort' });
+            this._chartConfChange$.next({ charts: [chart], subUnitId, unitId, type: 'sort' });
         }
     }
 

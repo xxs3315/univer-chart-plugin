@@ -17,7 +17,7 @@
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IRange, IUnitRange, Workbook } from '@univerjs/core';
 import { createInternalEditorID, ICommandService, InterceptorManager, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
     IRemoveSheetMutationParams } from '@univerjs/sheets';
 import { RemoveSheetMutation,
@@ -63,8 +63,6 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const { chart, onCancel } = props;
     const rangeResult = useRef<IRange[]>(chart?.ranges ?? []);
     const chartMenuController = useDependency(ChartMenuController);
-    // const cvController = useDependency(ChartClearController);
-    // const [fetchChartConfListId, fetchChartConfListIdSet] = useState(0);
 
     const rangeString = useMemo(() => {
         let ranges = chart?.ranges;
@@ -145,7 +143,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                     chartMenuController.closeChartDialog(chart);
                     const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
-                    commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+                    commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
 
                     const chartId = chartConfModel.createChartId(unitId, subUnitId);
                     c = { chartId, ranges, conf: result };
@@ -163,7 +161,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             chartMenuController.closeChartDialog(chart);
             const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
             const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
-            commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+            commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [chart.chartId] } as IDeleteChartCommandParams);
         }
         onCancel();
     };
@@ -172,40 +170,6 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const onConfChange = (config: unknown) => {
         result.current = config as Parameters<IConfEditorProps['onChange']>;
     };
-
-    // const getAllChartConfMap = () => {
-    //     const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
-    //     if (!allChartConfMap || !allChartConfMap.size) {
-    //         return null;
-    //     }
-    //     return allChartConfMap;
-    // };
-    // const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
-    const getChartConfList = () => {
-        const chartConfList = chartConfModel.getSubunitChartConfs(unitId, subUnitId);
-        if (!chartConfList || !chartConfList.length) {
-            return [];
-        }
-        return chartConfList;
-    };
-    const [chartConfList, chartConfListSet] = useState(getChartConfList);
-
-    // useEffect(() => {
-    //     // console.log(1)
-    //     // console.log(allChartConfMap)
-    //     if (allChartConfMap) {
-    //         // 关闭所有chart
-    //         allChartConfMap.forEach((value, _key) => {
-    //             value.forEach((chart) => {
-    //                 chartMenuController.closeChartDialog(chart);
-    //             });
-    //         });
-    //     }
-    //     chartConfList?.forEach((chart) => {
-    //         // 打开所有的chart（当前sheet的）
-    //         chartMenuController.openChartDialog(chart);
-    //     });
-    // }, [chartMenuController, allChartConfMap, chartConfList, fetchChartConfListId, unitId, subUnitId]);
 
     // 编辑面板打开时，向chart conf model中加入一个preview dialog的conf
     useLayoutEffect(() => {
@@ -221,26 +185,6 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             chartPreviewService.changeChartConfTitle(chart.conf.title);
         }
     }, []);
-
-    // useEffect(() => {
-    //     chartConfListSet(getChartConfList);
-    // }, [fetchChartConfListId, unitId, subUnitId]);
-
-    // useEffect(() => {
-    //     const disposable = commandService.onCommandExecuted((commandInfo) => {
-    //         if (commandInfo.id === SetWorksheetActiveOperation.id) {
-    //             fetchChartConfListIdSet(Math.random());
-    //         }
-    //     });
-    //     return () => disposable.dispose();
-    // });
-    //
-    // useEffect(() => {
-    //     const dispose = chartConfModel.$chartConfChange.subscribe(() => {
-    //         fetchChartConfListIdSet(Math.random());
-    //     });
-    //     return () => dispose.unsubscribe();
-    // }, [chartConfModel]);
 
     return (
         <div className={styles.chartSideEditor}>

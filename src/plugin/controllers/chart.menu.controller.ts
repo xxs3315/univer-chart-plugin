@@ -135,15 +135,7 @@ export class ChartMenuController extends Disposable {
             this._dialogPlusService.close(chart.chartId);
         } else {
             this._dialogPlusService.close(CHART_PREVIEW_DIALOG_KEY);
-            // const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-            // const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
-            // const previewChart = this._chartConfModel.getChartConf(unitId, subUnitId, CHART_PREVIEW_DIALOG_KEY);
-            // if (previewChart) {
-            //     this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
-            // }
         }
-
-        // queueMicrotask(() => this._layoutService.focus());
     }
 
     private _initMenu() {

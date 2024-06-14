@@ -27,7 +27,6 @@ import { debounceTime, Observable } from 'rxjs';
 import { Injector } from '@wendellhu/redi';
 import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
 import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command.ts';
-import { ChartClearController } from '../../../controllers/chart.clear.controller.ts';
 import type { IChart } from '../../../models/types.ts';
 import { ChartConfModel } from '../../../models/chart-conf-model.ts';
 import { createDefaultNewChart } from '../../../utils/utils.ts';
@@ -50,7 +49,6 @@ export const ChartSideList = (props: IChartListProps) => {
     const univerInstanceService = useDependency(IUniverInstanceService);
     const commandService = useDependency(ICommandService);
     const localeService = useDependency(LocaleService);
-    const cvController = useDependency(ChartClearController);
     const injector = useDependency(Injector);
     const chartMenuController = useDependency(ChartMenuController);
     const selectionManagerService = useDependency(SelectionManagerService);
@@ -71,15 +69,6 @@ export const ChartSideList = (props: IChartListProps) => {
     };
     const [chartConfList, chartConfListSet] = useState(getChartConfList);
 
-    // const getAllChartConfMap = () => {
-    //     const allChartConfMap = chartConfModel.getUnitChartConfs(unitId);
-    //     if (!allChartConfMap || !allChartConfMap.size) {
-    //         return null;
-    //     }
-    //     return allChartConfMap;
-    // };
-    // const [allChartConfMap, _allChartConfMapSet] = useState(getAllChartConfMap);
-
     const [layoutWidth, layoutWidthSet] = useState(defaultWidth);
     const [draggingId, draggingIdSet] = useState<number>(-1);
     const [currentChartRanges, currentChartRangesSet] = useState<IRange[]>([]);
@@ -87,29 +76,12 @@ export const ChartSideList = (props: IChartListProps) => {
 
     const layout = chartConfList.map((chart, index) => ({ i: chart.chartId, x: 0, w: 12, y: index, h: 1, isResizable: false }));
 
-    // const chartConfListByPermissionCheck = cvController.interceptor.fetchThroughInterceptors(CHART_PERMISSION_CHECK)(chartConfList, chartConfList);
-
-    // useEffect(() => {
-    //     if (allChartConfMap) {
-    //         // 关闭所有chart
-    //         allChartConfMap.forEach((value, _key) => {
-    //             value.forEach((chart) => {
-    //                 chartMenuController.closeChartDialog(chart);
-    //             });
-    //         });
-    //     }
-    //     chartConfList?.forEach((chart) => {
-    //         // 打开所有的chart（当前sheet的）
-    //         chartMenuController.openChartDialog(chart);
-    //     });
-    // }, [chartMenuController, allChartConfMap, chartConfList, fetchChartConfListId, unitId, subUnitId]);
-
     const handleDelete = (chart: IChart) => {
         // 关闭对应的chart
         chartMenuController.closeChartDialog(chart);
         const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
         const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
-        commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
+        commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [chart.chartId] } as IDeleteChartCommandParams);
     };
 
     const handleDragStart = (_layout: unknown, from: { y: number }) => {

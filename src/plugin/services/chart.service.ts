@@ -131,56 +131,30 @@ export class ChartService extends Disposable {
                         const params = commandInfo.params as IRemoveSheetCommandParams;
                         const unitId = params.unitId || getUnitId(this._univerInstanceService);
                         const subUnitId = params.subUnitId || getSubUnitId(this._univerInstanceService);
-                        // const allChartConfMap = this._chartConfModel.getUnitChartConfs(unitId);
-                        // allChartConfMap?.forEach((value, _key) => {
-                        //     value.forEach((chart) => {
-                        //         this._chartMenuController.closeChartDialog(chart);
-                        //         this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
-                        //     });
-                        // });
                         const chartList = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
-                        // console.log('to delete', subUnitId, JSON.stringify(chartList));
                         if (!chartList) {
                             return { redos: [], undos: [] };
                         }
 
-                        // console.log('before', JSON.stringify(this._chartConfModel.getSubunitChartConfs(unitId, subUnitId)));
+                        const chartIdsToDelete: string[] = [];
+                        chartList.forEach((chart) => {
+                            this._chartMenuController.closeChartDialog(chart);
+                            chartIdsToDelete.push(chart.chartId);
+                        });
 
-                        // chartList?.forEach((chart) => {
-                        //     this._chartMenuController.closeChartDialog(chart);
-                        // });
-                        // chartList?.forEach((chart) => {
-                        //     this._chartMenuController.closeChartDialog(chart);
-                        //     this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
-                        // });
-
-                        // console.log('after', JSON.stringify(this._chartConfModel.getSubunitChartConfs(unitId, subUnitId)));
-
-                        // // 关闭preview chart
-                        // this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
-                        // this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+                        this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: chartIdsToDelete } as IDeleteChartCommandParams);
 
                         const redos: IMutationInfo[] = [];
                         const undos: IMutationInfo[] = [];
                         // 删除sheet时，同时删除该sheet下的所有charts
-                        chartList.forEach((chart) => {
-                            if (chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
-                                const params: IDeleteChartMutationParams = {
-                                    unitId, subUnitId,
-                                    chartId: chart.chartId,
-                                };
-                                redos.push({
-                                    id: DeleteChartMutation.id, params,
-                                });
-                                undos.push(...DeleteChartMutationUndoFactory(this._injector, params));
-                            }
+                        const paramsToDelete: IDeleteChartMutationParams = {
+                            unitId, subUnitId,
+                            chartIds: chartIdsToDelete.filter(() => chartIdsToDelete.some((chartId) => chartId !== CHART_PREVIEW_DIALOG_KEY)),
+                        };
+                        redos.push({
+                            id: DeleteChartMutation.id, params: paramsToDelete,
                         });
-
-                        // TODO 循环删除 似乎...有问题
-                        chartList.forEach((chart) => {
-                            this._chartMenuController.closeChartDialog(chart);
-                            this._commandService.executeCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: chart.chartId } as IDeleteChartCommandParams);
-                        });
+                        undos.push(...DeleteChartMutationUndoFactory(this._injector, paramsToDelete));
 
                         return {
                             redos,
@@ -203,7 +177,7 @@ export class ChartService extends Disposable {
                     const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
                     const activeSheetId = activeSheet.getSheetId();
                     this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
-                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, activeSheetId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, activeSheetId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
                 })
         );
         this.disposeWithMe(
@@ -261,7 +235,7 @@ export class ChartService extends Disposable {
                     this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
                     const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
-                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartId: CHART_PREVIEW_DIALOG_KEY } as IDeleteChartCommandParams);
+                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
                 });
             })
         );

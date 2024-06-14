@@ -27,39 +27,43 @@ import { MoveChartMutation } from './move-chart.mutation.ts';
 export interface IDeleteChartMutationParams {
     unitId: string;
     subUnitId: string;
-    chartId: string;
+    chartIds: string[];
 }
 export const DeleteChartMutationUndoFactory = (accessor: IAccessor, param: IDeleteChartMutationParams) => {
     const chartConfModel = accessor.get(ChartConfModel);
-    const { unitId, subUnitId, chartId } = param;
+    const { unitId, subUnitId, chartIds } = param;
     const chartConfList = ([...(chartConfModel.getSubunitChartConfs(unitId, subUnitId) || [])]);
-    const index = chartConfList.findIndex((item) => item.chartId === chartId);
-    const beforeChart = chartConfList[index - 1];
-    if (index > -1) {
-        const chart = chartConfList[index];
-        const result: IMutationInfo[] = [{
-            id: AddChartMutation.id,
-            params: { unitId, subUnitId, chart: Tools.deepClone(chart) } as IAddChartMutationParams,
-        }];
-        chartConfList.splice(index, 1);
-        if (index !== 0) {
-            const firstChart = chartConfList[0];
-            if (firstChart) {
-                const transformResult = transformSupportSymmetryAnchor({ id: firstChart.chartId, type: 'before' }, { id: beforeChart.chartId, type: 'after' }, chartConfList, (chart) => chart.chartId);
-                if (!transformResult) {
-                    return result;
+    const allResults: IMutationInfo[] = [];
+    param.chartIds.forEach((chartId) => {
+        const index = chartConfList.findIndex((item) => item.chartId === chartId);
+        const beforeChart = chartConfList[index - 1];
+        if (index > -1) {
+            const chart = chartConfList[index];
+            const result: IMutationInfo[] = [{
+                id: AddChartMutation.id,
+                params: { unitId, subUnitId, chart: Tools.deepClone(chart) } as IAddChartMutationParams,
+            }];
+            chartConfList.splice(index, 1);
+            if (index !== 0) {
+                const firstChart = chartConfList[0];
+                if (firstChart) {
+                    const transformResult = transformSupportSymmetryAnchor({ id: firstChart.chartId, type: 'before' }, { id: beforeChart.chartId, type: 'after' }, chartConfList, (chart) => chart.chartId);
+                    if (!transformResult) {
+                        allResults.concat(result);
+                        return;
+                    }
+                    const [start, end] = transformResult;
+                    const params: IMoveChartMutationParams = {
+                        unitId, subUnitId, start,
+                        end,
+                    };
+                    result.push({ id: MoveChartMutation.id, params });
                 }
-                const [start, end] = transformResult;
-                const params: IMoveChartMutationParams = {
-                    unitId, subUnitId, start,
-                    end,
-                };
-                result.push({ id: MoveChartMutation.id, params });
             }
+            allResults.concat(result);
         }
-        return result;
-    }
-    return [];
+    });
+    return allResults;
 };
 export const DeleteChartMutation: IMutation<IDeleteChartMutationParams> = {
     type: CommandType.MUTATION,
@@ -68,9 +72,9 @@ export const DeleteChartMutation: IMutation<IDeleteChartMutationParams> = {
         if (!params) {
             return false;
         }
-        const { unitId, subUnitId, chartId } = params;
+        const { unitId, subUnitId, chartIds } = params;
         const chartConfModel = accessor.get(ChartConfModel);
-        chartConfModel.deleteChartConf(unitId, subUnitId, chartId);
+        chartConfModel.deleteChartConf(unitId, subUnitId, chartIds);
         return true;
     },
 };
