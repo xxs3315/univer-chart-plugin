@@ -15,14 +15,14 @@
  */
 
 import type { IMutationInfo, IRange, Workbook } from '@univerjs/core';
-import { afterInitApply, Disposable,
-    fromCallback,
-    ICommandService,
-    IResourceManagerService, IUniverInstanceService,
-    LifecycleStages,
-    ObjectMatrix,
+import { afterInitApply, Disposable, fromCallback, ICommandService,
+    IResourceManagerService,
+    IUniverInstanceService,
+    LifecycleStages, ObjectMatrix,
     OnLifecycle,
-    Rectangle, UniverInstanceType,
+    Rectangle,
+    RedoCommand,
+    UndoCommand, UniverInstanceType,
 } from '@univerjs/core';
 import { Inject, Injector } from '@wendellhu/redi';
 import type {
@@ -77,6 +77,7 @@ export class ChartService extends Disposable {
         this._initSheetChange();
         this._initChartConfListener();
         this._initSidebarChangeListener();
+        this._initRedoUndoChangeListener();
         this._afterInitApplyPromise = afterInitApply(_commandService);
     }
 
@@ -350,5 +351,74 @@ export class ChartService extends Disposable {
                     }
                 }
             }));
+    }
+
+    private _initRedoUndoChangeListener() {
+        this.disposeWithMe(
+            fromCallback(this._commandService.beforeCommandExecuted)
+                .pipe(
+                    filter(([command, _options]) => command.id === RedoCommand.id)
+                )
+                .subscribe(() => {
+                    // 关闭所有chart
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
+                    allCharts?.forEach((value, _key) => {
+                        value.forEach((chart) => {
+                            this._chartMenuController.closeChartDialog(chart);
+                        });
+                    });
+                })
+        );
+        this.disposeWithMe(
+            fromCallback(this._commandService.beforeCommandExecuted)
+                .pipe(
+                    filter(([command, _options]) => command.id === UndoCommand.id)
+                )
+                .subscribe(() => {
+                    // 关闭所有chart
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
+                    allCharts?.forEach((value, _key) => {
+                        value.forEach((chart) => {
+                            this._chartMenuController.closeChartDialog(chart);
+                        });
+                    });
+                })
+        );
+        this.disposeWithMe(
+            fromCallback(this._commandService.onCommandExecuted)
+                .pipe(
+                    filter(([command, _options]) => command.id === RedoCommand.id)
+                )
+                .subscribe(() => {
+                    // // 切换sheet后，管理当前sheet的charts
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
+                    const activeSheetId = activeSheet.getSheetId();
+                    // 打开current active sheet charts
+                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
+                    charts?.forEach((chart) => {
+                        this._chartMenuController.openChartDialog(chart);
+                    });
+                })
+        );
+        this.disposeWithMe(
+            fromCallback(this._commandService.onCommandExecuted)
+                .pipe(
+                    filter(([command, _options]) => command.id === UndoCommand.id)
+                )
+                .subscribe(() => {
+                    // // 切换sheet后，管理当前sheet的charts
+                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
+                    const activeSheetId = activeSheet.getSheetId();
+                    // 打开current active sheet charts
+                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
+                    charts?.forEach((chart) => {
+                        this._chartMenuController.openChartDialog(chart);
+                    });
+                })
+        );
     }
 }

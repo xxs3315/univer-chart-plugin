@@ -24,6 +24,7 @@ import {
     DeleteChartMutation,
     DeleteChartMutationUndoFactory,
 } from '../mutations/delete-chart.mutation.ts';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const.ts';
 
 export interface IDeleteChartCommandParams {
     unitId?: string;
@@ -44,9 +45,11 @@ export const DeleteChartCommand: ICommand<IDeleteChartCommandParams> = {
         if (!target) return false;
 
         const { unitId, subUnitId } = target;
-        const config: IDeleteChartMutationParams = { unitId, subUnitId, chartIds: params.chartIds };
+        const targetIds = params.chartIds.filter(() => params.chartIds.some((id) => id !== CHART_PREVIEW_DIALOG_KEY));
+        const config: IDeleteChartMutationParams = { unitId, subUnitId, chartIds: targetIds };
+        const configIncludePreview: IDeleteChartMutationParams = { unitId, subUnitId, chartIds: params.chartIds };
         const undos = DeleteChartMutationUndoFactory(accessor, config);
-        const result = commandService.syncExecuteCommand(DeleteChartMutation.id, config);
+        const result = commandService.syncExecuteCommand(DeleteChartMutation.id, configIncludePreview);
         if (result) {
             undoRedoService.pushUndoRedo({ unitID: unitId, undoMutations: undos, redoMutations: [{ id: DeleteChartMutation.id, params: config }] });
         }

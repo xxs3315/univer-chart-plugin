@@ -20,6 +20,7 @@ import { getSheetCommandTarget } from '@univerjs/sheets';
 import type { IChart } from '../../models/types.ts';
 import type { ISetChartMutationParams } from '../mutations/set-chart.mutation.ts';
 import { SetChartMutation, setChartMutationUndoFactory } from '../mutations/set-chart.mutation.ts';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const.ts';
 
 export interface ISetChartCommandParams {
     unitId?: string;
@@ -46,7 +47,7 @@ export const SetChartCommand: ICommand<ISetChartCommandParams> = {
         const config: ISetChartMutationParams = { unitId, subUnitId, chart: params.chart };
         const undos = setChartMutationUndoFactory(accessor, config);
         const result = commandService.syncExecuteCommand(SetChartMutation.id, config);
-        if (result) {
+        if (result && config.chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
             undoRedoService.pushUndoRedo({ unitID: unitId, undoMutations: undos, redoMutations: [{ id: SetChartMutation.id, params: config }] });
         }
         return result;

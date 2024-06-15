@@ -39,9 +39,10 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     const chartPreviewService = useDependency(IChartPreviewService);
     const state = useObservable(chartPreviewService.state$, undefined, true);
     const { chartId, ranges, conf } = state;
+    const [chartChange, chartChangeSet] = useState(chart);
 
     const [xAxis, seriesName, vs, title] = useMemo(() => {
-        let rangeResult = chartId === chart.chartId ? ranges : chart.ranges;
+        let rangeResult = chartId === chartChange.chartId ? ranges : chartChange.ranges;
         if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
             rangeResult = selectionManagerService.getSelectionRanges()!;
         }
@@ -86,7 +87,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
                 };
             });
 
-            const title = chartId === chart.chartId ? conf.title : chart.conf.title;
+            const title = chartId === chartChange.chartId ? conf.title : chartChange.conf.title;
 
             return [nextXAxis, nextSeriesName, nextVs, title] as any[];
         }
@@ -95,10 +96,20 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
 
     useEffect(() => {
         const dispose = chartConfModel.$chartConfChange.subscribe(() => {
-            fetchChartConfRedrawSet(Math.random());
+            const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+            const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+            const c = chartConfModel.getChartConf(unitId, subUnitId, chartChange.chartId);
+            if (c) {
+                chartChangeSet(c);
+                fetchChartConfRedrawSet(Math.random());
+            }
         });
         return () => dispose.unsubscribe();
     });
+
+    // useEffect(() => {
+    //     fetchChartConfRedrawSet(Math.random());
+    // }, [chartConfModel]);
 
     const option: any = useMemo(() => {
         return {

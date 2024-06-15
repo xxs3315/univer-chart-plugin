@@ -28,11 +28,11 @@ export interface IAddChartMutationParams {
     chart: IChart;
 }
 export const AddChartMutationUndoFactory = (accessor: IAccessor, param: IAddChartMutationParams) => {
-    return { id: DeleteChartMutation.id, params: { unitId: param.unitId, subUnitId: param.subUnitId, chartId: param.chart.chartId } as IDeleteChartMutationParams };
+    return { id: DeleteChartMutation.id, params: { unitId: param.unitId, subUnitId: param.subUnitId, chartIds: [param.chart.chartId] } as IDeleteChartMutationParams };
 };
 export const AddChartMutation: IMutation<IAddChartMutationParams> = {
     type: CommandType.MUTATION,
-    id: 'sheet.chart.mutation.add-conditional-rule',
+    id: 'sheet.chart.mutation.add-chart',
     handler(accessor, params) {
         if (!params) {
             return false;

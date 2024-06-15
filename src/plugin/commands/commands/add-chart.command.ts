@@ -27,6 +27,7 @@ import {
     AddChartMutation,
     AddChartMutationUndoFactory,
 } from '../mutations/add-chart.mutation.ts';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const.ts';
 
 export interface IAddChartCommandParams {
     unitId?: string;
@@ -54,7 +55,7 @@ export const AddChartCommand: ICommand<IAddChartCommandParams> = {
         const config: IAddChartMutationParams = { unitId, subUnitId, chart: { ...chart, chartId: chart.chartId || chartId } };
         const undo = AddChartMutationUndoFactory(accessor, config);
         const result = commandService.syncExecuteCommand(AddChartMutation.id, config);
-        if (result) {
+        if (result && config.chart.chartId !== CHART_PREVIEW_DIALOG_KEY) {
             undoRedoService.pushUndoRedo({
                 unitID: unitId,
                 redoMutations: [{ id: AddChartMutation.id, params: config }],

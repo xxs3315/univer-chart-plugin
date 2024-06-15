@@ -126,7 +126,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             const result = ranges.filter((range) => !(Number.isNaN(range.startRow) || Number.isNaN(range.startColumn)));
             return result;
         };
-
+        // 提交时，将当前preview state中的chartId 置空, 不再响应state
+        chartPreviewService.changeChartId('');
         if (beforeSubmitResult) {
             const result = interceptorManager.fetchThroughInterceptors(interceptorManager.getInterceptPoints().submit)(null, null);
             const ranges = getRanges();
@@ -163,6 +164,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
             commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [chart.chartId] } as IDeleteChartCommandParams);
         }
+        // 取消时，将当前preview state中的chartId 置空, 不再响应state
+        chartPreviewService.changeChartId('');
         onCancel();
     };
 
