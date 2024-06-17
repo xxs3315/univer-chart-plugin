@@ -16,7 +16,7 @@
 
 import { Subject } from 'rxjs';
 import { Inject, Injector } from '@wendellhu/redi';
-import { Rectangle } from '@univerjs/core';
+import { ICommandService, Rectangle } from '@univerjs/core';
 import { createChartId } from '../utils/create-chart-id.ts';
 import type { IAnchor } from '../utils/anchor.ts';
 import { findIndexByAnchor, moveByAnchor } from '../utils/anchor.ts';
@@ -36,7 +36,8 @@ export class ChartConfModel {
     $chartConfChange = this._chartConfChange$.asObservable();
 
     constructor(
-        @Inject(Injector) private _injector: Injector
+        @Inject(Injector) private _injector: Injector,
+        @Inject(ICommandService) private _commandService: ICommandService
     ) {
         // empty
     }
@@ -53,6 +54,46 @@ export class ChartConfModel {
             unitMap.set(subUnitId, list);
         }
         return list;
+    }
+
+    reArrangeChartZIndex(unitId: string, subUnitId: string) {
+        const allCharts = this.getUnitChartConfs(unitId);
+        const zIndexMap: Array<{ chartId: string; zIndex: number | undefined }> = [];
+        allCharts?.forEach((value, _key) => {
+            value.forEach((chart) => {
+                zIndexMap.push({
+                    chartId: chart.chartId,
+                    zIndex: chart.zIndex,
+                });
+            });
+        });
+        zIndexMap.sort((o1, o2) => {
+            return o1.zIndex && o2.zIndex && o2.zIndex > o1.zIndex ? -1 : 1;
+        });
+        const list = this._ensureList(unitId, subUnitId);
+
+        const charts: IChart[] = [];
+        zIndexMap.forEach((item, index) => {
+            const oldChartConf = list.find((chart) => chart.chartId === item.chartId);
+            if (oldChartConf) {
+                Object.assign(oldChartConf, { zIndex: index + 1 });
+                charts.push(oldChartConf);
+            }
+        });
+        this._chartConfChange$.next({ charts, subUnitId, unitId, type: 'set' });
+    }
+
+    getLatestMaxZIndex(unitId: string) {
+        let result = 0;
+        const allCharts = this.getUnitChartConfs(unitId);
+        allCharts?.forEach((value, _key) => {
+            value.forEach((chart) => {
+                if (chart && chart.zIndex && chart.zIndex > result) {
+                    result = chart.zIndex;
+                }
+            });
+        });
+        return result;
     }
 
     getChartConf(unitId: string, subUnitId: string, chartId?: string) {

@@ -25,4 +25,5 @@ export interface IDialogPlusService {
     close(id: string): void;
     getDialogs$(): Observable<IDialogPlusPartMethodOptions[]>;
     getZIndex(zIndex?: number): number;
+    getLatestMaxZIndex(): number;
 }

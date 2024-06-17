@@ -16,7 +16,7 @@
 
 import { CloseSingle } from '@univerjs/icons';
 import RcDialog from 'rc-dialog';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { DraggableData, DraggableEvent, DraggableEventHandler } from 'react-draggable';
 import Draggable from 'react-draggable';
 import type { ResizeCallbackData } from 'react-resizable';
@@ -26,6 +26,7 @@ import { ConfigContext } from '@univerjs/design';
 import './resize.css';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service.ts';
+import { DESKTOP_DIALOG_PLUS_BASE_Z_INDEX } from '../../services/dialog-plus/desktop-dialog-plus.service.ts';
 import styles from './index.module.less';
 
 export interface IDialogPlusProps {
@@ -138,13 +139,17 @@ export function DialogPlus(props: IDialogPlusProps) {
     } = props;
     const [dragDisabled, setDragDisabled] = useState(false);
     const [positionOffset, setPositionOffset] = useState<{ x: number; y: number } | null>(null);
-    const [calcWidth, calcWidthSet] = useState((width || 600) + 60);
+    const [calcWidth, calcWidthSet] = useState((width || 600) + 2);
     const initWidth = width || 600;
-    const [calcHeight, calcHeightSet] = useState((height || 400) + 60);
+    const [calcHeight, calcHeightSet] = useState((height || 400));
     const initHeight = height || 400;
     const { clientWidth, clientHeight } = window.document.documentElement;
     const { mountContainer } = useContext(ConfigContext);
     const [currentZIndex, currentZIndexSet] = useState(dialogPlusService.getZIndex(zIndex));
+
+    useEffect(() => {
+        currentZIndexSet(dialogPlusService.getZIndex(zIndex));
+    }, [zIndex]);
 
     const TitleIfDraggable = draggable
         ? (
@@ -191,12 +196,13 @@ export function DialogPlus(props: IDialogPlusProps) {
         }
 
         function handleMouseDown(e: MouseEvent) {
-            const zIndex = dialogPlusService.getZIndex();
-            currentZIndexSet(zIndex);
-            onMouseDown?.(zIndex);
+            const currentZIndex = dialogPlusService.getLatestMaxZIndex() + 1;
+            currentZIndexSet(currentZIndex + DESKTOP_DIALOG_PLUS_BASE_Z_INDEX);
+            onMouseDown?.(currentZIndex);
         }
 
-        const position = positionOffset || defaultPosition || { x: 0, y: 0 };
+        const { clientWidth, clientHeight } = window.document.documentElement;
+        const position = positionOffset || defaultPosition || { x: (clientWidth - calcWidth) / 2, y: (clientHeight - calcHeight) / 2 };
 
         const onStart = (_event: DraggableEvent, uiData: DraggableData) => {
             const { clientWidth, clientHeight } = window.document.documentElement;
@@ -232,8 +238,8 @@ export function DialogPlus(props: IDialogPlusProps) {
     };
 
     const onResize = (event: React.SyntheticEvent, { node, size, handle }: ResizeCallbackData) => {
-        calcWidthSet(size.width + 56);
-        calcHeightSet(size.height + 56);
+        calcWidthSet(size.width + 2);
+        calcHeightSet(size.height);
     };
 
     const onResizeStop = (event: React.SyntheticEvent, { node, size, handle }: ResizeCallbackData) => {

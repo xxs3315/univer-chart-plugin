@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Disposable, toDisposable } from '@univerjs/core';
+import { Disposable, IUniverInstanceService, toDisposable, UniverInstanceType, type Workbook } from '@univerjs/core';
 import { type IDisposable, Inject, Injector } from '@wendellhu/redi';
 import { Subject } from 'rxjs';
 
@@ -22,37 +22,47 @@ import { connectInjector } from '@wendellhu/redi/react-bindings';
 import { BuiltInUIPart, IUIPartsService } from '@univerjs/ui';
 import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-plus/interface.ts';
 import { DialogPartPlus } from '../../components/dialog-part-plus';
+import { ChartConfModel } from '../../models/chart-conf-model.ts';
 import type { IDialogPlusService } from './dialog-plus.service.ts';
 
 export const DESKTOP_DIALOG_PLUS_BASE_Z_INDEX = 200;
+export const DESKTOP_DIALOG_PLUS_MAX_Z_INDEX = 600;
+const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+
 export class DesktopDialogPlusService extends Disposable implements IDialogPlusService {
     protected _dialogOptions: IDialogPlusPartMethodOptions[] = [];
     protected readonly _dialogOptions$ = new Subject<IDialogPlusPartMethodOptions[]>();
 
-    protected cz = DESKTOP_DIALOG_PLUS_BASE_Z_INDEX;
-
     constructor(
         @Inject(Injector) protected readonly _injector: Injector,
-        @IUIPartsService protected readonly _uiPartsService: IUIPartsService
+        @IUIPartsService protected readonly _uiPartsService: IUIPartsService,
+        @Inject(ChartConfModel) private _chartConfModel: ChartConfModel,
+        @Inject(IUniverInstanceService) private _univerInstanceService: IUniverInstanceService
     ) {
         super();
-
         this._initUIPart();
     }
 
     override dispose(): void {
         super.dispose();
-
         this._dialogOptions$.complete();
     }
 
     getZIndex(zIndex?: number) {
-        if (zIndex && zIndex >= this.cz) {
-            this.cz = zIndex + 1;
-        } else {
-            this.cz += 1;
+        if (zIndex) {
+            return DESKTOP_DIALOG_PLUS_BASE_Z_INDEX + zIndex;
         }
-        return this.cz;
+        return DESKTOP_DIALOG_PLUS_BASE_Z_INDEX + this.getLatestMaxZIndex() + 1;
+    }
+
+    getLatestMaxZIndex() {
+        const latestMaxZIndex = this._chartConfModel.getLatestMaxZIndex(getUnitId(this._univerInstanceService));
+        if (latestMaxZIndex >= DESKTOP_DIALOG_PLUS_MAX_Z_INDEX - DESKTOP_DIALOG_PLUS_BASE_Z_INDEX - 1) {
+            this._chartConfModel.reArrangeChartZIndex(getUnitId(this._univerInstanceService), getSubUnitId(this._univerInstanceService));
+            return this._chartConfModel.getLatestMaxZIndex(getUnitId(this._univerInstanceService));
+        }
+        return latestMaxZIndex;
     }
 
     open(option: IDialogPlusPartMethodOptions): IDisposable {
