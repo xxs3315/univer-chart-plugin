@@ -15,9 +15,9 @@
  */
 
 import { useObservable } from '@univerjs/ui';
-import React, { forwardRef, useEffect, useMemo, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import type { Workbook } from '@univerjs/core';
-import { isNullCell, IUniverInstanceService, UniverInstanceType } from '@univerjs/core';
+import { isNullCell, IUniverInstanceService, Tools, UniverInstanceType } from '@univerjs/core';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { SelectionManagerService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts.tsx';
@@ -25,6 +25,15 @@ import type { IChart } from '../../models/types.ts';
 import { ChartConfModel } from '../../models/chart-conf-model.ts';
 import { IChartPreviewService } from '../../services/chart-preview.service.ts';
 import './index.module.less';
+import { ChartType } from '../../types/enum/chart-types.ts';
+import {
+    BAR_COLUMN_CONFS_GRID, BAR_COLUMN_CONFS_SERIE,
+    BAR_DEFAULT_CONFS_GRID, BAR_DEFAULT_CONFS_SERIE,
+    LINE_AREA_CONFS_GRID,
+    LINE_AREA_CONFS_SERIE,
+    LINE_DEFAULT_CONFS_GRID,
+    LINE_DEFAULT_CONFS_SERIE,
+} from './confs.ts';
 
 interface IChartDialogProps {
     chart: IChart;
@@ -40,6 +49,42 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     const state = useObservable(chartPreviewService.state$, undefined, true);
     const { chartId, ranges, conf } = state;
     const [chartChange, chartChangeSet] = useState(chart);
+
+    const getChartGridConf = useCallback(() => {
+        const subType = chartId === chartChange.chartId ? conf.subType : chart.conf.subType;
+        if (subType === ChartType.LINE_DEFAULT) {
+            return LINE_DEFAULT_CONFS_GRID;
+        }
+        if (subType === ChartType.LINE_AREA) {
+            return LINE_AREA_CONFS_GRID;
+        }
+        if (subType === ChartType.BAR_DEFAULT) {
+            return BAR_DEFAULT_CONFS_GRID;
+        }
+        if (subType === ChartType.BAR_COLUMN) {
+            return BAR_COLUMN_CONFS_GRID;
+        }
+        return LINE_DEFAULT_CONFS_GRID;
+    }, [state]);
+    const [gridConf, gridConfSet] = useState(getChartGridConf());
+
+    const getChartSerieConf = useCallback(() => {
+        const subType = chartId === chartChange.chartId ? conf.subType : chart.conf.subType;
+        if (subType === ChartType.LINE_DEFAULT) {
+            return LINE_DEFAULT_CONFS_SERIE;
+        }
+        if (subType === ChartType.LINE_AREA) {
+            return LINE_AREA_CONFS_SERIE;
+        }
+        if (subType === ChartType.BAR_DEFAULT) {
+            return BAR_DEFAULT_CONFS_SERIE;
+        }
+        if (subType === ChartType.BAR_COLUMN) {
+            return BAR_COLUMN_CONFS_SERIE;
+        }
+        return LINE_DEFAULT_CONFS_SERIE;
+    }, [state]);
+    const [serieConf, serieConfSet] = useState(getChartSerieConf());
 
     const [xAxis, seriesName, vs, title] = useMemo(() => {
         let rangeResult = chartId === chartChange.chartId ? ranges : chartChange.ranges;
@@ -79,12 +124,10 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
             }
 
             const nextVs: any[] = nextData.map((_: any, index: number) => {
-                return {
+                return Tools.deepMerge({
                     name: nextSeriesName?.[index],
-                    type: 'line',
-                    // areaStyle: {},
                     data: nextData[index],
-                };
+                }, serieConf);
             });
 
             const title = chartId === chartChange.chartId ? conf.title : chartChange.conf.title;
@@ -92,7 +135,12 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
             return [nextXAxis, nextSeriesName, nextVs, title] as any[];
         }
         return [[], [], [], ''];
-    }, [chart, fetchChartConfRedraw, selectionManagerService, univerInstanceService, state]);
+    }, [chart, fetchChartConfRedraw, selectionManagerService, univerInstanceService, state, serieConf]);
+
+    useEffect(() => {
+        gridConfSet(getChartGridConf());
+        serieConfSet(getChartSerieConf());
+    }, [chart, fetchChartConfRedraw, state]);
 
     useEffect(() => {
         const dispose = chartConfModel.$chartConfChange.subscribe(() => {
@@ -107,48 +155,20 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         return () => dispose.unsubscribe();
     });
 
-    // useEffect(() => {
-    //     fetchChartConfRedrawSet(Math.random());
-    // }, [chartConfModel]);
-
     const option: any = useMemo(() => {
-        return {
+        const o = Tools.deepMerge({
             title: {
-                left: 'center',
                 text: title,
             },
-            tooltip: {
-                trigger: 'axis',
-            },
-            legend: {
-                top: '12%',
-                data: seriesName,
-            },
-            grid: {
-                left: '3%',
-                right: '3%',
-                bottom: '3%',
-                containLabel: true,
-            },
-            /*toolbox: {
-                feature: {
-                    saveAsImage: {},
-                },
-            },*/
             xAxis: {
-                type: 'category',
                 data: xAxis,
             },
-            yAxis: {
-                type: 'value',
-            },
             series: vs,
-        };
-    }, [seriesName, vs, xAxis, title]);
+        }, gridConf);
+        return o;
+    }, [seriesName, vs, xAxis, title, gridConf, serieConf]);
 
     return (
-        // <div className={styles.uiPluginChartDialog}>
         <ReactECharts option={option} settings={{ notMerge: true }} />
-        // </div>
     );
 });
