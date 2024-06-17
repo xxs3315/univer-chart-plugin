@@ -34,6 +34,7 @@ import type { IMoveChartCommand } from '../../../commands/commands/move-chart.co
 import { MoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
 import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
 import { CHART_PREVIEW_DIALOG_KEY } from '../../../common/const.ts';
+import { type ISetChartCommandParams, SetChartCommand } from '../../../commands/commands/set-chart.command.ts';
 import styles from './index.module.less';
 import 'react-grid-layout/css/styles.css';
 
@@ -82,6 +83,11 @@ export const ChartSideList = (props: IChartListProps) => {
         const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
         const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
         commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [chart.chartId] } as IDeleteChartCommandParams);
+    };
+
+    const handleShowHide = (chart: IChart) => {
+        const c = { ...chart, show: !(chart.show) };
+        commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart: c } as ISetChartCommandParams);
     };
 
     const handleDragStart = (_layout: unknown, from: { y: number }) => {
@@ -232,6 +238,7 @@ export const ChartSideList = (props: IChartListProps) => {
                                             <div
                                                 className={`${styles.viewItem} ${draggingId === index ? styles.active : ''}`}
                                                 onClick={(_e) => {
+                                                    handleShowHide(chart);
                                                 }}
                                             >
                                                 {!chart.show ? <EyelashSingle /> : <ViweModeSingle />}

@@ -43,7 +43,7 @@ export class ChartInitService extends Disposable {
         const activeSheetId = activeSheet.getSheetId();
         const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
         charts?.forEach((chart) => {
-            this._chartMenuController.openChartDialog(chart);
+            if (!chart.show) this._chartMenuController.openChartDialog(chart);
         });
     }
 }
