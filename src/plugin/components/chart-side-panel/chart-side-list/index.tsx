@@ -193,7 +193,6 @@ export const ChartSideList = (props: IChartListProps) => {
                                             }}
                                             onMouseLeave={() => currentChartRangesSet([])}
                                             onClick={() => {
-                                                // if (chart.disable) return;
                                                 // onClick(chart);
                                             }}
                                             className={`${styles.confItem} ${draggingId === index ? styles.active : ''}`}
@@ -212,7 +211,6 @@ export const ChartSideList = (props: IChartListProps) => {
                                                     {chart.ranges.map((range) => serializeRange(range)).join(',')}
                                                 </div>
                                             </div>
-                                            {/*{!chart.disable && (*/}
                                             <div
                                                 className={`${styles.deleteItem} ${draggingId === index ? styles.active : ''}`}
                                                 onClick={(e) => {
@@ -222,19 +220,14 @@ export const ChartSideList = (props: IChartListProps) => {
                                             >
                                                 <DeleteSingle />
                                             </div>
-                                            {/*)}*/}
-                                            {/*{!chart.disable && (*/}
                                             <div
                                                 className={`${styles.editItem} ${draggingId === index ? styles.active : ''}`}
                                                 onClick={(_e) => {
-                                                        // if (chart.disable) return;
                                                     onClick(chart);
                                                 }}
                                             >
                                                 <EditRegionSingle />
                                             </div>
-                                            {/*)}*/}
-                                            {/*{!chart.disable && (*/}
                                             <div
                                                 className={`${styles.viewItem} ${draggingId === index ? styles.active : ''}`}
                                                 onClick={(_e) => {
@@ -243,7 +236,6 @@ export const ChartSideList = (props: IChartListProps) => {
                                             >
                                                 {chart.show !== false ? <EyelashSingle /> : <ViweModeSingle />}
                                             </div>
-                                            {/*)}*/}
                                         </div>
                                     </div>
                                 );
