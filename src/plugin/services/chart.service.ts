@@ -201,7 +201,7 @@ export class ChartService extends Disposable {
                     // 打开current active sheet charts
                     const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
                     charts?.forEach((chart) => {
-                        if (!chart.show) this._chartMenuController.openChartDialog(chart);
+                        if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
                     });
                 })
         );
@@ -221,7 +221,7 @@ export class ChartService extends Disposable {
                 });
                 const charts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
                 charts?.forEach((chart) => {
-                    if (!chart.show) this._chartMenuController.openChartDialog(chart);
+                    if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
                 });
             })
         );
@@ -399,7 +399,7 @@ export class ChartService extends Disposable {
                     // 打开current active sheet charts
                     const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
                     charts?.forEach((chart) => {
-                        if (!chart.show) this._chartMenuController.openChartDialog(chart);
+                        if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
                     });
                 })
         );
@@ -416,7 +416,7 @@ export class ChartService extends Disposable {
                     // 打开current active sheet charts
                     const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
                     charts?.forEach((chart) => {
-                        if (!chart.show) this._chartMenuController.openChartDialog(chart);
+                        if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
                     });
                 })
         );

@@ -241,7 +241,7 @@ export const ChartSideList = (props: IChartListProps) => {
                                                     handleShowHide(chart);
                                                 }}
                                             >
-                                                {!chart.show ? <EyelashSingle /> : <ViweModeSingle />}
+                                                {chart.show !== false ? <EyelashSingle /> : <ViweModeSingle />}
                                             </div>
                                             {/*)}*/}
                                         </div>
