@@ -27,7 +27,7 @@ import {
 import type { IDisposable } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
 import type { IMenuItemFactory } from '@univerjs/ui';
-import { ComponentManager, ILayoutService, IMenuService, ISidebarService } from '@univerjs/ui';
+import { ComponentManager, IMenuService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface.ts';
 import { ChartSelectorPanel } from '../components/chart-selector-panel';
 import { ChartSidePanel } from '../components/chart-side-panel';
@@ -36,7 +36,6 @@ import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
 import { ChartDialog } from '../components/chart-dialog';
 import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service.ts';
 import { type ISetChartCommandParams, SetChartCommand } from '../commands/commands/set-chart.command.ts';
-import { ChartConfModel } from '../models/chart-conf-model.ts';
 import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
@@ -54,10 +53,8 @@ export class ChartMenuController extends Disposable {
         @Inject(IMenuService) private _menuService: IMenuService,
         @Inject(ISidebarService) private _sidebarService: ISidebarService,
         @Inject(IDialogPlusService) private readonly _dialogPlusService: IDialogPlusService,
-        @Inject(ILayoutService) private readonly _layoutService: ILayoutService,
         @Inject(LocaleService) private _localeService: LocaleService,
-        @Inject(ICommandService) private _commandService: ICommandService,
-        @Inject(ChartConfModel) private _chartConfModel: ChartConfModel
+        @Inject(ICommandService) private _commandService: ICommandService
     ) {
         super();
 

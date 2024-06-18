@@ -17,6 +17,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { SelectionManagerService, SetWorksheetActiveOperation } from '@univerjs/sheets';
+import { useHighlightRange } from '@univerjs/sheets-ui';
 import type { IRange, Workbook } from '@univerjs/core';
 import { ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
 import { Button } from '@univerjs/design';
@@ -35,6 +36,7 @@ import { MoveChartCommand } from '../../../commands/commands/move-chart.command.
 import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
 import { CHART_PREVIEW_DIALOG_KEY } from '../../../common/const.ts';
 import { type ISetChartCommandParams, SetChartCommand } from '../../../commands/commands/set-chart.command.ts';
+import { IChartService } from '../../../services/chart.service.ts';
 import styles from './index.module.less';
 import 'react-grid-layout/css/styles.css';
 
@@ -53,6 +55,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const injector = useDependency(Injector);
     const chartMenuController = useDependency(ChartMenuController);
     const selectionManagerService = useDependency(SelectionManagerService);
+    const chartService = useDependency(IChartService);
 
     const workbook = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
     const unitId = workbook.getUnitId();
@@ -73,6 +76,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const [layoutWidth, layoutWidthSet] = useState(defaultWidth);
     const [draggingId, draggingIdSet] = useState<number>(-1);
     const [currentChartRanges, currentChartRangesSet] = useState<IRange[]>([]);
+    const [currentChartId, currentChartIdSet] = useState<string>();
     const [fetchChartConfListId, fetchChartConfListIdSet] = useState(0);
 
     const layout = chartConfList.map((chart, index) => ({ i: chart.chartId, x: 0, w: 12, y: index, h: 1, isResizable: false }));
@@ -128,6 +132,13 @@ export const ChartSideList = (props: IChartListProps) => {
         });
         return () => dispose.unsubscribe();
     }, [chartConfModel]);
+
+    useHighlightRange(currentChartRanges);
+
+    // useHighlightChart(currentChartId);
+    useEffect(() => {
+        chartService.changeChartHighlightId(currentChartId);
+    }, [currentChartId]);
 
     useEffect(() => {
         // Because univer-sidebar contains animations, accurate width values can not be obtained in real time。
@@ -190,10 +201,14 @@ export const ChartSideList = (props: IChartListProps) => {
                                         <div
                                             onMouseMove={() => {
                                                 chart.ranges !== currentChartRanges && currentChartRangesSet(chart.ranges);
+                                                chart.chartId !== currentChartId && currentChartIdSet(chart.chartId);
                                             }}
-                                            onMouseLeave={() => currentChartRangesSet([])}
+                                            onMouseLeave={() => {
+                                                currentChartRangesSet([]);
+                                                currentChartIdSet('');
+                                            }}
                                             onClick={() => {
-                                                // onClick(chart);
+                                                chart.chartId !== currentChartId && currentChartIdSet(chart.chartId);
                                             }}
                                             className={`${styles.confItem} ${draggingId === index ? styles.active : ''}`}
                                         >

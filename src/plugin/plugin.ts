@@ -40,7 +40,7 @@ import { AddChartCommand } from './commands/commands/add-chart.command.ts';
 import { ChartClearController } from './controllers/chart.clear.controller.ts';
 import { DeleteChartCommand } from './commands/commands/delete-chart.command.ts';
 import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
-import { ChartService } from './services/chart.service.ts';
+import { ChartService, IChartService } from './services/chart.service.ts';
 import { ChartInitService } from './services/chart-init.service.ts';
 import { DesktopDialogPlusService } from './services/dialog-plus/desktop-dialog-plus.service.ts';
 import { IDialogPlusService } from './services/dialog-plus/dialog-plus.service.ts';
@@ -97,7 +97,7 @@ export class ChartPlugin extends Plugin {
             [ChartConfModel],
             // [ChartViewModel],
             // service
-            [ChartService],
+            [IChartService, { useClass: ChartService }],
             [ChartInitService],
             [IChartPreviewService, { useClass: ChartPreviewService }],
             [IDialogPlusService, { useClass: DesktopDialogPlusService }],

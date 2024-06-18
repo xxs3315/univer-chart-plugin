@@ -25,11 +25,15 @@ import { ResizableBox } from 'react-resizable';
 import { ConfigContext } from '@univerjs/design';
 import './resize.css';
 import { useDependency } from '@wendellhu/redi/react-bindings';
+import { useObservable } from '@univerjs/ui';
 import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service.ts';
 import { DESKTOP_DIALOG_PLUS_BASE_Z_INDEX } from '../../services/dialog-plus/desktop-dialog-plus.service.ts';
+import { IChartService } from '../../services/chart.service.ts';
 import styles from './index.module.less';
 
 export interface IDialogPlusProps {
+    id: string;
+
     children: React.ReactNode;
 
     /**
@@ -118,6 +122,7 @@ export interface IDialogPlusProps {
 export function DialogPlus(props: IDialogPlusProps) {
     const dialogPlusService = useDependency(IDialogPlusService);
     const {
+        id,
         className,
         children,
         style,
@@ -146,6 +151,9 @@ export function DialogPlus(props: IDialogPlusProps) {
     const { clientWidth, clientHeight } = window.document.documentElement;
     const { mountContainer } = useContext(ConfigContext);
     const [currentZIndex, currentZIndexSet] = useState(dialogPlusService.getZIndex(zIndex));
+    const chartService = useDependency(IChartService);
+    const chartHighlightState = useObservable(chartService.highlightState$, undefined, true);
+    const { chartId: chartHighlightId } = chartHighlightState;
 
     useEffect(() => {
         currentZIndexSet(dialogPlusService.getZIndex(zIndex));
@@ -231,7 +239,7 @@ export function DialogPlus(props: IDialogPlusProps) {
                     onStop={handleStop as DraggableEventHandler}
                     onMouseDown={handleMouseDown}
                 >
-                    <div ref={draggleRef}>{modal}</div>
+                    <div ref={draggleRef} className={`${chartHighlightId === id ? 'univer-dialog-plus-highlight' : ''}`}>{modal}</div>
                 </Draggable>
             )
             : modal;

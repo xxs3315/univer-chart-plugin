@@ -122,7 +122,7 @@ function createInitChartPreviewState(): IChartPreviewState {
     };
 }
 
-export const IChartPreviewService = createIdentifier<IChartPreviewService>('sheet.chart.view.service');
+export const IChartPreviewService = createIdentifier<IChartPreviewService>('sheet.chart.preview.service');
 
 export class ChartPreviewService extends Disposable implements IChartPreviewService {
     private readonly _state = new ChartPreviewState();

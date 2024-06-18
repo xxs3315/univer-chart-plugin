@@ -16,14 +16,22 @@
 
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IRange, IUnitRange, Workbook } from '@univerjs/core';
-import { createInternalEditorID, ICommandService, InterceptorManager, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
+import {
+    createInternalEditorID,
+    ICommandService,
+    InterceptorManager,
+    IUniverInstanceService,
+    LocaleService,
+    UniverInstanceType,
+} from '@univerjs/core';
 import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import type {
-    IRemoveSheetMutationParams } from '@univerjs/sheets';
-import { RemoveSheetMutation,
+import type { IRemoveSheetMutationParams } from '@univerjs/sheets';
+import {
+    RemoveSheetMutation,
     SelectionManagerService,
     setEndForRange,
-    SetWorksheetActiveOperation } from '@univerjs/sheets';
+    SetWorksheetActiveOperation,
+} from '@univerjs/sheets';
 import { serializeRange } from '@univerjs/engine-formula';
 import { RangeSelector } from '@univerjs/ui';
 import { Button } from '@univerjs/design';
@@ -38,6 +46,7 @@ import type { IAddChartCommandParams } from '../../../commands/commands/add-char
 import { AddChartCommand } from '../../../commands/commands/add-chart.command.ts';
 import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
 import { DeleteChartCommand, type IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
+import { IChartService } from '../../../services/chart.service.ts';
 import styles from './index.module.less';
 import type { IConfEditorProps } from './types.ts';
 import { beforeSubmit, submit } from './types.ts';
@@ -57,6 +66,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const univerInstanceService = useDependency(IUniverInstanceService);
     const selectionManagerService = useDependency(SelectionManagerService);
     const chartPreviewService = useDependency(IChartPreviewService);
+    const chartService = useDependency(IChartService);
     const chartConfModel = useDependency(ChartConfModel);
     const unitId = getUnitId(univerInstanceService);
     const subUnitId = getSubUnitId(univerInstanceService);
@@ -114,8 +124,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     };
 
     const interceptorManager = useMemo(() => {
-        const _interceptorManager = new InterceptorManager({ beforeSubmit, submit });
-        return _interceptorManager;
+        return new InterceptorManager({ beforeSubmit, submit });
     }, []);
 
     const handleSubmit = () => {
@@ -128,6 +137,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         };
         // 提交时，将当前preview state中的chartId 置空, 不再响应state
         chartPreviewService.changeChartId('');
+        // 提交时，将当前highlight state中的chartId 置空, 不再响应state
+        chartService.changeChartHighlightId('');
         if (beforeSubmitResult) {
             const result = interceptorManager.fetchThroughInterceptors(interceptorManager.getInterceptPoints().submit)(null, null);
             const ranges = getRanges();
@@ -166,6 +177,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         }
         // 取消时，将当前preview state中的chartId 置空, 不再响应state
         chartPreviewService.changeChartId('');
+        // 取消时，将当前highlight state中的chartId 置空, 不再响应state
+        chartService.changeChartHighlightId('');
         onCancel();
     };
 
