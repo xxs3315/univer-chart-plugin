@@ -1,7 +1,7 @@
 {
   "name": "univer-chart-plugin",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.15",
   "type": "module",
   "scripts": {
     "dev": "vite",
