@@ -609,7 +609,7 @@ export const DEFAULT_WORKBOOK_DATA: IWorkbookData = {
     resources: [
         {
             name: 'SHEET_CHART_PLUGIN',
-            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","zIndex":2,"left":650,"top":540,"width":800,"height":600,"show":false,"conf":{"type":"line","subType":"line-default","title":"测试chart"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}, {"chartId":"OzZgjsqM1","zIndex":4,"left":350,"top":240,"width":800,"height":600,"conf":{"type":"line","subType":"line-default","title":"测试chart1"},"ranges":[{"startRow":2,"endRow":7,"startColumn":1,"endColumn":6}]}]}',
+            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","zIndex":2,"left":950,"top":440,"width":550,"height":300,"conf":{"type":"bar","subType":"bar-default","title":"测试chart"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}, {"chartId":"OzZgjsqM1","zIndex":4,"left":450,"top":440,"width":550,"height":300,"conf":{"type":"line","subType":"line-default","title":"测试chart1"},"ranges":[{"startRow":2,"endRow":7,"startColumn":1,"endColumn":6}]}]}',
         },
     ],
 };

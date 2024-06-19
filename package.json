@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "pre-commit": "lint-staged",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix"
+    "lint": "eslint ./src ./packages",
+    "lint:fix": "eslint ./src ./packages --fix"
   },
   "dependencies": {
     "echarts": "^5.5.0"
