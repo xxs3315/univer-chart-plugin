@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 /pnpm-lock.yaml
 /.npmrc
+demo/dist
+plugin/lib
+/.turbo/

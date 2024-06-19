@@ -18,13 +18,13 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    
+
     /** univer plugin */
     "experimentalDecorators": true,
 
     "jsx": "react"
   },
-  "include": ["src", "packages"],
+  "include": ["src"],
   "references": [
     {
       "path": "./tsconfig.node.json"

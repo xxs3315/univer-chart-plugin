@@ -1,5 +1,5 @@
 {
-  "name": "univer-chart-plugin",
+  "name": "univer-chart-plugin-demo",
   "private": true,
   "version": "0.1.15",
   "type": "module",
@@ -7,12 +7,37 @@
   "author": "xxs3315 <dxxs3315@foxmail.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "turbo test -- --passWithNoTests",
-    "build": "turbo build --concurrency=50%",
-    "pre-commit": "lint-staged",
-    "lint": "eslint demo/src plugin/src",
-    "lint:fix": "eslint demo/src plugin/src --fix",
-    "release": "release-it"
+    "dev": "vite",
+    "build": "tsc && vite build"
+  },
+  "dependencies": {
+    "echarts": "^5.5.0"
+  },
+  "peerDependencies": {
+    "@univerjs/core": "^0.1.15",
+    "@univerjs/design": "^0.1.15",
+    "@univerjs/docs": "^0.1.15",
+    "@univerjs/docs-ui": "^0.1.15",
+    "@univerjs/engine-formula": "^0.1.15",
+    "@univerjs/engine-numfmt": "^0.1.15",
+    "@univerjs/engine-render": "^0.1.15",
+    "@univerjs/facade": "^0.1.15",
+    "@univerjs/icons": "^0.1.57",
+    "@univerjs/sheets": "^0.1.15",
+    "@univerjs/sheets-formula": "^0.1.15",
+    "@univerjs/sheets-ui": "^0.1.15",
+    "@univerjs/ui": "^0.1.15",
+    "@univerjs/vite-plugin": "^0.4.0",
+    "@wendellhu/redi": "^0.15.4",
+    "clsx": ">=2.0.0",
+    "echarts": "^5.5.0",
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-grid-layout": "^1.4.4",
+    "react-resizable": "^3.0.5",
+    "rc-dialog": "^9.5.2",
+    "react-draggable": "^4.4.6",
+    "rxjs": ">=7.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",
@@ -38,10 +63,8 @@
     "lint-staged": "^15.2.6",
     "release-it": "^17.3.0",
     "turbo": "^2.0.4",
+    "vite-plugin-dts": "^3.9.1",
     "typescript": "^5.4.5",
     "vite": "^5.2.13"
-  },
-  "lint-staged": {
-    "*": "eslint --fix"
   }
 }
