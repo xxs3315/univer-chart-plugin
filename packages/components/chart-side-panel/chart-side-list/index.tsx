@@ -90,7 +90,7 @@ export const ChartSideList = (props: IChartListProps) => {
     };
 
     const handleShowHide = (chart: IChart) => {
-        const c = { ...chart, show: !(chart.show) };
+        const c = { ...chart, show: chart.show === undefined ? false : !(chart.show) };
         commandService.executeCommand(SetChartCommand.id, { unitId, subUnitId, chart: c } as ISetChartCommandParams);
     };
 
