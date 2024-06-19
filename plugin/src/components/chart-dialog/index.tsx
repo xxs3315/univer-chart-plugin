@@ -24,7 +24,6 @@ import { ReactECharts } from '../common/react-echarts.tsx';
 import type { IChart } from '../../models/types.ts';
 import { ChartConfModel } from '../../models/chart-conf-model.ts';
 import { IChartPreviewService } from '../../services/chart-preview.service.ts';
-import './index.module.less';
 import { ChartType } from '../../types/enum/chart-types.ts';
 import {
     BAR_COLUMN_CONFS_GRID, BAR_COLUMN_CONFS_SERIE,

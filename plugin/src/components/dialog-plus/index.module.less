@@ -23,6 +23,10 @@
         &-content {
             padding: 16px 0px 16px;
             box-sizing: border-box;
+
+            span {
+                display: none;
+            }
         }
     }
 
@@ -41,6 +45,7 @@
     }
 
     &-close {
+        display: none;
         cursor: pointer;
 
         position: absolute;
@@ -72,7 +77,8 @@
     }
 
     &-body {
-        padding: 0 28px 20px;
+        padding: 0;
+
         .react-resizable {
             .react-resizable-handle-se {
                 z-index: 9999 !important;
