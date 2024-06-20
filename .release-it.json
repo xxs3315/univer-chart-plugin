@@ -3,7 +3,7 @@
         "commitMessage": "chore(release): release v${version}",
         "tagName": "v${version}"
     },
-    "npm": false,
+    "npm": true,
     "github": {
         "release": false
     },
@@ -18,7 +18,7 @@
             "publish": false,
             "skipChecks": true,
             "workspaces": [
-                "packages/*"
+                "plugin"
             ]
         }
     }
