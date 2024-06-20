@@ -12,7 +12,10 @@
     "pre-commit": "lint-staged",
     "lint": "eslint demo/src plugin/src",
     "lint:fix": "eslint demo/src plugin/src --fix",
-    "release": "release-it"
+    "release": "release-it",
+    "release:alpha": "release-it preminor --preRelease=alpha",
+    "release:beta": "release-it preminor --preRelease=beta",
+    "release:rc": "release-it prerelease --preRelease=rc"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",
