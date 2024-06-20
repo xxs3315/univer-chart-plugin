@@ -4,7 +4,8 @@
         "tagName": "v${version}"
     },
     "npm": {
-      "versionArgs": ["--allow-same-version", "--workspaces-update=false"]
+        "publish": true,
+        "versionArgs": ["--allow-same-version"]
     },
     "github": {
         "release": false
