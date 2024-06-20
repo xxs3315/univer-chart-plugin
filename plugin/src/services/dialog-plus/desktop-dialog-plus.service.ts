@@ -20,10 +20,10 @@ import { Subject } from 'rxjs';
 
 import { connectInjector } from '@wendellhu/redi/react-bindings';
 import { BuiltInUIPart, IUIPartsService } from '@univerjs/ui';
-import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-plus/interface.ts';
+import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-plus/interface';
 import { DialogPartPlus } from '../../components/dialog-part-plus';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
-import type { IDialogPlusService } from './dialog-plus.service.ts';
+import { ChartConfModel } from '../../models/chart-conf-model';
+import type { IDialogPlusService } from './dialog-plus.service';
 
 export const DESKTOP_DIALOG_PLUS_BASE_Z_INDEX = 200;
 export const DESKTOP_DIALOG_PLUS_MAX_Z_INDEX = 600;

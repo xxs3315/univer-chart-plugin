@@ -16,8 +16,8 @@
 
 import type { IAccessor } from '@wendellhu/redi';
 import { SelectionManagerService } from '@univerjs/sheets';
-import { createDefaultChartConf } from '../common/const.ts';
-import type { IChart } from '../models/types.ts';
+import { createDefaultChartConf } from '../common/const';
+import type { IChart } from '../models/types';
 
 export function createDefaultNewChart(accessor: IAccessor) {
     const selectionManagerService = accessor.get(SelectionManagerService);

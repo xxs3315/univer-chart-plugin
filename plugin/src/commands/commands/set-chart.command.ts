@@ -17,10 +17,10 @@
 import type { ICommand } from '@univerjs/core';
 import { CommandType, ICommandService, IUndoRedoService, IUniverInstanceService } from '@univerjs/core';
 import { getSheetCommandTarget } from '@univerjs/sheets';
-import type { IChart } from '../../models/types.ts';
-import type { ISetChartMutationParams } from '../mutations/set-chart.mutation.ts';
-import { SetChartMutation, setChartMutationUndoFactory } from '../mutations/set-chart.mutation.ts';
-import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const.ts';
+import type { IChart } from '../../models/types';
+import type { ISetChartMutationParams } from '../mutations/set-chart.mutation';
+import { SetChartMutation, setChartMutationUndoFactory } from '../mutations/set-chart.mutation';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const';
 
 export interface ISetChartCommandParams {
     unitId?: string;

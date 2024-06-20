@@ -26,7 +26,7 @@ import GridLayout from 'react-grid-layout';
 import { serializeRange } from '@univerjs/engine-formula';
 import { debounceTime, Observable } from 'rxjs';
 import { Injector } from '@wendellhu/redi';
-import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
+import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command';
 import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command.ts';
 import type { IChart } from '../../../models/types.ts';
 import { ChartConfModel } from '../../../models/chart-conf-model.ts';

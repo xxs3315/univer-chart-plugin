@@ -17,17 +17,17 @@
 import type { ICommand } from '@univerjs/core';
 import { CommandType, ICommandService, IUndoRedoService, IUniverInstanceService } from '@univerjs/core';
 import { getSheetCommandTarget } from '@univerjs/sheets';
-import type { IChart } from '../../models/types.ts';
-import type { MakePropertyOptional } from '../../utils/types.ts';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
+import type { IChart } from '../../models/types';
+import type { MakePropertyOptional } from '../../utils/types';
+import { ChartConfModel } from '../../models/chart-conf-model';
 import type {
     IAddChartMutationParams,
-} from '../mutations/add-chart.mutation.ts';
+} from '../mutations/add-chart.mutation';
 import {
     AddChartMutation,
     AddChartMutationUndoFactory,
-} from '../mutations/add-chart.mutation.ts';
-import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const.ts';
+} from '../mutations/add-chart.mutation';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const';
 
 export interface IAddChartCommandParams {
     unitId?: string;

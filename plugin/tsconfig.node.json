@@ -1,11 +1,4 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": [
-    "./vite.config.ts"
-  ]
+  "extends": "@univerjs/shared/tsconfigs/node",
+  "include": ["vite.config.ts"]
 }

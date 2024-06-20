@@ -18,9 +18,9 @@ import type { ICommand } from '@univerjs/core';
 import { CommandType, LocaleService } from '@univerjs/core';
 import type { IAccessor } from '@wendellhu/redi';
 import { SelectionManagerService } from '@univerjs/sheets';
-import { ChartMenuController } from '../../controllers/chart.menu.controller.ts';
-import { CHART_PREVIEW_DIALOG_KEY, createDefaultChartConf } from '../../common/const.ts';
-import type { IChart } from '../../models/types.ts';
+import { ChartMenuController } from '../../controllers/chart.menu.controller';
+import { CHART_PREVIEW_DIALOG_KEY, createDefaultChartConf } from '../../common/const';
+import type { IChart } from '../../models/types';
 
 interface IOpenChartPanelParams {
     value: { type: string; subType: string };

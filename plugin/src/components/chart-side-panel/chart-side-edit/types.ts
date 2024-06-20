@@ -16,7 +16,7 @@
 
 import type { InterceptorManager } from '@univerjs/core';
 import { createInterceptorKey } from '@univerjs/core';
-import type { IChartConfig } from '../../../models/types.ts';
+import type { IChartConfig } from '../../../models/types';
 
 export const beforeSubmit = createInterceptorKey<boolean, null>('beforeSubmit');
 export const submit = createInterceptorKey<any, null>('submit');

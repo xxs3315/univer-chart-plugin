@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { UniverChartPlugin } from './plugin.ts';
+export { UniverChartPlugin } from './plugin';
 export { enUS, zhCN, ruRU } from './locale';

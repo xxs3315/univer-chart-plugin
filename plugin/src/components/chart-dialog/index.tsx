@@ -20,11 +20,11 @@ import type { Workbook } from '@univerjs/core';
 import { isNullCell, IUniverInstanceService, Tools, UniverInstanceType } from '@univerjs/core';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { SelectionManagerService } from '@univerjs/sheets';
-import { ReactECharts } from '../common/react-echarts.tsx';
-import type { IChart } from '../../models/types.ts';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
-import { IChartPreviewService } from '../../services/chart-preview.service.ts';
-import { ChartType } from '../../types/enum/chart-types.ts';
+import { ReactECharts } from '../common/react-echarts';
+import type { IChart } from '../../models/types';
+import { ChartConfModel } from '../../models/chart-conf-model';
+import { IChartPreviewService } from '../../services/chart-preview.service';
+import { ChartType } from '../../types/enum/chart-types';
 import {
     BAR_COLUMN_CONFS_GRID, BAR_COLUMN_CONFS_SERIE,
     BAR_DEFAULT_CONFS_GRID, BAR_DEFAULT_CONFS_SERIE,
@@ -32,7 +32,7 @@ import {
     LINE_AREA_CONFS_SERIE,
     LINE_DEFAULT_CONFS_GRID,
     LINE_DEFAULT_CONFS_SERIE,
-} from './confs.ts';
+} from './confs';
 
 interface IChartDialogProps {
     chart: IChart;

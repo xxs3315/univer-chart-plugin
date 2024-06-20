@@ -16,8 +16,8 @@
 
 import React, { useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
-import type { IChart } from '../../models/types.ts';
-import { IChartPreviewService } from '../../services/chart-preview.service.ts';
+import type { IChart } from '../../models/types';
+import { IChartPreviewService } from '../../services/chart-preview.service';
 import styles from './index.module.less';
 import { ChartSideEdit } from './chart-side-edit';
 import { ChartSideList } from './chart-side-list';

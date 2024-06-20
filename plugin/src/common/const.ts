@@ -16,9 +16,9 @@
 
 import type { IAccessor } from '@wendellhu/redi';
 import { LocaleService } from '@univerjs/core';
-import type { IChart, ILineDefaultChart } from '../models/types.ts';
-import { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import { ChartType } from '../types/enum/chart-types.ts';
+import type { IChart, ILineDefaultChart } from '../models/types';
+import { ChartGroupType } from '../types/enum/chart-group-types';
+import { ChartType } from '../types/enum/chart-types';
 
 export const SHEET_CHART_PLUGIN = 'SHEET_CHART_PLUGIN';
 

@@ -17,10 +17,10 @@
 import { Subject } from 'rxjs';
 import { Inject, Injector } from '@wendellhu/redi';
 import { ICommandService, Rectangle } from '@univerjs/core';
-import { createChartId } from '../utils/create-chart-id.ts';
-import type { IAnchor } from '../utils/anchor.ts';
-import { findIndexByAnchor, moveByAnchor } from '../utils/anchor.ts';
-import type { IChart, IChartConfig, IChartModel } from './types.ts';
+import { createChartId } from '../utils/create-chart-id';
+import type { IAnchor } from '../utils/anchor';
+import { findIndexByAnchor, moveByAnchor } from '../utils/anchor';
+import type { IChart, IChartConfig, IChartModel } from './types';
 
 type ChartConfOperatorType = 'delete' | 'set' | 'add' | 'sort' | 'redraw';
 

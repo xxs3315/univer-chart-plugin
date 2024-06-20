@@ -18,7 +18,7 @@ import { Input, Select } from '@univerjs/design';
 import React, { useEffect, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { LocaleService } from '@univerjs/core';
-import type { IChartConfig } from '../../../models/types.ts';
+import type { IChartConfig } from '../../../models/types';
 import styleBase from '../index.module.less';
 import { ChartType } from '../../../types/enum/chart-types.ts';
 import type { ChartGroupType } from '../../../types/enum/chart-group-types.ts';

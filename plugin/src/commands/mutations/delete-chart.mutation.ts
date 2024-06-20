@@ -17,12 +17,12 @@
 import type { IAccessor } from '@wendellhu/redi';
 import type { IMutation, IMutationInfo } from '@univerjs/core';
 import { CommandType, Tools } from '@univerjs/core';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
-import { transformSupportSymmetryAnchor } from '../../utils/anchor.ts';
-import type { IAddChartMutationParams } from './add-chart.mutation.ts';
-import { AddChartMutation } from './add-chart.mutation.ts';
-import type { IMoveChartMutationParams } from './move-chart.mutation.ts';
-import { MoveChartMutation } from './move-chart.mutation.ts';
+import { ChartConfModel } from '../../models/chart-conf-model';
+import { transformSupportSymmetryAnchor } from '../../utils/anchor';
+import type { IAddChartMutationParams } from './add-chart.mutation';
+import { AddChartMutation } from './add-chart.mutation';
+import type { IMoveChartMutationParams } from './move-chart.mutation';
+import { MoveChartMutation } from './move-chart.mutation';
 
 export interface IDeleteChartMutationParams {
     unitId: string;

@@ -15,8 +15,8 @@
  */
 
 import type { IRange } from '@univerjs/core';
-import type { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import type { ChartType } from '../types/enum/chart-types.ts';
+import type { ChartGroupType } from '../types/enum/chart-group-types';
+import type { ChartType } from '../types/enum/chart-types';
 
 export interface IBaseChart {
     type: string;

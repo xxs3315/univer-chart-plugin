@@ -21,10 +21,10 @@ import { createIdentifier, Inject, Injector } from '@wendellhu/redi';
 
 import type { IRange } from '@univerjs/core';
 import { Disposable, IContextService } from '@univerjs/core';
-import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
-import type { IChartConfig } from '../models/types.ts';
-import { ChartGroupType } from '../types/enum/chart-group-types.ts';
-import { ChartType } from '../types/enum/chart-types.ts';
+import { CHART_PREVIEW_DIALOG_KEY } from '../common/const';
+import type { IChartConfig } from '../models/types';
+import { ChartGroupType } from '../types/enum/chart-group-types';
+import { ChartType } from '../types/enum/chart-types';
 
 export interface IChartPreviewState {
     chartId: string;

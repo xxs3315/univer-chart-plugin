@@ -17,10 +17,10 @@
 import type { IAccessor } from '@wendellhu/redi';
 import type { IMutation } from '@univerjs/core';
 import { CommandType } from '@univerjs/core';
-import type { IChart } from '../../models/types.ts';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
-import type { IDeleteChartMutationParams } from './delete-chart.mutation.ts';
-import { DeleteChartMutation } from './delete-chart.mutation.ts';
+import type { IChart } from '../../models/types';
+import { ChartConfModel } from '../../models/chart-conf-model';
+import type { IDeleteChartMutationParams } from './delete-chart.mutation';
+import { DeleteChartMutation } from './delete-chart.mutation';
 
 export interface IAddChartMutationParams {
     unitId: string;

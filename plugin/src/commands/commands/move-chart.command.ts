@@ -17,15 +17,15 @@
 import type { ICommand } from '@univerjs/core';
 import { CommandType, ICommandService, IUndoRedoService, IUniverInstanceService } from '@univerjs/core';
 import { getSheetCommandTarget } from '@univerjs/sheets';
-import type { IAnchor } from '../../utils/anchor.ts';
-import { transformSupportSymmetryAnchor } from '../../utils/anchor.ts';
+import type { IAnchor } from '../../utils/anchor';
+import { transformSupportSymmetryAnchor } from '../../utils/anchor';
 import type {
-    IMoveChartMutationParams } from '../mutations/move-chart.mutation.ts';
+    IMoveChartMutationParams } from '../mutations/move-chart.mutation';
 import {
     MoveChartMutation,
     MoveChartMutationUndoFactory,
-} from '../mutations/move-chart.mutation.ts';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
+} from '../mutations/move-chart.mutation';
+import { ChartConfModel } from '../../models/chart-conf-model';
 
 export interface IMoveChartCommand {
     unitId?: string;

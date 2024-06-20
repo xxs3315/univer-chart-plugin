@@ -19,12 +19,12 @@ import { CommandType, ICommandService, IUndoRedoService, IUniverInstanceService 
 import { getSheetCommandTarget } from '@univerjs/sheets';
 import type {
     IDeleteChartMutationParams,
-} from '../mutations/delete-chart.mutation.ts';
+} from '../mutations/delete-chart.mutation';
 import {
     DeleteChartMutation,
     DeleteChartMutationUndoFactory,
-} from '../mutations/delete-chart.mutation.ts';
-import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const.ts';
+} from '../mutations/delete-chart.mutation';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../common/const';
 
 export interface IDeleteChartCommandParams {
     unitId?: string;

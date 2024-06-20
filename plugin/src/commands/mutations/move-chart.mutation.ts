@@ -16,9 +16,9 @@
 
 import type { IMutation } from '@univerjs/core';
 import { CommandType } from '@univerjs/core';
-import { ChartConfModel } from '../../models/chart-conf-model.ts';
-import type { IAnchor } from '../../utils/anchor.ts';
-import { anchorUndoFactory } from '../../utils/anchor.ts';
+import { ChartConfModel } from '../../models/chart-conf-model';
+import type { IAnchor } from '../../utils/anchor';
+import { anchorUndoFactory } from '../../utils/anchor';
 
 export interface IMoveChartMutationParams {
     unitId: string;

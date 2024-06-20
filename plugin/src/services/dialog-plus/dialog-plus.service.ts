@@ -17,7 +17,7 @@
 import type { IDisposable } from '@wendellhu/redi';
 import { createIdentifier } from '@wendellhu/redi';
 import type { Observable } from 'rxjs';
-import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-plus/interface.ts';
+import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-plus/interface';
 
 export const IDialogPlusService = createIdentifier<IDialogPlusService>('sheet.chart.dialog-plus-service');
 export interface IDialogPlusService {

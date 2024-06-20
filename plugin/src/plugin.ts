@@ -18,33 +18,33 @@ import { ICommandService, Plugin, UniverInstanceType } from '@univerjs/core';
 import { ComponentManager, IMenuService } from '@univerjs/ui';
 import type { Dependency } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
-import { SHEET_CHART_PLUGIN } from './common/const.ts';
-import ComboChart from './components/icons/combo_chart.tsx';
-import { ChartMenuController } from './controllers/chart.menu.controller.ts';
-import { ChartI18nController } from './controllers/chart.i18n.controller.ts';
-import AreaChart from './components/icons/area_chart.tsx';
-import BarChart from './components/icons/bar_chart.tsx';
-import DoughnutChart from './components/icons/doughnut_chart.tsx';
-import LineChart from './components/icons/line_chart.tsx';
-import PieChart from './components/icons/pie_chart.tsx';
-import StackedColumnChart from './components/icons/stacked_column_chart.tsx';
-import { OpenChartEditPanelOperator, OpenChartManagePanelOperator } from './commands/operations/open-chart-panel.operation.ts';
-// import { ChartPreviewOperator } from './commands/operations/chart-preview.operation.ts';
-import { ChartConfModel } from './models/chart-conf-model.ts';
-import { MoveChartMutation } from './commands/mutations/move-chart.mutation.ts';
-import { SetChartMutation } from './commands/mutations/set-chart.mutation.ts';
-import { DeleteChartMutation } from './commands/mutations/delete-chart.mutation.ts';
-import { AddChartMutation } from './commands/mutations/add-chart.mutation.ts';
-import { SetChartCommand } from './commands/commands/set-chart.command.ts';
-import { AddChartCommand } from './commands/commands/add-chart.command.ts';
-import { ChartClearController } from './controllers/chart.clear.controller.ts';
-import { DeleteChartCommand } from './commands/commands/delete-chart.command.ts';
-import { MoveChartCommand } from './commands/commands/move-chart.command.ts';
-import { ChartService, IChartService } from './services/chart.service.ts';
-import { ChartInitService } from './services/chart-init.service.ts';
-import { DesktopDialogPlusService } from './services/dialog-plus/desktop-dialog-plus.service.ts';
-import { IDialogPlusService } from './services/dialog-plus/dialog-plus.service.ts';
-import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
+import { SHEET_CHART_PLUGIN } from './common/const';
+import ComboChart from './components/icons/combo_chart';
+import { ChartMenuController } from './controllers/chart.menu.controller';
+import { ChartI18nController } from './controllers/chart.i18n.controller';
+import AreaChart from './components/icons/area_chart';
+import BarChart from './components/icons/bar_chart';
+import DoughnutChart from './components/icons/doughnut_chart';
+import LineChart from './components/icons/line_chart';
+import PieChart from './components/icons/pie_chart';
+import StackedColumnChart from './components/icons/stacked_column_chart';
+import { OpenChartEditPanelOperator, OpenChartManagePanelOperator } from './commands/operations/open-chart-panel.operation';
+// import { ChartPreviewOperator } from './commands/operations/chart-preview.operation';
+import { ChartConfModel } from './models/chart-conf-model';
+import { MoveChartMutation } from './commands/mutations/move-chart.mutation';
+import { SetChartMutation } from './commands/mutations/set-chart.mutation';
+import { DeleteChartMutation } from './commands/mutations/delete-chart.mutation';
+import { AddChartMutation } from './commands/mutations/add-chart.mutation';
+import { SetChartCommand } from './commands/commands/set-chart.command';
+import { AddChartCommand } from './commands/commands/add-chart.command';
+import { ChartClearController } from './controllers/chart.clear.controller';
+import { DeleteChartCommand } from './commands/commands/delete-chart.command';
+import { MoveChartCommand } from './commands/commands/move-chart.command';
+import { ChartService, IChartService } from './services/chart.service';
+import { ChartInitService } from './services/chart-init.service';
+import { DesktopDialogPlusService } from './services/dialog-plus/desktop-dialog-plus.service';
+import { IDialogPlusService } from './services/dialog-plus/dialog-plus.service';
+import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service';
 
 export class UniverChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
@@ -80,7 +80,7 @@ export class UniverChartPlugin extends Plugin {
      * The plugin should add its own module to the dependency injection system at this lifecycle.
      * It is not recommended to initialize the internal module of the plugin outside this lifecycle.
      */
-    onStarting(injector: Injector) {
+    override onStarting(injector: Injector) {
         super.onStarting(injector);
 
         // register icon component

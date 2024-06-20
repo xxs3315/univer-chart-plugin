@@ -45,18 +45,18 @@ import {
 } from '@univerjs/sheets';
 import { ISidebarService } from '@univerjs/ui';
 import { filter } from 'rxjs';
-import { ChartConfModel } from '../models/chart-conf-model.ts';
-import { ChartMenuController } from '../controllers/chart.menu.controller.ts';
-import type { IChart, IChartModelJson } from '../models/types.ts';
-import { CHART_PREVIEW_DIALOG_KEY, SHEET_CHART_PLUGIN } from '../common/const.ts';
-import { DeleteChartCommand, type IDeleteChartCommandParams } from '../commands/commands/delete-chart.command.ts';
+import { ChartConfModel } from '../models/chart-conf-model';
+import { ChartMenuController } from '../controllers/chart.menu.controller';
+import type { IChart, IChartModelJson } from '../models/types';
+import { CHART_PREVIEW_DIALOG_KEY, SHEET_CHART_PLUGIN } from '../common/const';
+import { DeleteChartCommand, type IDeleteChartCommandParams } from '../commands/commands/delete-chart.command';
 import type {
     IDeleteChartMutationParams,
-} from '../commands/mutations/delete-chart.mutation.ts';
+} from '../commands/mutations/delete-chart.mutation';
 import {
     DeleteChartMutation,
     DeleteChartMutationUndoFactory,
-} from '../commands/mutations/delete-chart.mutation.ts';
+} from '../commands/mutations/delete-chart.mutation';
 
 const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
 const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
