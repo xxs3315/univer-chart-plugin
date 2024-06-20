@@ -3,7 +3,9 @@
         "commitMessage": "chore(release): release v${version}",
         "tagName": "v${version}"
     },
-    "npm": true,
+    "npm": {
+      "versionArgs": ["--allow-same-version", "--workspaces-update=false"]
+    },
     "github": {
         "release": false
     },
