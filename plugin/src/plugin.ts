@@ -46,7 +46,7 @@ import { DesktopDialogPlusService } from './services/dialog-plus/desktop-dialog-
 import { IDialogPlusService } from './services/dialog-plus/dialog-plus.service.ts';
 import { ChartPreviewService, IChartPreviewService } from './services/chart-preview.service.ts';
 
-export class ChartPlugin extends Plugin {
+export class UniverChartPlugin extends Plugin {
     static override pluginName = SHEET_CHART_PLUGIN;
     static override type = UniverInstanceType.UNIVER_SHEET;
 
@@ -111,10 +111,10 @@ export class ChartPlugin extends Plugin {
             }
         );
 
-        [...ChartPlugin.mutationList].forEach((m) => {
+        [...UniverChartPlugin.mutationList].forEach((m) => {
             this.commandService.registerCommand(m);
         });
-        [...ChartPlugin.commandList].forEach((m) => {
+        [...UniverChartPlugin.commandList].forEach((m) => {
             this.commandService.registerCommand(m);
         });
     }

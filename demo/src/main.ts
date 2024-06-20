@@ -31,7 +31,7 @@ import { UniverSheetsPlugin } from '@univerjs/sheets';
 import { UniverSheetsFormulaPlugin } from '@univerjs/sheets-formula';
 import { UniverSheetsUIPlugin } from '@univerjs/sheets-ui';
 import { UniverUIPlugin } from '@univerjs/ui';
-import { ChartPlugin } from 'univer-chart-plugin';
+import { UniverChartPlugin } from 'univer-chart-plugin';
 import { DEFAULT_WORKBOOK_DATA } from './data.ts';
 
 const univer = new Univer({
@@ -60,7 +60,7 @@ univer.registerPlugin(UniverSheetsPlugin);
 univer.registerPlugin(UniverSheetsUIPlugin);
 univer.registerPlugin(UniverSheetsFormulaPlugin);
 
-univer.registerPlugin(ChartPlugin);
+univer.registerPlugin(UniverChartPlugin);
 
 // create univer sheet instance
 univer.createUnit(UniverInstanceType.UNIVER_SHEET, DEFAULT_WORKBOOK_DATA);

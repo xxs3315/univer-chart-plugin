@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 /pnpm-lock.yaml
-/.npmrc
+/plugin/.npmrc
 demo/dist
 plugin/lib
 /.turbo/
