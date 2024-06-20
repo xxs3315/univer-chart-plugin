@@ -13,11 +13,13 @@
   "main": "./lib/cjs/index.js",
   "module": "./lib/es/index.js",
   "types": "./lib/types/index.d.ts",
+  "style": "./lib/index.css",
   "directories": {
     "lib": "lib"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "sideEffects": [
     "**/*.css"
