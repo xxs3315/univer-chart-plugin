@@ -29,7 +29,6 @@ import LineChart from './components/icons/line_chart';
 import PieChart from './components/icons/pie_chart';
 import StackedColumnChart from './components/icons/stacked_column_chart';
 import { OpenChartEditPanelOperator, OpenChartManagePanelOperator } from './commands/operations/open-chart-panel.operation';
-// import { ChartPreviewOperator } from './commands/operations/chart-preview.operation';
 import { ChartConfModel } from './models/chart-conf-model';
 import { MoveChartMutation } from './commands/mutations/move-chart.mutation';
 import { SetChartMutation } from './commands/mutations/set-chart.mutation';

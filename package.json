@@ -1,5 +1,5 @@
 {
-  "name": "univer-chart-plugin",
+  "name": "univer-chart-plugin-parent",
   "version": "0.1.15",
   "type": "module",
   "packageManager": "pnpm@9.1.0",
@@ -9,8 +9,8 @@
     "test": "turbo test -- --passWithNoTests",
     "build": "turbo build --concurrency=50%",
     "pre-commit": "lint-staged",
-    "lint": "eslint demo/src plugin/src",
-    "lint:fix": "eslint demo/src plugin/src --fix"
+    "lint": "eslint plugin/src",
+    "lint:fix": "eslint plugin/src --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",

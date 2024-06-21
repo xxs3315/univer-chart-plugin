@@ -64,7 +64,7 @@ function createViteConfig(overrideConfig, /** @type {IOptions} */ options) {
                 outDir: 'lib/types',
             }),
             obfuscator(),
-            buildPkg(),
+            // buildPkg(),
         ],
         define: {
             'process.env.NODE_ENV': JSON.stringify(mode),
