@@ -27,3 +27,4 @@ dist-ssr
 demo/dist
 plugin/lib
 /.turbo/
+/docs/src/.vitepress/cache/
