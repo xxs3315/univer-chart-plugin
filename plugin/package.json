@@ -1,6 +1,6 @@
 {
     "name": "univer-chart-plugin",
-    "version": "0.1.15",
+    "version": "0.1.16",
     "type": "module",
     "packageManager": "pnpm@9.1.0",
     "author": "xxs3315 <xxs3315@foxmail.com>",
@@ -58,13 +58,13 @@
         "echarts": "^5.5.0"
     },
     "peerDependencies": {
-        "@univerjs/core": ">=0.1.15",
-        "@univerjs/design": ">=0.1.15",
-        "@univerjs/engine-formula": ">=0.1.15",
-        "@univerjs/icons": ">=0.1.15",
-        "@univerjs/sheets": ">=0.1.15",
-        "@univerjs/sheets-ui": ">=0.1.15",
-        "@univerjs/ui": ">=0.1.15",
+        "@univerjs/core": ">=0.1.16",
+        "@univerjs/design": ">=0.1.16",
+        "@univerjs/engine-formula": ">=0.1.16",
+        "@univerjs/icons": ">=0.1.57",
+        "@univerjs/sheets": ">=0.1.16",
+        "@univerjs/sheets-ui": ">=0.1.16",
+        "@univerjs/ui": ">=0.1.16",
         "@wendellhu/redi": "0.15.4",
         "echarts": ">=5.5.0",
         "rc-dialog": ">=9.5.2",
