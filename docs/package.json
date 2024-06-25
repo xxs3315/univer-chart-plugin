@@ -6,6 +6,17 @@
   "author": "xxs3315 <xxs3315@foxmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@univerjs/core": "^0.1.16",
+    "@univerjs/design": "^0.1.16",
+    "@univerjs/docs": "^0.1.16",
+    "@univerjs/docs-ui": "^0.1.16",
+    "@univerjs/engine-formula": "^0.1.16",
+    "@univerjs/engine-render": "^0.1.16",
+    "@univerjs/sheets": "^0.1.16",
+    "@univerjs/sheets-formula": "^0.1.16",
+    "@univerjs/sheets-ui": "^0.1.16",
+    "@univerjs/ui": "^0.1.16",
+    "univer-chart-plugin": "^0.1.16",
     "vitepress": "^1.2.3",
     "vue": "^3.4.27"
   },
