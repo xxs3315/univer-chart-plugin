@@ -28,7 +28,7 @@ import type { IDialogPlusService } from './dialog-plus.service';
 export const DESKTOP_DIALOG_PLUS_BASE_Z_INDEX = 200;
 export const DESKTOP_DIALOG_PLUS_MAX_Z_INDEX = 600;
 const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
 
 export class DesktopDialogPlusService extends Disposable implements IDialogPlusService {
     protected _dialogOptions: IDialogPlusPartMethodOptions[] = [];

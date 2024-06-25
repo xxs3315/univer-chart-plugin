@@ -28,19 +28,19 @@ import type { IDisposable } from '@wendellhu/redi';
 import { Inject, Injector } from '@wendellhu/redi';
 import type { IMenuItemFactory } from '@univerjs/ui';
 import { ComponentManager, IMenuService, ISidebarService } from '@univerjs/ui';
-import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface.ts';
+import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface';
 import { ChartSelectorPanel } from '../components/chart-selector-panel';
 import { ChartSidePanel } from '../components/chart-side-panel';
-import type { IChart } from '../models/types.ts';
-import { CHART_PREVIEW_DIALOG_KEY } from '../common/const.ts';
+import type { IChart } from '../models/types';
+import { CHART_PREVIEW_DIALOG_KEY } from '../common/const';
 import { ChartDialog } from '../components/chart-dialog';
-import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service.ts';
-import { type ISetChartCommandParams, SetChartCommand } from '../commands/commands/set-chart.command.ts';
-import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu.ts';
+import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service';
+import { type ISetChartCommandParams, SetChartCommand } from '../commands/commands/set-chart.command';
+import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
 const getUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
 
 @OnLifecycle(LifecycleStages.Ready, ChartMenuController)
 export class ChartMenuController extends Disposable {

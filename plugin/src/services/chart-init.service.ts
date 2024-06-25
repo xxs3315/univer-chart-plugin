@@ -59,7 +59,7 @@ import {
 } from '../commands/mutations/delete-chart.mutation';
 
 const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
 
 @OnLifecycle(LifecycleStages.Rendered, ChartInitService)
 export class ChartInitService extends Disposable {
@@ -86,7 +86,7 @@ export class ChartInitService extends Disposable {
     private _initCharts() {
         const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
         const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-        const activeSheetId = activeSheet.getSheetId();
+        const activeSheetId = activeSheet!.getSheetId();
         const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
         charts?.forEach((chart) => {
             if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
@@ -188,7 +188,7 @@ export class ChartInitService extends Disposable {
                     // 切换sheet前，清除所有的preview chart conf，即切换sheet前所有的预览chart都会被清除
                     const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet.getSheetId();
+                    const activeSheetId = activeSheet!.getSheetId();
                     this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
                     this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, activeSheetId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
                 })
@@ -202,7 +202,7 @@ export class ChartInitService extends Disposable {
                     // 切换sheet后，管理当前sheet的charts
                     const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet.getSheetId();
+                    const activeSheetId = activeSheet!.getSheetId();
                     // 关闭所有chart
                     const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
                     allCharts?.forEach((value, _key) => {
@@ -247,7 +247,7 @@ export class ChartInitService extends Disposable {
                     // 关闭preview chart
                     this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
                     const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+                    const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
                     this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
                 });
             })
@@ -407,7 +407,7 @@ export class ChartInitService extends Disposable {
                     // // 切换sheet后，管理当前sheet的charts
                     const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet.getSheetId();
+                    const activeSheetId = activeSheet!.getSheetId();
                     // 打开current active sheet charts
                     const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
                     charts?.forEach((chart) => {
@@ -424,7 +424,7 @@ export class ChartInitService extends Disposable {
                     // // 切换sheet后，管理当前sheet的charts
                     const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
                     const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet.getSheetId();
+                    const activeSheetId = activeSheet!.getSheetId();
                     // 打开current active sheet charts
                     const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
                     charts?.forEach((chart) => {

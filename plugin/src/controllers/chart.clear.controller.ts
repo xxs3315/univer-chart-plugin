@@ -28,8 +28,8 @@ import {
     SelectionManagerService,
     SheetInterceptorService,
 } from '@univerjs/sheets';
-import type { IChart, IChartConfig } from '../models/types.ts';
-import { ChartConfModel } from '../models/chart-conf-model.ts';
+import type { IChart, IChartConfig } from '../models/types';
+import { ChartConfModel } from '../models/chart-conf-model';
 
 export const CHART_PERMISSION_CHECK = createInterceptorKey<(IChart<IChartConfig> & { disable?: boolean; show?: boolean })[], (IChart<IChartConfig> & { disable?: boolean; show?: boolean })[]>('chartPermissionCheck');
 

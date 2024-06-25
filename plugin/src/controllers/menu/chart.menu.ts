@@ -18,11 +18,11 @@ import type { IMenuButtonItem, IMenuSelectorItem } from '@univerjs/ui';
 import { getMenuHiddenObservable, MenuGroup, MenuItemType, MenuPosition } from '@univerjs/ui';
 import type { IAccessor } from '@wendellhu/redi';
 import { LocaleService, UniverInstanceType } from '@univerjs/core';
-import { CHART_SELECTOR_PANEL_COMPONENT } from '../../components/chart-selector-panel/interface.ts';
+import { CHART_SELECTOR_PANEL_COMPONENT } from '../../components/chart-selector-panel/interface';
 import {
     OpenChartEditPanelOperator,
     OpenChartManagePanelOperator,
-} from '../../commands/operations/open-chart-panel.operation.ts';
+} from '../../commands/operations/open-chart-panel.operation';
 
 export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelectorItem {
     const localeService = accessor.get(LocaleService);

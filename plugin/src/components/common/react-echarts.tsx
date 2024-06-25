@@ -48,6 +48,7 @@ export function ReactECharts({
         if (chartRef.current !== null) {
             // Add chart resize listener
             const chart = getInstanceByDom(chartRef.current);
+            // registerTheme('customed', getTheme(''));
             if (chart) {
                 observer = new ResizeObserver(() => {
                     chart?.resize();

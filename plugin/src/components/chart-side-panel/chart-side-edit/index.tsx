@@ -36,24 +36,23 @@ import { serializeRange } from '@univerjs/engine-formula';
 import { RangeSelector } from '@univerjs/ui';
 import { Button } from '@univerjs/design';
 import type { IChart } from '../../../models/types';
-import styleBase from '../index.module.less';
 import { CHART_PREVIEW_DIALOG_KEY, SHEET_CHART_PLUGIN } from '../../../common/const';
 import { IChartPreviewService } from '../../../services/chart-preview.service';
 import type { ISetChartCommandParams } from '../../../commands/commands/set-chart.command';
 import { SetChartCommand } from '../../../commands/commands/set-chart.command';
 import { ChartConfModel } from '../../../models/chart-conf-model';
 import type { IAddChartCommandParams } from '../../../commands/commands/add-chart.command';
-import { AddChartCommand } from '../../../commands/commands/add-chart.command.ts';
-import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
-import { DeleteChartCommand, type IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command.ts';
-import { IChartService } from '../../../services/chart.service.ts';
-import styles from './index.module.less';
-import type { IConfEditorProps } from './types.ts';
-import { beforeSubmit, submit } from './types.ts';
+import { AddChartCommand } from '../../../commands/commands/add-chart.command';
+import { ChartMenuController } from '../../../controllers/chart.menu.controller';
+import { DeleteChartCommand, type IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command';
+import { IChartService } from '../../../services/chart.service';
+import styles from '../../../styles/index.module.less';
+import type { IConfEditorProps } from './types';
+import { beforeSubmit, submit } from './types';
 import { ChartConf } from './chart-conf';
 
 const getUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+const getSubUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
 
 interface IChartEditProps {
     chart?: IChart;
@@ -131,7 +130,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
         const beforeSubmitResult = interceptorManager.fetchThroughInterceptors(interceptorManager.getInterceptPoints().beforeSubmit)(true, null);
         const getRanges = () => {
             const worksheet = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-            const ranges = rangeResult.current.map((range) => setEndForRange(range, worksheet.getRowCount(), worksheet.getColumnCount()));
+            const ranges = rangeResult.current.map((range) => setEndForRange(range, worksheet!.getRowCount(), worksheet!.getColumnCount()));
             const result = ranges.filter((range) => !(Number.isNaN(range.startRow) || Number.isNaN(range.startColumn)));
             return result;
         };
@@ -154,7 +153,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                     // 维护chart conf model, 去掉preview chart conf 因model中删除之后再无sheet.chart.preview.dialog为key的记录,所以这里先关闭预览
                     chartMenuController.closeChartDialog(chart);
                     const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+                    const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
                     commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
 
                     const chartId = chartConfModel.createChartId(unitId, subUnitId);
@@ -172,7 +171,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
             // 关闭对应的preview chart
             chartMenuController.closeChartDialog(chart);
             const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-            const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+            const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
             commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [chart.chartId] } as IDeleteChartCommandParams);
         }
         // 取消时，将当前preview state中的chartId 置空, 不再响应state
@@ -204,8 +203,8 @@ export const ChartSideEdit = (props: IChartEditProps) => {
 
     return (
         <div className={styles.chartSideEditor}>
-            <div className={styleBase.title}>{localeService.t('chart.panel.range')}</div>
-            <div className={`${styleBase.mTBase}`}>
+            <div className={styles.title}>{localeService.t('chart.panel.range')}</div>
+            <div className={`${styles.mTBase}`}>
                 <RangeSelector
                     placeholder={localeService.t('chart.form.rangeSelector')}
                     width={'100%' as unknown as number}
@@ -218,10 +217,10 @@ export const ChartSideEdit = (props: IChartEditProps) => {
                 />
             </div>
             <ChartConf onChange={onConfChange} interceptorManager={interceptorManager} chart={chart?.conf as any} chartId={chart && chart.chartId ? chart.chartId : CHART_PREVIEW_DIALOG_KEY} />
-            <div className={`${styleBase.mTBase} ${styles.btnList}`}>
+            <div className={`${styles.mTBase} ${styles.btnList}`}>
                 <Button size="small" onClick={handleCancel}>{localeService.t('chart.panel.cancel')}</Button>
                 <Button
-                    className={styleBase.mLSm}
+                    className={styles.mLSm}
                     size="small"
                     type="primary"
                     onClick={handleSubmit}

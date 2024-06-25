@@ -19,12 +19,11 @@ import React, { useEffect, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { LocaleService } from '@univerjs/core';
 import type { IChartConfig } from '../../../models/types';
-import styleBase from '../index.module.less';
-import { ChartType } from '../../../types/enum/chart-types.ts';
-import type { ChartGroupType } from '../../../types/enum/chart-group-types.ts';
-import { IChartPreviewService } from '../../../services/chart-preview.service.ts';
-import type { IConfEditorProps } from './types.ts';
-import styles from './index.module.less';
+import { ChartType } from '../../../types/enum/chart-types';
+import type { ChartGroupType } from '../../../types/enum/chart-group-types';
+import { IChartPreviewService } from '../../../services/chart-preview.service';
+import styles from '../../../styles/index.module.less';
+import type { IConfEditorProps } from './types';
 
 export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
     const chartPreviewService = useDependency(IChartPreviewService);
@@ -124,8 +123,8 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
 
     return (
         <>
-            <div className={styleBase.title}>{localeService.t('chart.panel.type')}</div>
-            <div className={styleBase.mTBase}>
+            <div className={styles.title}>{localeService.t('chart.panel.type')}</div>
+            <div className={styles.mTBase}>
                 <Select
                     className={styles.width100}
                     value={chartType}
@@ -133,8 +132,8 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
                     onChange={(e) => chartTypeSet(e)}
                 />
             </div>
-            <div className={styleBase.title}>{localeService.t('chart.conf.title')}</div>
-            <div className={styleBase.mTBase}>
+            <div className={styles.title}>{localeService.t('chart.conf.title')}</div>
+            <div className={styles.mTBase}>
                 <Input
                     className={styles.width100}
                     value={chartConfTitle}

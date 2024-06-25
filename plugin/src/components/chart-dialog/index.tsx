@@ -98,7 +98,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         let nextData: any[][] = [];
         if (rangeResult && rangeResult.length > 0) {
             const { startRow, startColumn, endColumn, endRow } = rangeResult[0]; // 多选区的情况下默认取第一个
-            const cellMatrix = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getMatrixWithMergedCells(startRow, startColumn, endRow, endColumn);
+            const cellMatrix = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getMatrixWithMergedCells(startRow, startColumn, endRow, endColumn);
 
             initXAxis = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
             if (startColumn !== endColumn) {
@@ -144,7 +144,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     useEffect(() => {
         const dispose = chartConfModel.$chartConfChange.subscribe(() => {
             const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-            const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+            const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
             const c = chartConfModel.getChartConf(unitId, subUnitId, chartChange.chartId);
             if (c) {
                 chartChangeSet(c);

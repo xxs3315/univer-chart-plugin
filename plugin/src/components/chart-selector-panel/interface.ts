@@ -15,8 +15,8 @@
  */
 
 import type { ICustomComponentProps } from '@univerjs/ui';
-import type { ChartType } from '../../types/enum/chart-types.ts';
-import type { ChartGroupType } from '../../types/enum/chart-group-types.ts';
+import type { ChartType } from '../../types/enum/chart-types';
+import type { ChartGroupType } from '../../types/enum/chart-group-types';
 
 const COMPONENT_PREFIX = 'UI_PLUGIN_SHEETS';
 

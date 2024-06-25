@@ -27,17 +27,17 @@ import { serializeRange } from '@univerjs/engine-formula';
 import { debounceTime, Observable } from 'rxjs';
 import { Injector } from '@wendellhu/redi';
 import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command';
-import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command.ts';
-import type { IChart } from '../../../models/types.ts';
-import { ChartConfModel } from '../../../models/chart-conf-model.ts';
-import { createDefaultNewChart } from '../../../utils/utils.ts';
-import type { IMoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
-import { MoveChartCommand } from '../../../commands/commands/move-chart.command.ts';
-import { ChartMenuController } from '../../../controllers/chart.menu.controller.ts';
-import { CHART_PREVIEW_DIALOG_KEY } from '../../../common/const.ts';
-import { type ISetChartCommandParams, SetChartCommand } from '../../../commands/commands/set-chart.command.ts';
-import { IChartService } from '../../../services/chart.service.ts';
-import styles from './index.module.less';
+import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command';
+import type { IChart } from '../../../models/types';
+import { ChartConfModel } from '../../../models/chart-conf-model';
+import { createDefaultNewChart } from '../../../utils/utils';
+import type { IMoveChartCommand } from '../../../commands/commands/move-chart.command';
+import { MoveChartCommand } from '../../../commands/commands/move-chart.command';
+import { ChartMenuController } from '../../../controllers/chart.menu.controller';
+import { CHART_PREVIEW_DIALOG_KEY } from '../../../common/const';
+import { type ISetChartCommandParams, SetChartCommand } from '../../../commands/commands/set-chart.command';
+import { IChartService } from '../../../services/chart.service';
+import styles from '../../../styles/index.module.less';
 import 'react-grid-layout/css/styles.css';
 
 interface IChartListProps {
@@ -60,7 +60,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const workbook = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
     const unitId = workbook.getUnitId();
     const worksheet = workbook.getActiveSheet();
-    const subUnitId = worksheet.getSheetId();
+    const subUnitId = worksheet!.getSheetId();
 
     const layoutContainerRef = useRef<HTMLDivElement>(null);
 
@@ -85,7 +85,7 @@ export const ChartSideList = (props: IChartListProps) => {
         // 关闭对应的chart
         chartMenuController.closeChartDialog(chart);
         const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-        const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+        const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
         commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [chart.chartId] } as IDeleteChartCommandParams);
     };
 
@@ -101,7 +101,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const handleDragStop = (_layout: unknown, from: { y: number }, to: { y: number }) => {
         draggingIdSet(-1);
         const unitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-        const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet().getSheetId();
+        const subUnitId = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
         const getSaveIndex = (index: number) => {
             const length = chartConfList.length;
             return Math.min(length - 1, Math.max(0, index));

@@ -18,10 +18,10 @@ import { useDependency } from '@wendellhu/redi/react-bindings';
 import React, { useEffect, useState } from 'react';
 
 import { CustomLabel } from '@univerjs/ui';
-import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service.ts';
+import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service';
 import type { IDialogPlusProps } from '../dialog-plus';
 import { DialogPlus } from '../dialog-plus';
-import type { IDialogPlusPartMethodOptions } from './interface.ts';
+import type { IDialogPlusPartMethodOptions } from './interface';
 
 export function DialogPartPlus() {
     const dialogPlusService = useDependency(IDialogPlusService);
