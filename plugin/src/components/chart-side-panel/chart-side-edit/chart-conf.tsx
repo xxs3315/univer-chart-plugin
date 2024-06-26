@@ -23,6 +23,7 @@ import { ChartType } from '../../../types/enum/chart-types';
 import type { ChartGroupType } from '../../../types/enum/chart-group-types';
 import { IChartPreviewService } from '../../../services/chart-preview.service';
 import styles from '../../../styles/index.module.less';
+import { ChartThemeType } from '../../../types/enum/chart-theme-types.ts';
 import type { IConfEditorProps } from './types';
 
 export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
@@ -69,6 +70,91 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
         return defaultType;
     });
 
+    const themeOptions = [
+        { label: localeService.t('chart.theme.default'), value: 'default' },
+        { label: localeService.t('chart.theme.vintage'), value: 'vintage' },
+        { label: localeService.t('chart.theme.dark'), value: 'dark' },
+        { label: localeService.t('chart.theme.westeros'), value: 'westeros' },
+        { label: localeService.t('chart.theme.essos'), value: 'essos' },
+        { label: localeService.t('chart.theme.wonderland'), value: 'wonderland' },
+        { label: localeService.t('chart.theme.walden'), value: 'walden' },
+        { label: localeService.t('chart.theme.chalk'), value: 'chalk' },
+        { label: localeService.t('chart.theme.infographic'), value: 'infographic' },
+        { label: localeService.t('chart.theme.macarons'), value: 'macarons' },
+        { label: localeService.t('chart.theme.roma'), value: 'roma' },
+        { label: localeService.t('chart.theme.shine'), value: 'shine' },
+        { label: localeService.t('chart.theme.purplePassion'), value: 'purple-passion' },
+        { label: localeService.t('chart.theme.halloween'), value: 'halloween' },
+    ];
+
+    const [chartConfTheme, chartConfThemeSet] = useState(() => {
+        let theme = chart?.theme;
+        const defaultTheme = themeOptions[0].value;
+        if (!theme) {
+            theme = defaultTheme;
+        } else {
+            switch (theme) {
+                case ChartThemeType.DEFAULT:{
+                    theme = 'default';
+                    break;
+                }
+                case ChartThemeType.VINTAGE:{
+                    theme = 'vintage';
+                    break;
+                }
+                case ChartThemeType.DARK:{
+                    theme = 'dark';
+                    break;
+                }
+                case ChartThemeType.WESTEROS:{
+                    theme = 'westeros';
+                    break;
+                }
+                case ChartThemeType.ESSOS:{
+                    theme = 'essos';
+                    break;
+                }
+                case ChartThemeType.WONDERLAND:{
+                    theme = 'wonderland';
+                    break;
+                }
+                case ChartThemeType.WALDEN:{
+                    theme = 'walden';
+                    break;
+                }
+                case ChartThemeType.CHALK:{
+                    theme = 'chalk';
+                    break;
+                }
+                case ChartThemeType.INFOGRAPHIC:{
+                    theme = 'infographic';
+                    break;
+                }
+                case ChartThemeType.MACARONS:{
+                    theme = 'macarons';
+                    break;
+                }
+                case ChartThemeType.ROMA:{
+                    theme = 'roma';
+                    break;
+                }
+                case ChartThemeType.SHINE:{
+                    theme = 'shine';
+                    break;
+                }
+                case ChartThemeType.PURPLE_PASSION:{
+                    theme = 'purple-passion';
+                    break;
+                }
+                case ChartThemeType.HALLOWEEN:{
+                    theme = 'halloween';
+                    break;
+                }
+            }
+        }
+        return theme;
+    });
+
     const [chartGroupType, chartGroupTypeSet] = useState('line');
 
     useEffect(() => {
@@ -109,17 +195,21 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
 
     useEffect(() => {
         const dispose = interceptorManager.intercept(interceptorManager.getInterceptPoints().submit, { handler() {
-            const result: IChartConfig = { type: chartGroupType, subType: chartType, title: chartConfTitle } as IChartConfig;
+            const result: IChartConfig = { type: chartGroupType, subType: chartType, title: chartConfTitle, theme: chartConfTheme } as IChartConfig;
             return result;
         } });
         return () => {
             dispose();
         };
-    }, [chartType, chartGroupType, chartConfTitle, interceptorManager]);
+    }, [chartType, chartGroupType, chartConfTitle, chartConfTheme, interceptorManager]);
 
     useEffect(() => {
         chartPreviewService.changeChartConfTitle(chartConfTitle || '');
     }, [chartConfTitle, chartPreviewService]);
+
+    useEffect(() => {
+        chartPreviewService.changeChartConfTheme(chartConfTheme);
+    }, [chartConfTheme, chartPreviewService]);
 
     return (
         <>
@@ -130,6 +220,15 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
                     value={chartType}
                     options={options}
                     onChange={(e) => chartTypeSet(e)}
+                />
+            </div>
+            <div className={styles.title}>{localeService.t('chart.conf.theme')}</div>
+            <div className={styles.mTBase}>
+                <Select
+                    className={styles.width100}
+                    value={chartConfTheme}
+                    options={themeOptions}
+                    onChange={(e) => chartConfThemeSet(e)}
                 />
             </div>
             <div className={styles.title}>{localeService.t('chart.conf.title')}</div>

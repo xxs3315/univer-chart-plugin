@@ -71,6 +71,12 @@ export class ChartPreviewState {
                 changed = true;
             }
 
+            if (typeof changes.conf?.theme !== 'undefined' && this._conf.theme !== changes.conf?.theme) {
+                this._conf.theme = changes.conf.theme;
+                changedState.conf!.theme = changes.conf.theme;
+                changed = true;
+            }
+
             if (typeof changes.ranges !== 'undefined' && this._ranges !== changes.ranges) {
                 this._ranges = changes.ranges;
                 changedState.ranges = changes.ranges;
@@ -108,6 +114,8 @@ export interface IChartPreviewService {
     changeRange(ranges: IRange[]): void;
 
     changeChartConfTitle(title: string): void;
+
+    changeChartConfTheme(theme: string): void;
 }
 
 function createInitChartPreviewState(): IChartPreviewState {
@@ -118,6 +126,7 @@ function createInitChartPreviewState(): IChartPreviewState {
             type: ChartGroupType.LINE,
             subType: ChartType.LINE_DEFAULT,
             title: '',
+            theme: 'default',
         } as IChartConfig,
     };
 }
@@ -149,6 +158,10 @@ export class ChartPreviewService extends Disposable implements IChartPreviewServ
 
     changeChartConfTitle(title: string): void {
         this._state.changeState({ conf: { title } });
+    }
+
+    changeChartConfTheme(theme: string): void {
+        this._state.changeState({ conf: { theme } });
     }
 
     changeChartType(type: string, subType: string): void {

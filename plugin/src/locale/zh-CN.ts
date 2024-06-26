@@ -50,6 +50,23 @@ const locale = {
         },
         conf: {
             title: '标题',
+            theme: '主题',
+        },
+        theme: {
+            default: 'Default',
+            vintage: 'Vintage',
+            dark: 'Dark',
+            westeros: 'Westeros',
+            essos: 'Essos',
+            wonderland: 'Wonderland',
+            walden: 'Walden',
+            chalk: 'Chalk',
+            infographic: 'Infographic',
+            macarons: 'Macarons',
+            roma: 'Roma',
+            shine: 'Shine',
+            purplePassion: 'Purple Passion',
+            halloween: 'Halloween',
         },
     },
 };

@@ -22,6 +22,7 @@ export interface IBaseChart {
     type: string;
     subType: string;
     title: string;
+    theme: string;
 }
 
 export interface ILineDefaultChart extends IBaseChart {

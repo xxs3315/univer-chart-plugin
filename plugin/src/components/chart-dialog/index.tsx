@@ -167,7 +167,12 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         return o;
     }, [seriesName, vs, xAxis, title, gridConf, serieConf]);
 
+    const themeConf: string = useMemo(() => {
+        const theme = (chartId === chartChange.chartId ? conf.theme : chart.conf.theme) || 'default';
+        return theme;
+    }, [state]);
+
     return (
-        <ReactECharts option={option} settings={{ notMerge: true }} />
+        <ReactECharts option={option} settings={{ notMerge: true }} theme={themeConf} />
     );
 });

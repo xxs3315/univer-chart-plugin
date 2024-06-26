@@ -15,16 +15,17 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { getInstanceByDom, init } from 'echarts';
+import { getInstanceByDom, init, registerTheme } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, SetOptionOpts } from 'echarts';
+import { getTheme } from './utils.ts';
 
 export interface ReactEChartsProps {
     option: EChartsOption;
     style?: CSSProperties;
     settings?: SetOptionOpts;
     loading?: boolean;
-    theme?: 'light' | 'dark';
+    theme: string;
 }
 
 export function ReactECharts({
@@ -39,6 +40,11 @@ export function ReactECharts({
     useEffect(() => {
         // Initialize chart
         if (chartRef.current !== null) {
+            const chart = getInstanceByDom(chartRef.current);
+            if (chart) {
+                chart.dispose();
+            }
+            registerTheme(theme, getTheme(theme));
             init(chartRef.current, theme);
         }
     }, [theme]);
@@ -48,10 +54,9 @@ export function ReactECharts({
         if (chartRef.current !== null) {
             // Add chart resize listener
             const chart = getInstanceByDom(chartRef.current);
-            // registerTheme('customed', getTheme(''));
             if (chart) {
                 observer = new ResizeObserver(() => {
-                    chart?.resize();
+                    chart.resize();
                 });
                 observer.observe(chartRef.current);
             }
