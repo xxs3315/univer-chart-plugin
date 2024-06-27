@@ -65,7 +65,7 @@ export function ReactECharts({
         return () => {
             observer?.disconnect();
         };
-    }, [chartRef.current]);
+    }, [chartRef.current, theme]);
 
     useEffect(() => {
         // Update chart

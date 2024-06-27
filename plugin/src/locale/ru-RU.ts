@@ -67,7 +67,7 @@ const locale: typeof zhCN = {
             macarons: 'Macarons',
             roma: 'Roma',
             shine: 'Shine',
-            purplePassion: 'Purple Passion',
+            'purple-passion': 'Purple Passion',
             halloween: 'Halloween',
         },
     },

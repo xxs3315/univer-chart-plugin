@@ -24,6 +24,7 @@ import type { ChartGroupType } from '../../../types/enum/chart-group-types';
 import { IChartPreviewService } from '../../../services/chart-preview.service';
 import styles from '../../../styles/index.module.less';
 import { ChartThemeType } from '../../../types/enum/chart-theme-types.ts';
+import { getTheme } from '../../common/utils.ts';
 import type { IConfEditorProps } from './types';
 
 export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
@@ -70,21 +71,38 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
         return defaultType;
     });
 
+    const getThemeOptions = (themeName: string) => {
+        const theme = getTheme(themeName);
+        return (
+            <>
+                <div style={{ background: theme.backgroundColor }}>
+                    {/*<span className={styles.themePlanTitle}>{`${localeService.t(`chart.theme.${themeName}`)}: `}</span>*/}
+                    {theme.color.map((color: string, index: number) => {
+                        return (
+                            <div key={index} className={styles.themePlanColor} style={{ background: color }}></div>
+                        );
+                    }
+                    )}
+                </div>
+            </>
+        );
+    };
+
     const themeOptions = [
-        { label: localeService.t('chart.theme.default'), value: 'default' },
-        { label: localeService.t('chart.theme.vintage'), value: 'vintage' },
-        { label: localeService.t('chart.theme.dark'), value: 'dark' },
-        { label: localeService.t('chart.theme.westeros'), value: 'westeros' },
-        { label: localeService.t('chart.theme.essos'), value: 'essos' },
-        { label: localeService.t('chart.theme.wonderland'), value: 'wonderland' },
-        { label: localeService.t('chart.theme.walden'), value: 'walden' },
-        { label: localeService.t('chart.theme.chalk'), value: 'chalk' },
-        { label: localeService.t('chart.theme.infographic'), value: 'infographic' },
-        { label: localeService.t('chart.theme.macarons'), value: 'macarons' },
-        { label: localeService.t('chart.theme.roma'), value: 'roma' },
-        { label: localeService.t('chart.theme.shine'), value: 'shine' },
-        { label: localeService.t('chart.theme.purplePassion'), value: 'purple-passion' },
-        { label: localeService.t('chart.theme.halloween'), value: 'halloween' },
+        { label: getThemeOptions('default'), value: 'default' },
+        { label: getThemeOptions('vintage'), value: 'vintage' },
+        { label: getThemeOptions('dark'), value: 'dark' },
+        { label: getThemeOptions('westeros'), value: 'westeros' },
+        { label: getThemeOptions('essos'), value: 'essos' },
+        { label: getThemeOptions('wonderland'), value: 'wonderland' },
+        { label: getThemeOptions('walden'), value: 'walden' },
+        { label: getThemeOptions('chalk'), value: 'chalk' },
+        { label: getThemeOptions('infographic'), value: 'infographic' },
+        { label: getThemeOptions('macarons'), value: 'macarons' },
+        { label: getThemeOptions('roma'), value: 'roma' },
+        { label: getThemeOptions('shine'), value: 'shine' },
+        { label: getThemeOptions('purple-passion'), value: 'purple-passion' },
+        { label: getThemeOptions('halloween'), value: 'halloween' },
     ];
 
     const [chartConfTheme, chartConfThemeSet] = useState(() => {
