@@ -106,68 +106,66 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
     ];
 
     const [chartConfTheme, chartConfThemeSet] = useState(() => {
-        let theme = chart?.theme;
-        const defaultTheme = themeOptions[0].value;
-        if (!theme) {
-            theme = defaultTheme;
-        } else {
-            switch (theme) {
-                case ChartThemeType.DEFAULT:{
-                    theme = 'default';
-                    break;
-                }
-                case ChartThemeType.VINTAGE:{
-                    theme = 'vintage';
-                    break;
-                }
-                case ChartThemeType.DARK:{
-                    theme = 'dark';
-                    break;
-                }
-                case ChartThemeType.WESTEROS:{
-                    theme = 'westeros';
-                    break;
-                }
-                case ChartThemeType.ESSOS:{
-                    theme = 'essos';
-                    break;
-                }
-                case ChartThemeType.WONDERLAND:{
-                    theme = 'wonderland';
-                    break;
-                }
-                case ChartThemeType.WALDEN:{
-                    theme = 'walden';
-                    break;
-                }
-                case ChartThemeType.CHALK:{
-                    theme = 'chalk';
-                    break;
-                }
-                case ChartThemeType.INFOGRAPHIC:{
-                    theme = 'infographic';
-                    break;
-                }
-                case ChartThemeType.MACARONS:{
-                    theme = 'macarons';
-                    break;
-                }
-                case ChartThemeType.ROMA:{
-                    theme = 'roma';
-                    break;
-                }
-                case ChartThemeType.SHINE:{
-                    theme = 'shine';
-                    break;
-                }
-                case ChartThemeType.PURPLE_PASSION:{
-                    theme = 'purple-passion';
-                    break;
-                }
-                case ChartThemeType.HALLOWEEN:{
-                    theme = 'halloween';
-                    break;
-                }
+        let theme = chart?.theme || themeOptions[0].value;
+        if (Object.values(ChartThemeType).indexOf(theme as ChartThemeType) < 0) {
+            theme = themeOptions[0].value;
+        }
+        switch (theme) {
+            case ChartThemeType.DEFAULT:{
+                theme = 'default';
+                break;
+            }
+            case ChartThemeType.VINTAGE:{
+                theme = 'vintage';
+                break;
+            }
+            case ChartThemeType.DARK:{
+                theme = 'dark';
+                break;
+            }
+            case ChartThemeType.WESTEROS:{
+                theme = 'westeros';
+                break;
+            }
+            case ChartThemeType.ESSOS:{
+                theme = 'essos';
+                break;
+            }
+            case ChartThemeType.WONDERLAND:{
+                theme = 'wonderland';
+                break;
+            }
+            case ChartThemeType.WALDEN:{
+                theme = 'walden';
+                break;
+            }
+            case ChartThemeType.CHALK:{
+                theme = 'chalk';
+                break;
+            }
+            case ChartThemeType.INFOGRAPHIC:{
+                theme = 'infographic';
+                break;
+            }
+            case ChartThemeType.MACARONS:{
+                theme = 'macarons';
+                break;
+            }
+            case ChartThemeType.ROMA:{
+                theme = 'roma';
+                break;
+            }
+            case ChartThemeType.SHINE:{
+                theme = 'shine';
+                break;
+            }
+            case ChartThemeType.PURPLE_PASSION:{
+                theme = 'purple-passion';
+                break;
+            }
+            case ChartThemeType.HALLOWEEN:{
+                theme = 'halloween';
+                break;
             }
         }
         return theme;
