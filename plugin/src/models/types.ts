@@ -23,6 +23,7 @@ export interface IBaseChart {
     subType: string;
     title: string;
     theme: string;
+    reverseAxis: boolean;
 }
 
 export interface ILineDefaultChart extends IBaseChart {

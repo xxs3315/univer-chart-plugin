@@ -77,6 +77,12 @@ export class ChartPreviewState {
                 changed = true;
             }
 
+            if (typeof changes.conf?.reverseAxis !== 'undefined' && this._conf.reverseAxis !== changes.conf?.reverseAxis) {
+                this._conf.reverseAxis = changes.conf.reverseAxis;
+                changedState.conf!.reverseAxis = changes.conf.reverseAxis;
+                changed = true;
+            }
+
             if (typeof changes.ranges !== 'undefined' && this._ranges !== changes.ranges) {
                 this._ranges = changes.ranges;
                 changedState.ranges = changes.ranges;
@@ -116,6 +122,8 @@ export interface IChartPreviewService {
     changeChartConfTitle(title: string): void;
 
     changeChartConfTheme(theme: string): void;
+
+    changeChartConfReverseAxis(reverseAxis: boolean): void;
 }
 
 function createInitChartPreviewState(): IChartPreviewState {
@@ -127,6 +135,7 @@ function createInitChartPreviewState(): IChartPreviewState {
             subType: ChartType.LINE_DEFAULT,
             title: '',
             theme: 'default',
+            reverseAxis: false,
         } as IChartConfig,
     };
 }
@@ -170,5 +179,9 @@ export class ChartPreviewService extends Disposable implements IChartPreviewServ
 
     changeRange(ranges: IRange[]): void {
         this._state.changeState({ ranges });
+    }
+
+    changeChartConfReverseAxis(reverseAxis: boolean): void {
+        this._state.changeState({ conf: { reverseAxis } });
     }
 }

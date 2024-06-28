@@ -53,6 +53,7 @@ const locale: typeof zhCN = {
         conf: {
             title: 'Title',
             theme: '主题',
+            reverseAxis: 'Reverse Axis',
         },
         theme: {
             default: 'Default',

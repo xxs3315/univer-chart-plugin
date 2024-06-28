@@ -51,6 +51,7 @@ const locale = {
         conf: {
             title: '标题',
             theme: '主题',
+            reverseAxis: '反转坐标轴',
         },
         theme: {
             default: 'Default',

@@ -86,10 +86,3 @@ export class ChartService extends Disposable implements IChartService {
         this._highlightState.changeState({ chartId });
     }
 }
-//
-// @OnLifecycle(LifecycleStages.Rendered, ChartService)
-// export class ChartService extends Disposable {
-//     addChartHighlight(ChartId: string) {
-//         console.log(ChartId);
-//     };
-// }

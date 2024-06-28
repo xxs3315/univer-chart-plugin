@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Input, Select } from '@univerjs/design';
+import { Checkbox, Input, Select } from '@univerjs/design';
 import React, { useEffect, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
 import { LocaleService } from '@univerjs/core';
@@ -33,6 +33,7 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
     const { interceptorManager, chart } = props;
 
     const [chartConfTitle, chartConfTitleSet] = useState(chart?.title);
+    const [chartConfReverseAxis, chartConfReverseAxisSet] = useState(chart?.reverseAxis);
 
     const options = [
         { label: localeService.t('chart.type.lineDefault'), value: 'line-default' },
@@ -211,13 +212,13 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
 
     useEffect(() => {
         const dispose = interceptorManager.intercept(interceptorManager.getInterceptPoints().submit, { handler() {
-            const result: IChartConfig = { type: chartGroupType, subType: chartType, title: chartConfTitle, theme: chartConfTheme } as IChartConfig;
+            const result: IChartConfig = { type: chartGroupType, subType: chartType, title: chartConfTitle, theme: chartConfTheme, reverseAxis: chartConfReverseAxis } as IChartConfig;
             return result;
         } });
         return () => {
             dispose();
         };
-    }, [chartType, chartGroupType, chartConfTitle, chartConfTheme, interceptorManager]);
+    }, [chartType, chartGroupType, chartConfTitle, chartConfTheme, chartConfReverseAxis, interceptorManager]);
 
     useEffect(() => {
         chartPreviewService.changeChartConfTitle(chartConfTitle || '');
@@ -226,6 +227,10 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
     useEffect(() => {
         chartPreviewService.changeChartConfTheme(chartConfTheme);
     }, [chartConfTheme, chartPreviewService]);
+
+    useEffect(() => {
+        chartPreviewService.changeChartConfReverseAxis(!!chartConfReverseAxis);
+    }, [chartConfReverseAxis, chartPreviewService]);
 
     return (
         <>
@@ -253,6 +258,16 @@ export const ChartConf = (props: IConfEditorProps<unknown, IChartConfig>) => {
                     className={styles.width100}
                     value={chartConfTitle}
                     onChange={(e) => chartConfTitleSet(e)}
+                />
+            </div>
+            <div className={styles.title}>
+                {localeService.t('chart.conf.reverseAxis')}
+            </div>
+            <div className={styles.mTBase}>
+                <Checkbox
+                    className={styles.width100}
+                    checked={chartConfReverseAxis}
+                    onChange={(e) => chartConfReverseAxisSet(e as boolean)}
                 />
             </div>
         </>

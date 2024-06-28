@@ -25,6 +25,7 @@ import type { IChart } from '../../models/types';
 import { ChartConfModel } from '../../models/chart-conf-model';
 import { IChartPreviewService } from '../../services/chart-preview.service';
 import { ChartType } from '../../types/enum/chart-types';
+import { transferArray } from '../../utils/utils.ts';
 import {
     BAR_COLUMN_CONFS_GRID, BAR_COLUMN_CONFS_SERIE,
     BAR_DEFAULT_CONFS_GRID, BAR_DEFAULT_CONFS_SERIE,
@@ -90,6 +91,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
             rangeResult = selectionManagerService.getSelectionRanges()!;
         }
+        const reverseAxis = chartId === chartChange.chartId ? conf.reverseAxis : chartChange.conf.reverseAxis;
         let initXAxis: any[] = [];
         let nextXAxis: any[] = [];
         let initSeriesName: any[] = [];
@@ -99,35 +101,66 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         if (rangeResult && rangeResult.length > 0) {
             const { startRow, startColumn, endColumn, endRow } = rangeResult[0]; // 多选区的情况下默认取第一个
             const cellMatrix = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getMatrixWithMergedCells(startRow, startColumn, endRow, endColumn);
-
-            initXAxis = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
-            if (startColumn !== endColumn) {
-                nextXAxis = initXAxis.map((item: any, index: number) => {
-                    return cellMatrix.getArrayData()[0] && cellMatrix.getArrayData()[0][index + 1] && !isNullCell(cellMatrix.getArrayData()[0][index + 1]) ? cellMatrix.getArrayData()[0][index + 1].v : item;
-                });
-            }
-            initSeriesName = Array.from({ length: endRow - startRow + 1 - 1 }, (_, index) => `未命名${index}`);
-            if (startRow !== endRow) {
-                nextSeriesName = initSeriesName.map((item: any, index: number) => {
-                    return cellMatrix.getArrayData()[index + 1] && cellMatrix.getArrayData()[index + 1][0] && !isNullCell(cellMatrix.getArrayData()[index + 1][0]) ? cellMatrix.getArrayData()[index + 1][0].v : item;
-                });
-            }
-
-            initData = Array.from({ length: endRow - startRow + 1 - 1 }, () => new Array(endColumn - startColumn + 1 - 1).fill(undefined));
-            if (startColumn !== endColumn && startRow !== endRow) {
-                nextData = initData.map((row: any, rowIndex: number) => {
-                    return row.map((cell: any, colIndex: number) => {
-                        return cellMatrix.getArrayData()[rowIndex + 1] && cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1] && !isNullCell(cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1]) ? cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1].v : cell;
+            let nextVs: any[] = [];
+            if (reverseAxis) {
+                initSeriesName = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
+                if (startColumn !== endColumn) {
+                    nextSeriesName = initSeriesName.map((item: any, index: number) => {
+                        return cellMatrix.getArrayData()[0] && cellMatrix.getArrayData()[0][index + 1] && !isNullCell(cellMatrix.getArrayData()[0][index + 1]) ? cellMatrix.getArrayData()[0][index + 1].v : item;
                     });
+                }
+                initXAxis = Array.from({ length: endRow - startRow + 1 - 1 }, (_, index) => `未命名${index}`);
+                if (startRow !== endRow) {
+                    nextXAxis = initXAxis.map((item: any, index: number) => {
+                        return cellMatrix.getArrayData()[index + 1] && cellMatrix.getArrayData()[index + 1][0] && !isNullCell(cellMatrix.getArrayData()[index + 1][0]) ? cellMatrix.getArrayData()[index + 1][0].v : item;
+                    });
+                }
+
+                initData = Array.from({ length: endRow - startRow + 1 - 1 }, () => new Array(endColumn - startColumn + 1 - 1).fill(undefined));
+                if (startColumn !== endColumn && startRow !== endRow) {
+                    nextData = transferArray(initData.map((row: any, rowIndex: number) => {
+                        return row.map((cell: any, colIndex: number) => {
+                            return cellMatrix.getArrayData()[rowIndex + 1] && cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1] && !isNullCell(cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1]) ? cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1].v : cell;
+                        });
+                    }));
+                }
+
+                nextVs = nextData.map((_: any, index: number) => {
+                    return Tools.deepMerge({
+                        name: nextSeriesName?.[index],
+                        data: nextData[index],
+                    }, serieConf);
+                });
+            } else {
+                initXAxis = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
+                if (startColumn !== endColumn) {
+                    nextXAxis = initXAxis.map((item: any, index: number) => {
+                        return cellMatrix.getArrayData()[0] && cellMatrix.getArrayData()[0][index + 1] && !isNullCell(cellMatrix.getArrayData()[0][index + 1]) ? cellMatrix.getArrayData()[0][index + 1].v : item;
+                    });
+                }
+                initSeriesName = Array.from({ length: endRow - startRow + 1 - 1 }, (_, index) => `未命名${index}`);
+                if (startRow !== endRow) {
+                    nextSeriesName = initSeriesName.map((item: any, index: number) => {
+                        return cellMatrix.getArrayData()[index + 1] && cellMatrix.getArrayData()[index + 1][0] && !isNullCell(cellMatrix.getArrayData()[index + 1][0]) ? cellMatrix.getArrayData()[index + 1][0].v : item;
+                    });
+                }
+
+                initData = Array.from({ length: endRow - startRow + 1 - 1 }, () => new Array(endColumn - startColumn + 1 - 1).fill(undefined));
+                if (startColumn !== endColumn && startRow !== endRow) {
+                    nextData = initData.map((row: any, rowIndex: number) => {
+                        return row.map((cell: any, colIndex: number) => {
+                            return cellMatrix.getArrayData()[rowIndex + 1] && cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1] && !isNullCell(cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1]) ? cellMatrix.getArrayData()[rowIndex + 1][colIndex + 1].v : cell;
+                        });
+                    });
+                }
+
+                nextVs = nextData.map((_: any, index: number) => {
+                    return Tools.deepMerge({
+                        name: nextSeriesName?.[index],
+                        data: nextData[index],
+                    }, serieConf);
                 });
             }
-
-            const nextVs: any[] = nextData.map((_: any, index: number) => {
-                return Tools.deepMerge({
-                    name: nextSeriesName?.[index],
-                    data: nextData[index],
-                }, serieConf);
-            });
 
             const title = chartId === chartChange.chartId ? conf.title : chartChange.conf.title;
 

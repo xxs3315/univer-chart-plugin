@@ -29,3 +29,25 @@ export function createDefaultNewChart(accessor: IAccessor) {
 
     return chart;
 }
+
+// 转置一个矩阵型数组
+export const transferArray = (ary: any) => {
+    /*
+     * 转置一个二维矩阵的本质就是改变其子数组的结构，
+     * 即将原矩阵的行与列在结构上进行互换：
+     *  - 新子数组的个数为原任意一个子数组的长度；
+     *  - 新任意一个子数组的元素皆依次取自于原每一个子数组。
+     * 需要一个二层循环：
+     *  - 内层循环构造一个子数组，即从原子数组逐个取出同位序元素；
+     *  - 外层循环收集所有子数组。
+     */
+    const ar = []; // 转置后的数组
+    for (let i = 0; i < ary[0].length; i++) {
+        const cd = []; // 某个新子数组
+        for (let j = 0; j < ary.length; j++) {
+            cd.push(ary[j][i]);
+        }
+        ar.push(cd);
+    }
+    return ar;
+};
