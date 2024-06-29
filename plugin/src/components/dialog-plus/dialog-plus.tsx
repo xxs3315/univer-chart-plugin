@@ -203,16 +203,13 @@ export function DialogPlus(props: IDialogPlusProps) {
             }
         }
 
-        function handleMouseDown(e: MouseEvent) {
-            const currentZIndex = dialogPlusService.getLatestMaxZIndex() + 1;
-            currentZIndexSet(currentZIndex + DESKTOP_DIALOG_PLUS_BASE_Z_INDEX);
-            onMouseDown?.(currentZIndex);
-        }
-
         const { clientWidth, clientHeight } = window.document.documentElement;
         const position = positionOffset || defaultPosition || { x: (clientWidth - calcWidth) / 2, y: (clientHeight - calcHeight) / 2 };
 
         const onStart = (_event: DraggableEvent, uiData: DraggableData) => {
+            const currentZIndex = dialogPlusService.getLatestMaxZIndex() + 1;
+            currentZIndexSet(currentZIndex + DESKTOP_DIALOG_PLUS_BASE_Z_INDEX);
+            onMouseDown?.(currentZIndex);
             const { clientWidth, clientHeight } = window.document.documentElement;
             const targetRect = draggleRef.current?.getBoundingClientRect();
             if (!targetRect) {
@@ -237,7 +234,6 @@ export function DialogPlus(props: IDialogPlusProps) {
                     handle=".univer-dialog-plus-title"
                     onStart={(event, uiData) => onStart(event, uiData)}
                     onStop={handleStop as DraggableEventHandler}
-                    onMouseDown={handleMouseDown}
                 >
                     <div ref={draggleRef} className={`${chartHighlightId === id ? 'univer-dialog-plus-highlight' : ''}`}>{modal}</div>
                 </Draggable>
