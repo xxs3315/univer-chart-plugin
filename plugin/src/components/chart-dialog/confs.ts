@@ -98,11 +98,76 @@ export const BAR_COLUMN_CONFS_SERIE = {
 /**
  * pie-default
  */
-export const PIE_DEFAULT_CONFS_GRID = {};
-export const PIE_DEFAULT_CONFS_SERIE = {};
+export const PIE_DEFAULT_CONFS_GRID = {
+    title: {
+        left: 'center',
+    },
+    tooltip: {
+        trigger: 'axis',
+    },
+    legend: {
+        top: '10%',
+    },
+    grid: {
+        left: '3%',
+        right: '3%',
+        bottom: '3%',
+        containLabel: true,
+    },
+};
+export const PIE_DEFAULT_CONFS_SERIE = {
+    type: 'pie',
+    radius: '50%',
+    emphasis: {
+        itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+        },
+    },
+};
 
 /**
  * pie-doughnut
  */
-export const PIE_DOUGHNUT_CONFS_GRID = {};
-export const PIE_DOUGHNUT_CONFS_SERIE = {};
+export const PIE_DOUGHNUT_CONFS_GRID = {
+    title: {
+        left: 'center',
+    },
+    tooltip: {
+        trigger: 'axis',
+    },
+    legend: {
+        top: '10%',
+    },
+    grid: {
+        left: '3%',
+        right: '3%',
+        bottom: '3%',
+        containLabel: true,
+    },
+};
+export const PIE_DOUGHNUT_CONFS_SERIE = {
+    type: 'pie',
+    radius: ['30%', '60%'],
+    avoidLabelOverlap: false,
+    itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2,
+    },
+    label: {
+        show: false,
+        position: 'center',
+    },
+    emphasis: {
+        label: {
+            show: true,
+            fontSize: 20,
+            fontWeight: 'bold',
+        },
+    },
+    labelLine: {
+        show: false,
+    },
+};

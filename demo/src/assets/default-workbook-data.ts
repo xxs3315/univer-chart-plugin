@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import {
-    BooleanNumber,
     LocaleType,
     SheetTypes
 } from '@univerjs/core';
@@ -627,7 +626,7 @@ export const DEFAULT_WORKBOOK_DATA = {
     resources: [
         {
             name: 'SHEET_CHART_PLUGIN',
-            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","zIndex":2,"left":950,"top":440,"width":550,"height":300,"conf":{"type":"bar","subType":"bar-default","title":"测试chart","theme":"roma"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}, {"chartId":"OzZgjsqM1","zIndex":4,"left":450,"top":440,"width":550,"height":300,"conf":{"type":"line","subType":"line-default","title":"测试chart1","reverseAxis":true},"ranges":[{"startRow":2,"endRow":7,"startColumn":1,"endColumn":6}]}]}',
+            data: '{"sheet-0006":[{"chartId":"OzZgjsqM","zIndex":2,"left":880,"top":440,"width":550,"height":300,"conf":{"type":"bar","subType":"bar-default","title":"测试chart","theme":"roma"},"ranges":[{"startRow":2,"endRow":8,"startColumn":1,"endColumn":7}]}, {"chartId":"OzZgjsqM1","zIndex":4,"left":450,"top":440,"width":550,"height":300,"conf":{"type":"line","subType":"line-default","title":"测试chart1","reverseAxis":true},"ranges":[{"startRow":2,"endRow":7,"startColumn":1,"endColumn":6}]}, {"chartId":"OzZgjsqM2","zIndex":1,"left":450,"top":780,"width":450,"height":300,"conf":{"type":"pie","subType":"pie-doughnut","title":"测试pie chart","reverseAxis":true},"ranges":[{"startRow":2,"endRow":7,"startColumn":1,"endColumn":6}]}]}',
         },
     ],
 };

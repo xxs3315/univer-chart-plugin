@@ -27,12 +27,18 @@ import { IChartPreviewService } from '../../services/chart-preview.service';
 import { ChartType } from '../../types/enum/chart-types';
 import { transferArray } from '../../utils/utils.ts';
 import {
-    BAR_COLUMN_CONFS_GRID, BAR_COLUMN_CONFS_SERIE,
-    BAR_DEFAULT_CONFS_GRID, BAR_DEFAULT_CONFS_SERIE,
+    BAR_COLUMN_CONFS_GRID,
+    BAR_COLUMN_CONFS_SERIE,
+    BAR_DEFAULT_CONFS_GRID,
+    BAR_DEFAULT_CONFS_SERIE,
     LINE_AREA_CONFS_GRID,
     LINE_AREA_CONFS_SERIE,
     LINE_DEFAULT_CONFS_GRID,
     LINE_DEFAULT_CONFS_SERIE,
+    PIE_DEFAULT_CONFS_GRID,
+    PIE_DEFAULT_CONFS_SERIE,
+    PIE_DOUGHNUT_CONFS_GRID,
+    PIE_DOUGHNUT_CONFS_SERIE,
 } from './confs';
 
 interface IChartDialogProps {
@@ -64,6 +70,12 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         if (subType === ChartType.BAR_COLUMN) {
             return BAR_COLUMN_CONFS_GRID;
         }
+        if (subType === ChartType.PIE_DEFAULT) {
+            return PIE_DEFAULT_CONFS_GRID;
+        }
+        if (subType === ChartType.PIE_DOUGHNUT) {
+            return PIE_DOUGHNUT_CONFS_GRID;
+        }
         return LINE_DEFAULT_CONFS_GRID;
     }, [state]);
     const [gridConf, gridConfSet] = useState(getChartGridConf());
@@ -81,6 +93,12 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
         }
         if (subType === ChartType.BAR_COLUMN) {
             return BAR_COLUMN_CONFS_SERIE;
+        }
+        if (subType === ChartType.PIE_DEFAULT) {
+            return PIE_DEFAULT_CONFS_SERIE;
+        }
+        if (subType === ChartType.PIE_DOUGHNUT) {
+            return PIE_DOUGHNUT_CONFS_SERIE;
         }
         return LINE_DEFAULT_CONFS_SERIE;
     }, [state]);
@@ -131,6 +149,18 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
                         data: nextData[index],
                     }, serieConf);
                 });
+
+                const subType = chartId === chartChange.chartId ? conf.subType : chart.conf.subType;
+                if (subType === ChartType.PIE_DEFAULT || subType === ChartType.PIE_DOUGHNUT) {
+                    nextVs = Tools.deepMerge({
+                        data: nextXAxis.map((name: string, index: number) => {
+                            return {
+                                value: nextData.length > 0 ? nextData[0][index] : null,
+                                name,
+                            };
+                        }),
+                    }, serieConf);
+                }
             } else {
                 initXAxis = Array.from({ length: endColumn - startColumn + 1 - 1 }, (_, index) => `未命名${index}`);
                 if (startColumn !== endColumn) {
@@ -160,6 +190,18 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
                         data: nextData[index],
                     }, serieConf);
                 });
+
+                const subType = chartId === chartChange.chartId ? conf.subType : chart.conf.subType;
+                if (subType === ChartType.PIE_DEFAULT || subType === ChartType.PIE_DOUGHNUT) {
+                    nextVs = Tools.deepMerge({
+                        data: nextXAxis.map((name: string, index: number) => {
+                            return {
+                                value: nextData.length > 0 ? nextData[0][index] : null,
+                                name,
+                            };
+                        }),
+                    }, serieConf);
+                }
             }
 
             const title = chartId === chartChange.chartId ? conf.title : chartChange.conf.title;
@@ -188,15 +230,26 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     });
 
     const option: any = useMemo(() => {
-        const o = Tools.deepMerge({
-            title: {
-                text: title,
-            },
-            xAxis: {
-                data: xAxis,
-            },
-            series: vs,
-        }, gridConf);
+        let o = {};
+        const subType = chartId === chartChange.chartId ? conf.subType : chart.conf.subType;
+        if (subType === ChartType.PIE_DEFAULT || subType === ChartType.PIE_DOUGHNUT) {
+            o = Tools.deepMerge({
+                title: {
+                    text: title,
+                },
+                series: vs,
+            }, gridConf);
+        } else {
+            o = Tools.deepMerge({
+                title: {
+                    text: title,
+                },
+                xAxis: {
+                    data: xAxis,
+                },
+                series: vs,
+            }, gridConf);
+        }
         return o;
     }, [seriesName, vs, xAxis, title, gridConf, serieConf]);
 
