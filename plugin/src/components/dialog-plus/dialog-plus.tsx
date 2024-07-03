@@ -16,7 +16,7 @@
 
 import { CloseSingle } from '@univerjs/icons';
 import RcDialog from 'rc-dialog';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { DraggableData, DraggableEvent, DraggableEventHandler } from 'react-draggable';
 import Draggable from 'react-draggable';
 import type { ResizeCallbackData } from 'react-resizable';
@@ -30,6 +30,8 @@ import { DESKTOP_DIALOG_PLUS_BASE_Z_INDEX } from '../../services/dialog-plus/des
 import { IChartService } from '../../services/chart.service';
 import styles from '../../styles/index.module.less';
 import '../../styles/resize.css';
+import { IChartPreviewService } from '../../services/chart-preview.service.ts';
+import { getTheme } from '../common/utils.ts';
 
 export interface IDialogPlusProps {
     id: string;
@@ -117,6 +119,8 @@ export interface IDialogPlusProps {
     className?: string;
 
     zIndex?: number;
+
+    theme?: string;
 }
 
 export function DialogPlus(props: IDialogPlusProps) {
@@ -137,6 +141,7 @@ export function DialogPlus(props: IDialogPlusProps) {
         preservePositionOnDestroy = false,
         footer,
         zIndex,
+        theme = 'default',
         onClose,
         onResized = () => {},
         onMoved = () => {},
@@ -153,11 +158,23 @@ export function DialogPlus(props: IDialogPlusProps) {
     const [currentZIndex, currentZIndexSet] = useState(dialogPlusService.getZIndex(zIndex));
     const chartService = useDependency(IChartService);
     const chartHighlightState = useObservable(chartService.highlightState$, undefined, true);
+    const chartPreviewService = useDependency(IChartPreviewService);
+    const state = useObservable(chartPreviewService.state$, undefined, true);
+    const { chartId, conf } = state;
     const { chartId: chartHighlightId } = chartHighlightState;
 
     useEffect(() => {
         currentZIndexSet(dialogPlusService.getZIndex(zIndex));
     }, [zIndex]);
+
+    const getBackground = useCallback(() => {
+        const currentTheme = id === chartId ? conf.theme : theme;
+        let background = 'none';
+        if (currentTheme) {
+            background = getTheme(currentTheme).backgroundColor;
+        }
+        return background;
+    }, [theme, state]);
 
     const TitleIfDraggable = draggable
         ? (
@@ -166,6 +183,7 @@ export function DialogPlus(props: IDialogPlusProps) {
                 style={{
                     width: '100%',
                     cursor: 'pointer',
+                    background: getBackground(),
                 }}
                 onMouseOver={() => {
                     if (dragDisabled) {

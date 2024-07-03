@@ -100,6 +100,7 @@ export class ChartMenuController extends Disposable {
                 width: chart.width,
                 height: chart.height,
                 zIndex: chart.zIndex,
+                theme: chart.conf?.theme,
                 children: {
                     label: {
                         name: 'ChartDialog',
