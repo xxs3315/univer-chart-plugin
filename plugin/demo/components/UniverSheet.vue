@@ -13,9 +13,10 @@ import { UniverSheetsPlugin } from "@univerjs/sheets";
 import { UniverSheetsFormulaPlugin } from "@univerjs/sheets-formula";
 import { UniverSheetsUIPlugin } from "@univerjs/sheets-ui";
 import { UniverUIPlugin } from "@univerjs/ui";
-import { UniverChartPlugin } from "univer-chart-plugin";
+import { UniverChartPlugin } from "../../src";
 import { onBeforeUnmount, onMounted, ref, toRaw } from "vue";
-import 'univer-chart-plugin/lib/index.css';
+import '../../src/styles/index.module.less';
+import '../../src/styles/resize.css';
 
 /**
  * 

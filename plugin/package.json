@@ -51,6 +51,7 @@
         "**/*.css"
     ],
     "scripts": {
+        "dev": "vite",
         "lint:types": "tsc --noEmit",
         "build": "tsc && vite build"
     },
@@ -60,11 +61,14 @@
     "peerDependencies": {
         "@univerjs/core": ">=0.1.15",
         "@univerjs/design": ">=0.1.15",
+        "@univerjs/design/lib/index.css": "workspace:*",
         "@univerjs/engine-formula": ">=0.1.15",
         "@univerjs/icons": ">=0.1.15",
         "@univerjs/sheets": ">=0.1.15",
         "@univerjs/sheets-ui": ">=0.1.15",
+        "@univerjs/sheets-ui/lib/index.css": "workspace:*",
         "@univerjs/ui": ">=0.1.15",
+        "@univerjs/ui/lib/index.css": "workspace:*",
         "@wendellhu/redi": "0.15.4",
         "echarts": ">=5.5.0",
         "rc-dialog": ">=9.5.2",
@@ -84,8 +88,14 @@
         "@types/react-grid-layout": "^1.3.5",
         "@types/react-resizable": "^3.0.7",
         "@typescript-eslint/parser": "^7.13.0",
-        "@univerjs/vite-plugin": "^0.4.3",
+        "@univerjs/vite-plugin": "^0.4.4",
+        "@univerjs/docs": "^0.1.17",
+        "@univerjs/docs-ui": "^0.1.17",
+        "@univerjs/engine-formula": "^0.1.17",
+        "@univerjs/engine-render": "^0.1.17",
+        "@univerjs/sheets-formula": "^0.1.17",
         "@vitejs/plugin-react": "^4.3.1",
+        "@vitejs/plugin-vue": "^5.0.5",
         "@univerjs/shared": "workspace:*",
         "eslint": "8.57.0",
         "eslint-plugin-format": "^0.1.1",
@@ -101,6 +111,7 @@
         "turbo": "^2.0.4",
         "vite-plugin-dts": "^3.9.1",
         "typescript": "^5.4.5",
+        "vue": "^3.4.27",
         "vite": "^5.2.13"
     },
     "homepage": "https://univer.ai",
