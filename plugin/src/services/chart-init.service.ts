@@ -57,8 +57,8 @@ import {
     DeleteChartMutationUndoFactory,
 } from '../commands/mutations/delete-chart.mutation';
 
-const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
+// const getUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
+// const getSubUnitId = (u: IUniverInstanceService) => u.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
 
 @OnLifecycle(LifecycleStages.Ready, ChartInitService)
 export class ChartInitService extends Disposable {
@@ -83,13 +83,15 @@ export class ChartInitService extends Disposable {
     }
 
     private _initCharts() {
-        const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-        const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-        const activeSheetId = activeSheet!.getSheetId();
-        const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
-        charts?.forEach((chart) => {
-            if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
-        });
+        const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+        if (workbook && workbook.getActiveSheet()) {
+            const unitId = workbook.getUnitId();
+            const subunitId = workbook.getActiveSheet()!.getSheetId();
+            const charts = this._chartConfModel.getSubunitChartConfs(unitId, subunitId);
+            charts?.forEach((chart) => {
+                if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
+            });
+        }
     }
 
     private _initSnapshot() {
@@ -141,8 +143,15 @@ export class ChartInitService extends Disposable {
                 getMutations: (commandInfo) => {
                     if (commandInfo.id === RemoveSheetCommand.id) {
                         const params = commandInfo.params as IRemoveSheetCommandParams;
-                        const unitId = params.unitId || getUnitId(this._univerInstanceService);
-                        const subUnitId = params.subUnitId || getSubUnitId(this._univerInstanceService);
+                        const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                        let uid = '';
+                        let suid = '';
+                        if (workbook && workbook.getActiveSheet()) {
+                            uid = params.unitId || workbook.getUnitId();
+                            suid = params.subUnitId || workbook.getActiveSheet()!.getSheetId();
+                        }
+                        const unitId = params.unitId || uid;
+                        const subUnitId = params.subUnitId || suid;
                         const chartList = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
                         if (!chartList) {
                             return { redos: [], undos: [] };
@@ -182,11 +191,17 @@ export class ChartInitService extends Disposable {
                 if (command.id === SetWorksheetActiveOperation.id) {
                     // 切换sheet前，管理当前sheet的charts
                     // 切换sheet前，清除所有的preview chart conf，即切换sheet前所有的预览chart都会被清除
-                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet!.getSheetId();
-                    this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
-                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, activeSheetId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
+                    const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                    if (workbook && workbook.getActiveSheet()) {
+                        const unitId = workbook.getUnitId();
+                        const subunitId = workbook.getActiveSheet()!.getSheetId();
+                        this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
+                        this._commandService.syncExecuteCommand(DeleteChartCommand.id, {
+                            unitId,
+                            subunitId,
+                            chartIds: [CHART_PREVIEW_DIALOG_KEY],
+                        } as IDeleteChartCommandParams);
+                    }
                 }
             })
         );
@@ -194,21 +209,23 @@ export class ChartInitService extends Disposable {
             this._commandService.onCommandExecuted((command, options) => {
                 if (command.id === SetWorksheetActiveOperation.id) {
                     // 切换sheet后，管理当前sheet的charts
-                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet!.getSheetId();
-                    // 关闭所有chart
-                    const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
-                    allCharts?.forEach((value, _key) => {
-                        value.forEach((chart) => {
-                            this._chartMenuController.closeChartDialog(chart);
+                    const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                    if (workbook && workbook.getActiveSheet()) {
+                        const unitId = workbook.getUnitId();
+                        const subunitId = workbook.getActiveSheet()!.getSheetId();
+                        // 关闭所有chart
+                        const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
+                        allCharts?.forEach((value, _key) => {
+                            value.forEach((chart) => {
+                                this._chartMenuController.closeChartDialog(chart);
+                            });
                         });
-                    });
-                    // 打开current active sheet charts
-                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
-                    charts?.forEach((chart) => {
-                        if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
-                    });
+                        // 打开current active sheet charts
+                        const charts = this._chartConfModel.getSubunitChartConfs(unitId, subunitId);
+                        charts?.forEach((chart) => {
+                            if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
+                        });
+                    }
                 }
             })
         );
@@ -218,18 +235,21 @@ export class ChartInitService extends Disposable {
         // chart conf 变化时， 管理charts的行为
         this.disposeWithMe(
             this._chartConfModel.$chartConfChange.subscribe(() => {
-                const unitId = getUnitId(this._univerInstanceService);
-                const subUnitId = getSubUnitId(this._univerInstanceService);
-                const allChartConfMap = this._chartConfModel.getUnitChartConfs(unitId);
-                allChartConfMap?.forEach((value, _key) => {
-                    value.forEach((chart) => {
-                        this._chartMenuController.closeChartDialog(chart);
+                const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                if (workbook && workbook.getActiveSheet()) {
+                    const unitId = workbook.getUnitId();
+                    const subunitId = workbook.getActiveSheet()!.getSheetId();
+                    const allChartConfMap = this._chartConfModel.getUnitChartConfs(unitId);
+                    allChartConfMap?.forEach((value, _key) => {
+                        value.forEach((chart) => {
+                            this._chartMenuController.closeChartDialog(chart);
+                        });
                     });
-                });
-                const charts = this._chartConfModel.getSubunitChartConfs(unitId, subUnitId);
-                charts?.forEach((chart) => {
-                    if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
-                });
+                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, subunitId);
+                    charts?.forEach((chart) => {
+                        if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
+                    });
+                }
             })
         );
     }
@@ -241,9 +261,12 @@ export class ChartInitService extends Disposable {
                 this._sidebarService.sidebarOptions$.forEach((item) => {
                     // 关闭preview chart
                     this._chartMenuController.closeChartDialog({ chartId: CHART_PREVIEW_DIALOG_KEY });
-                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const subUnitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet()!.getSheetId();
-                    this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subUnitId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
+                    const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                    if (workbook && workbook.getActiveSheet()) {
+                        const unitId = workbook.getUnitId();
+                        const subunitId = workbook.getActiveSheet()!.getSheetId();
+                        this._commandService.syncExecuteCommand(DeleteChartCommand.id, { unitId, subunitId, chartIds: [CHART_PREVIEW_DIALOG_KEY] } as IDeleteChartCommandParams);
+                    }
                 });
             })
         );
@@ -365,13 +388,16 @@ export class ChartInitService extends Disposable {
             this._commandService.beforeCommandExecuted((command) => {
                 if (command.id === RedoCommand.id || command.id === UndoCommand.id) {
                     // 关闭所有chart
-                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
-                    allCharts?.forEach((value, _key) => {
-                        value.forEach((chart) => {
-                            this._chartMenuController.closeChartDialog(chart);
+                    const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                    if (workbook) {
+                        const unitId = workbook.getUnitId();
+                        const allCharts = this._chartConfModel.getUnitChartConfs(unitId);
+                        allCharts?.forEach((value, _key) => {
+                            value.forEach((chart) => {
+                                this._chartMenuController.closeChartDialog(chart);
+                            });
                         });
-                    });
+                    }
                 }
             })
         );
@@ -379,14 +405,16 @@ export class ChartInitService extends Disposable {
             this._commandService.onCommandExecuted((command, options) => {
                 if (command.id === RedoCommand.id || command.id === UndoCommand.id) {
                     // // 切换sheet后，管理当前sheet的charts
-                    const unitId = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
-                    const activeSheet = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getActiveSheet();
-                    const activeSheetId = activeSheet!.getSheetId();
-                    // 打开current active sheet charts
-                    const charts = this._chartConfModel.getSubunitChartConfs(unitId, activeSheetId);
-                    charts?.forEach((chart) => {
-                        if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
-                    });
+                    const workbook = this._univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET);
+                    if (workbook && workbook.getActiveSheet()) {
+                        const unitId = workbook.getUnitId();
+                        const subunitId = workbook.getActiveSheet()!.getSheetId();
+                        // 打开current active sheet charts
+                        const charts = this._chartConfModel.getSubunitChartConfs(unitId, subunitId);
+                        charts?.forEach((chart) => {
+                            if (chart.show !== false) this._chartMenuController.openChartDialog(chart);
+                        });
+                    }
                 }
             })
         );
