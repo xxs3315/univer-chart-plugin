@@ -1,0 +1,4 @@
+{
+  "installDependencies": true,
+  "startCommand": "cd ./plugin && pnpm run dev"
+}
