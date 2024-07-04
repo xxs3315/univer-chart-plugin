@@ -13,7 +13,7 @@ The chart univer plugin encapsulates the capability to create chart within [Univ
 
 [![][github-license-shield]][github-license-link]
 [![][npm-version-shield]][npm-version-link]
-![][language-shield]
+[![][language-shield]][language-link]
 
 </div>
 
@@ -24,6 +24,7 @@ The chart univer plugin encapsulates the capability to create chart within [Univ
 [npm-version-shield]: https://img.shields.io/npm/v/@xxs3315/univer-chart-plugin.svg?style=flat-square
 [npm-version-link]: https://www.npmjs.com/package/@xxs3315/univer-chart-plugin
 [language-shield]: https://img.shields.io/badge/language-TypeScript-red.svg?style=flat-square
+[language-link]: https://www.typescriptlang.org/
 
 [official-site-link]: https://github.com/xxs3315/univer-chart-plugin
 [documentation-link]: https://github.com/xxs3315/univer-chart-plugin
