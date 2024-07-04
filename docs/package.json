@@ -16,7 +16,7 @@
     "@univerjs/sheets-formula": "^0.1.17",
     "@univerjs/sheets-ui": "^0.1.17",
     "@univerjs/ui": "^0.1.17",
-    "univer-chart-plugin": "workspace:*",
+    "@xxs3315/univer-chart-plugin": "workspace:*",
     "vitepress": "^1.2.3",
     "vue": "^3.4.27"
   },

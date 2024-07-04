@@ -224,9 +224,9 @@ exports.autoExternalizeDependency = function autoExternalizeDependency() {
                                 peerDependencies[name] = externalMap[version].version;
                             }
                         }
-                    } else {
+                    }/* else {
                         peerDependencies[ext] = 'workspace:*';
-                    }
+                    }*/
                 });
 
             if (Object.keys(peerDependencies).length) {
