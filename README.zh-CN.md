@@ -3,17 +3,16 @@
 </div>
 
 <div align="center">
-本插件封装了[Univer](https://univer.ai/zh-CN)中绘制图表的能力
-</div>
 
-<div align="center">
+univer chart plugin插件封装了[Univer](https://univer.ai/zh-CN)中绘制浮动图表的能力
 
 [English][readme-en-link] | **简体中文** <br />
-[官网][official-site-link] | [文档][documentation-link] | [在线体验][playground-link]
 
 [![][github-license-shield]][github-license-link]
 [![][npm-version-shield]][npm-version-link]
 [![][language-shield]][language-link]
+
+[官网][official-site-link] | [文档][documentation-link] | [在线体验][playground-link]
 
 </div>
 

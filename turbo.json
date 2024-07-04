@@ -11,8 +11,6 @@
             "cache": false
         },
 
-        "build:demo": {},
-
         "lint:types": {}
     }
 }

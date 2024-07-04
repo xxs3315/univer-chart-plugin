@@ -3,17 +3,16 @@
 </div>
 
 <div align="center">
-The chart univer plugin encapsulates the capability to create chart within [Univer](https://univer.ai/zh-CN).
-</div>
 
-<div align="center">
+The univer chart plugin encapsulates the capability to create float chart within [Univer](https://univer.ai/zh-CN).
 
 **English** | [简体中文][readme-zh-link] <br />
-[Official Site][official-site-link] | [Documentation][documentation-link] | [Online Playground][playground-link]
 
 [![][github-license-shield]][github-license-link]
 [![][npm-version-shield]][npm-version-link]
 [![][language-shield]][language-link]
+
+[Official Site][official-site-link] | [Documentation][documentation-link] | [Online Playground][playground-link]
 
 </div>
 
