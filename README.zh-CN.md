@@ -3,13 +3,13 @@
 </div>
 
 <div align="center">
-The chart univer plugin encapsulates the capability to create chart within [Univer](https://univer.ai/zh-CN).
+本插件封装了[Univer](https://univer.ai/zh-CN)中绘制图表的能力
 </div>
 
 <div align="center">
 
-**English** | [简体中文][readme-zh-link] <br />
-[Official Site][official-site-link] | [Documentation][documentation-link] | [Online Playground][playground-link]
+[English][readme-en-link] | **简体中文** <br />
+[官网][official-site-link] | [文档][documentation-link] | [在线体验][playground-link]
 
 [![][github-license-shield]][github-license-link]
 [![][npm-version-shield]][npm-version-link]

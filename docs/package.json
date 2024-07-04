@@ -1,5 +1,5 @@
 {
-  "name": "univer-chart-plugin-docs",
+  "name": "@xxs3315/univer-chart-plugin-docs",
   "version": "0.1.17",
   "type": "module",
   "packageManager": "pnpm@9.1.0",
