@@ -16,7 +16,19 @@ univer chart plugin插件封装了[Univer](https://univer.ai/zh-CN)中绘制浮�
 
 </div>
 
-## 📦 项目设置
+## 🌟 插件使用
+
+### 安装
+
+```bash
+# npm
+$ npm install @xxs3315/univer-chart-plugin
+
+# pnpm
+$ pnpm add @xxs3315/univer-chart-plugin
+```
+
+## 📦 开发配置
 
 ### 初始化
 
@@ -65,6 +77,10 @@ pnpm run build
 - 图表操作支持Undo/Redo;
 - 表格数据变动实时响应至图表;
 - 更多...
+
+## ⌛ Roadmap
+- 支持更多的图表类型
+- 迁移至[univer sheets drawing ui](https://github.com/dream-num/univer/tree/dev/packages/sheets-drawing-ui)
 
 <!-- Links -->
 [github-license-shield]: https://img.shields.io/github/license/xxs3315/univer-chart-plugin?style=flat-square

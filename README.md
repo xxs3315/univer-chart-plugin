@@ -16,6 +16,18 @@ The univer chart plugin encapsulates the capability to create float chart within
 
 </div>
 
+## 🌟 Usage
+
+### Installation
+
+```bash
+# npm
+$ npm install @xxs3315/univer-chart-plugin
+
+# pnpm
+$ pnpm add @xxs3315/univer-chart-plugin
+```
+
 ## 📦 Project setup
 
 ### Initializing project
@@ -65,6 +77,10 @@ You can click the following button to open this repo in StackBlitz:
 - Undo/Redo charts;
 - Realtime sheets data change responding;
 - and more...
+
+## ⌛ Roadmap
+- Support more chart types
+- Migration to [univer sheets drawing ui](https://github.com/dream-num/univer/tree/dev/packages/sheets-drawing-ui)
 
 <!-- Links -->
 [github-license-shield]: https://img.shields.io/github/license/xxs3315/univer-chart-plugin?style=flat-square
