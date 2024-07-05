@@ -16,6 +16,18 @@ The univer chart plugin encapsulates the capability to create float chart within
 
 </div>
 
+## 🌟 Usage
+
+### Installation
+
+```bash
+# npm
+$ npm install @xxs3315/univer-chart-plugin
+
+# pnpm
+$ pnpm add @xxs3315/univer-chart-plugin
+```
+
 ## 📦 Project setup
 
 ### Initializing project

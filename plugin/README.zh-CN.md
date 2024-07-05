@@ -16,7 +16,19 @@ univer chart plugin插件封装了[Univer](https://univer.ai/zh-CN)中绘制浮�
 
 </div>
 
-## 📦 项目设置
+## 🌟 插件使用
+
+### 安装
+
+```bash
+# npm
+$ npm install @xxs3315/univer-chart-plugin
+
+# pnpm
+$ pnpm add @xxs3315/univer-chart-plugin
+```
+
+## 📦 开发配置
 
 ### 初始化
 
