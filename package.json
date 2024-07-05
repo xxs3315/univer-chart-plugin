@@ -10,7 +10,9 @@
     "build": "turbo build --concurrency=50%",
     "pre-commit": "lint-staged",
     "lint": "eslint plugin/src",
-    "lint:fix": "eslint plugin/src --fix"
+    "lint:fix": "eslint plugin/src --fix",
+    "dev": "cd ./plugin && pnpm run dev",
+    "docs:dev": "cd ./docs && pnpm run docs:dev"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",
