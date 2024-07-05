@@ -4,21 +4,21 @@
 
 <div align="center">
 
-The univer chart plugin encapsulates the capability to create float chart within [Univer](https://univer.ai/zh-CN).
+univer chart plugin插件封装了[Univer](https://univer.ai/zh-CN)中绘制浮动图表的能力
 
-**English** | [简体中文][readme-zh-link] <br />
+[English][readme-en-link] | **简体中文** <br />
 
 [![][github-license-shield]][github-license-link]
 [![][npm-version-shield]][npm-version-link]
 [![][language-shield]][language-link]
 
-[Official Site][official-site-link] | [Documentation][documentation-link] | [Online Playground][playground-link]
+[官网][official-site-link] | [文档][documentation-link] | [在线体验][playground-link]
 
 </div>
 
-## 📦 Project setup
+## 📦 项目设置
 
-### Initializing project
+### 初始化
 
 ```bash
 git clone https://github.com/xxs3315/univer-chart-plugin.git
@@ -26,45 +26,45 @@ cd univer-chart-plugin
 pnpm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发
 
 ```bash
 pnpm run dev
 ```
 
-### Writes awesome documents with vitepress
+### 使用vitepress编写文档
 
 ```bash
 pnpm run docs:dev
 ```
 
-### Compiles and minifies for production
+### 编译
 
 ```bash
 pnpm run build
 ```
 
-## 🔨 Playground with stackblitz
+## 🔨 使用stackblitz进行开发
 
-If you don't want to install the development environment locally, or your local environment doesn't meet the development requirements, you can use an online code editor to develop.
+若您不想安装本地开发环境，亦或本地环境不适配开发要求，
 
-You can click the following button to open this repo in StackBlitz:
+可以点击下边的stackblitz链接进行查看或开发：
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/~/github.com/xxs3315/univer-chart-plugin)
 
 
-## 🎁 Plugin features
-- Charts management panel, add/remove/show/hide charts of sheets;
-- Move/resize chart panels;
-- Supports chart types: Line/Area/Bar/Column/Pie/Doughnut;
-- Supports multi chart themes;
-- Supports chart title configuration;
-- Supports reverse chart axes;
-- Supports predefined chart data for inputting;
-- Supports chart data for outputting;
-- Undo/Redo charts;
-- Realtime sheets data change responding;
-- and more...
+## 🎁 插件特性
+- 使用图表管理侧边栏进行图表的add/remove/show/hide;
+- 图表面板支持移动位置/尺寸调整;
+- 支持Line/Area/Bar/Column/Pie/Doughnut等六种图表类型;
+- 支持多达14种图表主题;
+- 图表标题可以配置;
+- 支持反转图表坐标轴;
+- 支持预定义图表数据用以数据输入;
+- 支持图表数据输出;
+- 图表操作支持Undo/Redo;
+- 表格数据变动实时响应至图表;
+- 更多...
 
 <!-- Links -->
 [github-license-shield]: https://img.shields.io/github/license/xxs3315/univer-chart-plugin?style=flat-square
