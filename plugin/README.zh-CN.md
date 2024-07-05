@@ -78,6 +78,10 @@ pnpm run build
 - 表格数据变动实时响应至图表;
 - 更多...
 
+## ⌛ Roadmap
+- 支持更多的图表类型
+- 迁移至[univer sheets drawing ui](https://github.com/dream-num/univer/tree/dev/packages/sheets-drawing-ui)
+
 <!-- Links -->
 [github-license-shield]: https://img.shields.io/github/license/xxs3315/univer-chart-plugin?style=flat-square
 [github-license-link]: ./LICENSE
