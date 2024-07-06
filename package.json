@@ -1,6 +1,6 @@
 {
   "name": "@xxs3315/univer-chart-plugin-parent",
-  "version": "0.1.17",
+  "version": "0.2.0",
   "type": "module",
   "packageManager": "pnpm@9.1.0",
   "author": "xxs3315 <dxxs3315@foxmail.com>",
