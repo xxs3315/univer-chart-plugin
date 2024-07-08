@@ -46,7 +46,7 @@ import { UniverSheetsPlugin } from "@univerjs/sheets";
 import { UniverSheetsFormulaPlugin } from "@univerjs/sheets-formula";
 import { UniverSheetsUIPlugin } from "@univerjs/sheets-ui";
 import { UniverUIPlugin } from "@univerjs/ui";
-import { UniverChartPlugin } from "univer-chart-plugin";
+import { UniverChartPlugin } from "@xxs3315/univer-chart-plugin";
 import { onBeforeUnmount, onMounted, ref, toRaw } from "vue";
 
 import DesignZhCN from '@univerjs/design/locale/zh-CN';
@@ -58,7 +58,7 @@ import SheetsEnUS from '@univerjs/sheets/locale/en-US';
 import SheetsUIZhCN from '@univerjs/sheets-ui/locale/zh-CN';
 import SheetsUIEnUS from '@univerjs/sheets-ui/locale/en-US';
 
-import 'univer-chart-plugin/lib/index.css';
+import '@xxs3315/univer-chart-plugin/lib/index.css';
 
 import { DEFAULT_WORKBOOK_DATA } from './default-workbook-data';
 
