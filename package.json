@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "type": "module",
   "packageManager": "pnpm@9.1.0",
-  "author": "xxs3315 <dxxs3315@foxmail.com>",
+  "author": "xxs3315 <xxs3315@foxmail.com>",
   "license": "Apache-2.0",
   "scripts": {
     "test": "turbo test -- --passWithNoTests",
