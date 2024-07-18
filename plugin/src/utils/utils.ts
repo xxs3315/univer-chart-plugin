@@ -15,16 +15,16 @@
  */
 
 import type { IAccessor } from '@wendellhu/redi';
-import { SelectionManagerService } from '@univerjs/sheets';
+import { SheetsSelectionsService } from '@univerjs/sheets';
 import { createDefaultChartConf } from '../common/const';
 import type { IChart } from '../models/types';
 
 export function createDefaultNewChart(accessor: IAccessor) {
-    const selectionManagerService = accessor.get(SelectionManagerService);
-    const currentRanges = selectionManagerService.getSelectionRanges();
+    const selectionManagerService = accessor.get(SheetsSelectionsService);
+    const currentRanges = selectionManagerService.getCurrentSelections()?.map((s) => s.range) ?? [{ startColumn: 0, endColumn: 0, startRow: 0, endRow: 0 }];
     const chart = {
         ...createDefaultChartConf(accessor),
-        ranges: currentRanges ?? [{ startColumn: 0, endColumn: 0, startRow: 0, endRow: 0 }],
+        ranges: currentRanges,
     } as IChart;
 
     return chart;

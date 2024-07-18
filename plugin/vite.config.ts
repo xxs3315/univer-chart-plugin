@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import createViteConfig from '@univerjs/shared/vite';
+import createViteConfig from '@xxs3315/shared/vite';
 import { univerPlugin } from '@univerjs/vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import pkg from './package.json';
