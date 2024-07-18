@@ -25,7 +25,6 @@ import {
 } from '@univerjs/core';
 import { Inject, Injector } from '@wendellhu/redi';
 import {
-    SelectionManagerService,
     SheetInterceptorService,
 } from '@univerjs/sheets';
 import type { IChart, IChartConfig } from '../models/types';
@@ -41,7 +40,6 @@ export class ChartClearController extends Disposable {
         @Inject(Injector) private _injector: Injector,
         @Inject(IUniverInstanceService) private _univerInstanceService: IUniverInstanceService,
         @Inject(SheetInterceptorService) private _sheetInterceptorService: SheetInterceptorService,
-        @Inject(SelectionManagerService) private _selectionManagerService: SelectionManagerService,
         @Inject(ChartConfModel) private _chartConfModel: ChartConfModel
 
     ) {

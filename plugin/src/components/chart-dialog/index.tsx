@@ -19,7 +19,7 @@ import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 're
 import type { Workbook } from '@univerjs/core';
 import { isNullCell, IUniverInstanceService, Tools, UniverInstanceType } from '@univerjs/core';
 import { useDependency } from '@wendellhu/redi/react-bindings';
-import { SelectionManagerService } from '@univerjs/sheets';
+import { SheetsSelectionsService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts';
 import type { IChart } from '../../models/types';
 import { ChartConfModel } from '../../models/chart-conf-model';
@@ -49,7 +49,7 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
     const { chart } = props;
     const chartConfModel = useDependency(ChartConfModel);
     const univerInstanceService = useDependency(IUniverInstanceService);
-    const selectionManagerService = useDependency(SelectionManagerService);
+    const selectionManagerService = useDependency(SheetsSelectionsService);
     const [fetchChartConfRedraw, fetchChartConfRedrawSet] = useState(0);
     const chartPreviewService = useDependency(IChartPreviewService);
     const state = useObservable(chartPreviewService.state$, undefined, true);
@@ -106,8 +106,8 @@ export const ChartDialog = forwardRef(function ChartDialogImpl(props: IChartDial
 
     const [xAxis, seriesName, vs, title] = useMemo(() => {
         let rangeResult = chartId === chartChange.chartId ? ranges : chartChange.ranges;
-        if (!rangeResult?.length && selectionManagerService.getSelectionRanges() && selectionManagerService.getSelectionRanges()!.length > 0) {
-            rangeResult = selectionManagerService.getSelectionRanges()!;
+        if (!rangeResult?.length && selectionManagerService.getCurrentSelections() && selectionManagerService.getCurrentSelections()!.length > 0) {
+            rangeResult = selectionManagerService.getCurrentSelections()?.map((s) => s.range) ?? [];
         }
         const reverseAxis = chartId === chartChange.chartId ? conf.reverseAxis : chartChange.conf.reverseAxis;
         let initXAxis: any[] = [];

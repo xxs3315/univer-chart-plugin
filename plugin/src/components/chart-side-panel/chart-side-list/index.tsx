@@ -16,7 +16,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDependency } from '@wendellhu/redi/react-bindings';
-import { SelectionManagerService, SetWorksheetActiveOperation } from '@univerjs/sheets';
+import { SetWorksheetActiveOperation, SheetsSelectionsService } from '@univerjs/sheets';
 import { useHighlightRange } from '@univerjs/sheets-ui';
 import type { IRange, Workbook } from '@univerjs/core';
 import { ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
@@ -54,7 +54,7 @@ export const ChartSideList = (props: IChartListProps) => {
     const localeService = useDependency(LocaleService);
     const injector = useDependency(Injector);
     const chartMenuController = useDependency(ChartMenuController);
-    const selectionManagerService = useDependency(SelectionManagerService);
+    const selectionManagerService = useDependency(SheetsSelectionsService);
     const chartService = useDependency(IChartService);
 
     const workbook = univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!;
@@ -263,7 +263,7 @@ export const ChartSideList = (props: IChartListProps) => {
                         className={styles.listButton}
                         type="primary"
                         onClick={() => {
-                            const ranges = selectionManagerService.getSelectionRanges() || [];
+                            const ranges = selectionManagerService.getCurrentSelections()?.map((s) => s.range) ?? [];
                             const chart = {
                                 ...createDefaultNewChart(injector),
                                 ranges,

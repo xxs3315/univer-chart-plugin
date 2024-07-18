@@ -17,7 +17,7 @@
 import type { ICommand } from '@univerjs/core';
 import { CommandType, LocaleService } from '@univerjs/core';
 import type { IAccessor } from '@wendellhu/redi';
-import { SelectionManagerService } from '@univerjs/sheets';
+import { SheetsSelectionsService } from '@univerjs/sheets';
 import { ChartMenuController } from '../../controllers/chart.menu.controller';
 import { CHART_PREVIEW_DIALOG_KEY, createDefaultChartConf } from '../../common/const';
 import type { IChart } from '../../models/types';
@@ -32,8 +32,8 @@ export const OpenChartEditPanelOperator: ICommand = {
     handler: (accessor: IAccessor, params?: IOpenChartPanelParams) => {
         const chartMenuController = accessor.get(ChartMenuController);
         const localeService = accessor.get(LocaleService);
-        const selectionManagerService = accessor.get(SelectionManagerService);
-        const ranges = selectionManagerService.getSelectionRanges() || [];
+        const selectionManagerService = accessor.get(SheetsSelectionsService);
+        const ranges = selectionManagerService.getCurrentSelections()?.map((s) => s.range) ?? [];
         const chart = {
             ...createDefaultChartConf(accessor),
             ranges,

@@ -28,9 +28,9 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import type { IRemoveSheetMutationParams } from '@univerjs/sheets';
 import {
     RemoveSheetMutation,
-    SelectionManagerService,
     setEndForRange,
     SetWorksheetActiveOperation,
+    SheetsSelectionsService,
 } from '@univerjs/sheets';
 import { serializeRange } from '@univerjs/engine-formula';
 import { RangeSelector } from '@univerjs/ui';
@@ -63,7 +63,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const localeService = useDependency(LocaleService);
     const commandService = useDependency(ICommandService);
     const univerInstanceService = useDependency(IUniverInstanceService);
-    const selectionManagerService = useDependency(SelectionManagerService);
+    const selectionManagerService = useDependency(SheetsSelectionsService);
     const chartPreviewService = useDependency(IChartPreviewService);
     const chartService = useDependency(IChartService);
     const chartConfModel = useDependency(ChartConfModel);
@@ -76,7 +76,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     const rangeString = useMemo(() => {
         let ranges = chart?.ranges;
         if (!ranges?.length) {
-            ranges = selectionManagerService.getSelectionRanges() ?? [];
+            ranges = selectionManagerService.getCurrentSelections()?.map((s) => s.range) ?? [];
         }
         rangeResult.current = ranges;
         if (!ranges?.length) {
@@ -91,7 +91,7 @@ export const ChartSideEdit = (props: IChartEditProps) => {
     useLayoutEffect(() => {
         let ranges = chart?.ranges;
         if (!ranges?.length) {
-            ranges = selectionManagerService.getSelectionRanges() ?? [];
+            ranges = selectionManagerService.getCurrentSelections()?.map((s) => s.range) ?? [];
         }
         rangeResult.current = ranges;
         if (ranges?.length) {

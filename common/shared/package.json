@@ -1,6 +1,6 @@
 {
-    "name": "@univerjs/shared",
-    "version": "0.1.17",
+    "name": "@xxs3315/shared",
+    "version": "0.2.3",
     "private": true,
     "description": "Some infrastructures for univerjs",
     "author": "DreamNum <developer@univer.ai>",
