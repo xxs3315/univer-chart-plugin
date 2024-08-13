@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import type { ICommand } from '@univerjs/core';
+import type { IAccessor, ICommand } from '@univerjs/core';
 import { CommandType, LocaleService } from '@univerjs/core';
-import type { IAccessor } from '@wendellhu/redi';
 import { SheetsSelectionsService } from '@univerjs/sheets';
 import { ChartMenuController } from '../../controllers/chart.menu.controller';
 import { CHART_PREVIEW_DIALOG_KEY, createDefaultChartConf } from '../../common/const';

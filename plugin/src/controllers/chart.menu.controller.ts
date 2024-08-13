@@ -17,6 +17,9 @@
 import {
     Disposable,
     ICommandService,
+    type IDisposable,
+    Inject,
+    Injector,
     IUniverInstanceService,
     LifecycleStages,
     LocaleService,
@@ -24,8 +27,6 @@ import {
     UniverInstanceType,
     type Workbook,
 } from '@univerjs/core';
-import type { IDisposable } from '@wendellhu/redi';
-import { Inject, Injector } from '@wendellhu/redi';
 import type { IMenuItemFactory } from '@univerjs/ui';
 import { ComponentManager, IMenuService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface';

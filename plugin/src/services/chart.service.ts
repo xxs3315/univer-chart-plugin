@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    Disposable, IContextService,
-} from '@univerjs/core';
+import { createIdentifier, Disposable, IContextService,Inject, Injector } from '@univerjs/core';
 
 import { BehaviorSubject, type Observable, Subject } from 'rxjs';
-import { createIdentifier, Inject, Injector } from '@wendellhu/redi';
 
 export interface IChartHighlightState {
     chartId: string | undefined;

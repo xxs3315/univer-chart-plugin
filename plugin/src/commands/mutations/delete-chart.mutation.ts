@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import type { IAccessor } from '@wendellhu/redi';
-import type { IMutation, IMutationInfo } from '@univerjs/core';
+import type { IAccessor, IMutation, IMutationInfo } from '@univerjs/core';
 import { CommandType, Tools } from '@univerjs/core';
 import { ChartConfModel } from '../../models/chart-conf-model';
 import { transformSupportSymmetryAnchor } from '../../utils/anchor';

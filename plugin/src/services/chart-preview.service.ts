@@ -17,10 +17,8 @@
 import type { Observable } from 'rxjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 
-import { createIdentifier, Inject, Injector } from '@wendellhu/redi';
-
 import type { IRange } from '@univerjs/core';
-import { Disposable, IContextService } from '@univerjs/core';
+import { createIdentifier, Disposable, IContextService, Inject, Injector } from '@univerjs/core';
 import { CHART_PREVIEW_DIALOG_KEY } from '../common/const';
 import type { IChartConfig } from '../models/types';
 import { ChartGroupType } from '../types/enum/chart-group-types';

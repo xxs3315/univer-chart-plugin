@@ -16,8 +16,7 @@
 
 import { Checkbox, Input, Select } from '@univerjs/design';
 import React, { useEffect, useState } from 'react';
-import { useDependency } from '@wendellhu/redi/react-bindings';
-import { LocaleService } from '@univerjs/core';
+import { LocaleService, useDependency } from '@univerjs/core';
 import type { IChartConfig } from '../../../models/types';
 import { ChartType } from '../../../types/enum/chart-types';
 import type { ChartGroupType } from '../../../types/enum/chart-group-types';

@@ -18,12 +18,13 @@ import type { IMutationInfo } from '@univerjs/core';
 import {
     createInterceptorKey,
     Disposable,
+    Inject,
+    Injector,
     InterceptorManager,
     IUniverInstanceService,
     LifecycleStages,
     OnLifecycle,
 } from '@univerjs/core';
-import { Inject, Injector } from '@wendellhu/redi';
 import {
     SheetInterceptorService,
 } from '@univerjs/sheets';

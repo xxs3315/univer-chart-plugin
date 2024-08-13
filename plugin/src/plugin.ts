@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { ICommandService, Plugin, UniverInstanceType } from '@univerjs/core';
+import { type Dependency, ICommandService, Inject, Injector, Plugin, UniverInstanceType } from '@univerjs/core';
 import { ComponentManager, IMenuService } from '@univerjs/ui';
-import type { Dependency } from '@wendellhu/redi';
-import { Inject, Injector } from '@wendellhu/redi';
 import { SHEET_CHART_PLUGIN } from './common/const';
 import ComboChart from './components/icons/combo_chart';
 import { ChartMenuController } from './controllers/chart.menu.controller';

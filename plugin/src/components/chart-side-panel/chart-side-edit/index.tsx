@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { useDependency } from '@wendellhu/redi/react-bindings';
 import type { IRange, IUnitRange, Workbook } from '@univerjs/core';
 import {
     createInternalEditorID,
@@ -23,6 +22,7 @@ import {
     IUniverInstanceService,
     LocaleService,
     UniverInstanceType,
+    useDependency,
 } from '@univerjs/core';
 import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import type { IRemoveSheetMutationParams } from '@univerjs/sheets';
