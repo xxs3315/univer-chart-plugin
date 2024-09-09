@@ -15,17 +15,15 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useDependency } from '@wendellhu/redi/react-bindings';
+import { ICommandService, Injector, IUniverInstanceService, LocaleService, UniverInstanceType , useDependency } from '@univerjs/core';
 import { SetWorksheetActiveOperation, SheetsSelectionsService } from '@univerjs/sheets';
 import { useHighlightRange } from '@univerjs/sheets-ui';
 import type { IRange, Workbook } from '@univerjs/core';
-import { ICommandService, IUniverInstanceService, LocaleService, UniverInstanceType } from '@univerjs/core';
 import { Button } from '@univerjs/design';
 import { DeleteSingle, EditRegionSingle, EyelashSingle, SequenceSingle, ViweModeSingle } from '@univerjs/icons';
 import GridLayout from 'react-grid-layout';
 import { serializeRange } from '@univerjs/engine-formula';
 import { debounceTime, Observable } from 'rxjs';
-import { Injector } from '@wendellhu/redi';
 import type { IDeleteChartCommandParams } from '../../../commands/commands/delete-chart.command';
 import { DeleteChartCommand } from '../../../commands/commands/delete-chart.command';
 import type { IChart } from '../../../models/types';

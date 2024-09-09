@@ -17,8 +17,7 @@
 import { useObservable } from '@univerjs/ui';
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import type { Workbook } from '@univerjs/core';
-import { isNullCell, IUniverInstanceService, Tools, UniverInstanceType } from '@univerjs/core';
-import { useDependency } from '@wendellhu/redi/react-bindings';
+import { isNullCell, IUniverInstanceService, Tools, UniverInstanceType, useDependency } from '@univerjs/core';
 import { SheetsSelectionsService } from '@univerjs/sheets';
 import { ReactECharts } from '../common/react-echarts';
 import type { IChart } from '../../models/types';

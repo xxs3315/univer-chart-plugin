@@ -15,9 +15,8 @@
  */
 
 import { ComponentManager } from '@univerjs/ui';
-import { useDependency } from '@wendellhu/redi/react-bindings';
 import React from 'react';
-import { LocaleService } from '@univerjs/core';
+import { LocaleService, useDependency } from '@univerjs/core';
 import styles from '../../styles/index.module.less';
 import { CHART_SELECTOR_CHILDREN, type IChartInfo, type IChartSelectorPanelProps } from './interface';
 

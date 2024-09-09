@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import type { IAccessor } from '@wendellhu/redi';
-import { LocaleService } from '@univerjs/core';
+import { type IAccessor, LocaleService } from '@univerjs/core';
 import type { IChart, ILineDefaultChart } from '../models/types';
 import { ChartGroupType } from '../types/enum/chart-group-types';
 import { ChartType } from '../types/enum/chart-types';

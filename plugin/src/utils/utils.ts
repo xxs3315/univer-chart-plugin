@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { IAccessor } from '@wendellhu/redi';
+import type { IAccessor } from '@univerjs/core';
 import { SheetsSelectionsService } from '@univerjs/sheets';
 import { createDefaultChartConf } from '../common/const';
 import type { IChart } from '../models/types';

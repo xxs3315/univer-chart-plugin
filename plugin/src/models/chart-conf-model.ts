@@ -15,8 +15,7 @@
  */
 
 import { Subject } from 'rxjs';
-import { Inject, Injector } from '@wendellhu/redi';
-import { ICommandService, Rectangle } from '@univerjs/core';
+import { ICommandService, Inject, Injector, Rectangle } from '@univerjs/core';
 import { createChartId } from '../utils/create-chart-id';
 import type { IAnchor } from '../utils/anchor';
 import { findIndexByAnchor, moveByAnchor } from '../utils/anchor';

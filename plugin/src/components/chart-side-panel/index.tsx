@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from 'react';
-import { useDependency } from '@wendellhu/redi/react-bindings';
+import { useDependency } from '@univerjs/core';
 import type { IChart } from '../../models/types';
 import { IChartPreviewService } from '../../services/chart-preview.service';
 import styles from '../../styles/index.module.less';

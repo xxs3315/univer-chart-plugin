@@ -16,8 +16,7 @@
 
 import type { IMenuButtonItem, IMenuSelectorItem } from '@univerjs/ui';
 import { getMenuHiddenObservable, MenuGroup, MenuItemType, MenuPosition } from '@univerjs/ui';
-import type { IAccessor } from '@wendellhu/redi';
-import { LocaleService, UniverInstanceType } from '@univerjs/core';
+import { type IAccessor, LocaleService, UniverInstanceType } from '@univerjs/core';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../../components/chart-selector-panel/interface';
 import {
     OpenChartEditPanelOperator,

@@ -23,8 +23,8 @@ import type { ResizeCallbackData } from 'react-resizable';
 import { ResizableBox } from 'react-resizable';
 
 import { ConfigContext } from '@univerjs/design';
-import { useDependency } from '@wendellhu/redi/react-bindings';
 import { useObservable } from '@univerjs/ui';
+import { useDependency } from '@univerjs/core';
 import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service';
 import { DESKTOP_DIALOG_PLUS_BASE_Z_INDEX } from '../../services/dialog-plus/desktop-dialog-plus.service';
 import { IChartService } from '../../services/chart.service';

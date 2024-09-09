@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Disposable, LifecycleStages, LocaleService, OnLifecycle } from '@univerjs/core';
-import { Inject } from '@wendellhu/redi';
+import { Disposable, Inject, LifecycleStages, LocaleService, OnLifecycle } from '@univerjs/core';
 import { enUS, ruRU, zhCN } from '../locale';
 
 @OnLifecycle(LifecycleStages.Rendered, ChartI18nController)

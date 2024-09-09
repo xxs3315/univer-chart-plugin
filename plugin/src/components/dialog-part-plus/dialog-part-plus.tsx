@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { useDependency } from '@wendellhu/redi/react-bindings';
 import React, { useEffect, useState } from 'react';
 
 import { CustomLabel } from '@univerjs/ui';
+import { useDependency } from '@univerjs/core';
 import { IDialogPlusService } from '../../services/dialog-plus/dialog-plus.service';
 import type { IDialogPlusProps } from '../dialog-plus';
 import { DialogPlus } from '../dialog-plus';

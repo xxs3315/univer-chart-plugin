@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { Disposable, IUniverInstanceService, toDisposable, UniverInstanceType, type Workbook } from '@univerjs/core';
-import { type IDisposable, Inject, Injector } from '@wendellhu/redi';
+import { Disposable, type IDisposable, Inject, Injector, IUniverInstanceService, toDisposable, UniverInstanceType, type Workbook } from '@univerjs/core';
 import { Subject } from 'rxjs';
 
-import { connectInjector } from '@wendellhu/redi/react-bindings';
+import { connectInjector } from '@univerjs/core';
 import { BuiltInUIPart, IUIPartsService } from '@univerjs/ui';
 import type { IDialogPlusPartMethodOptions } from '../../components/dialog-part-plus/interface';
 import { DialogPartPlus } from '../../components/dialog-part-plus';

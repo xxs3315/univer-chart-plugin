@@ -15,14 +15,14 @@
  */
 
 import {
-    Disposable, ICommandService, type IMutationInfo, type IRange, IResourceManagerService,
+    Disposable, ICommandService,
+    type IMutationInfo, Inject, Injector, type IRange, IResourceManagerService,
     IUniverInstanceService,
     LifecycleStages, ObjectMatrix,
     OnLifecycle, Rectangle, RedoCommand, UndoCommand,
     UniverInstanceType,
     type Workbook,
 } from '@univerjs/core';
-import { Inject, Injector } from '@wendellhu/redi';
 import {
     type IInsertColMutationParams,
     type IMoveColumnsMutationParams,
