@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createIdentifier, Disposable, IContextService,Inject, Injector } from '@univerjs/core';
+import { createIdentifier, Disposable, IContextService, Inject, Injector } from '@univerjs/core';
 
 import { BehaviorSubject, type Observable, Subject } from 'rxjs';
 

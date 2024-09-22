@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ICommandService, Injector, IUniverInstanceService, LocaleService, UniverInstanceType , useDependency } from '@univerjs/core';
+import { ICommandService, Injector, IUniverInstanceService, LocaleService, UniverInstanceType, useDependency } from '@univerjs/core';
 import { SetWorksheetActiveOperation, SheetsSelectionsService } from '@univerjs/sheets';
 import { useHighlightRange } from '@univerjs/sheets-ui';
 import type { IRange, Workbook } from '@univerjs/core';
