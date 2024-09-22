@@ -47,8 +47,5 @@
   },
   "lint-staged": {
     "*": "eslint --fix"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
   }
 }

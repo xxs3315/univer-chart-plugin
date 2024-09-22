@@ -23,6 +23,7 @@
     "module": "./lib/es/index.js",
     "types": "./lib/types/index.d.ts",
     "publishConfig": {
+        "registry": "https://registry.npmjs.org",
         "access": "public",
         "main": "./lib/cjs/index.js",
         "module": "./lib/es/index.js",
