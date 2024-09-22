@@ -27,8 +27,7 @@ import {
     UniverInstanceType,
     type Workbook,
 } from '@univerjs/core';
-import type { IMenuItemFactory } from '@univerjs/ui';
-import { ComponentManager, IMenuService, ISidebarService } from '@univerjs/ui';
+import { ComponentManager, IMenuManagerService, ISidebarService } from '@univerjs/ui';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../components/chart-selector-panel/interface';
 import { ChartSelectorPanel } from '../components/chart-selector-panel';
 import { ChartSidePanel } from '../components/chart-side-panel';
@@ -37,7 +36,7 @@ import { CHART_PREVIEW_DIALOG_KEY } from '../common/const';
 import { ChartDialog } from '../components/chart-dialog';
 import { IDialogPlusService } from '../services/dialog-plus/dialog-plus.service';
 import { type ISetChartCommandParams, SetChartCommand } from '../commands/commands/set-chart.command';
-import { ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory } from './menu/chart.menu';
+import { chartMenuSchema } from './menu/chart.menu.schema.ts';
 
 const CHART_SIDE_PANEL_KEY = 'sheet.chart.side.panel';
 const getUnitId = (univerInstanceService: IUniverInstanceService) => univerInstanceService.getCurrentUnitForType<Workbook>(UniverInstanceType.UNIVER_SHEET)!.getUnitId();
@@ -51,7 +50,7 @@ export class ChartMenuController extends Disposable {
         @IUniverInstanceService private readonly _univerInstanceService: IUniverInstanceService,
         @Inject(Injector) private _injector: Injector,
         @Inject(ComponentManager) private _componentManager: ComponentManager,
-        @Inject(IMenuService) private _menuService: IMenuService,
+        @IMenuManagerService private readonly _menuManagerService: IMenuManagerService,
         @Inject(ISidebarService) private _sidebarService: ISidebarService,
         @Inject(IDialogPlusService) private readonly _dialogPlusService: IDialogPlusService,
         @Inject(LocaleService) private _localeService: LocaleService,
@@ -138,9 +137,7 @@ export class ChartMenuController extends Disposable {
     }
 
     private _initMenu() {
-        ([ChartSelectorMenuItemFactory, ManageChartsMenuItemFactory] as IMenuItemFactory[]).forEach((factory) => {
-            this.disposeWithMe(this._menuService.addMenuItem(this._injector.invoke(factory), {}));
-        });
+        this._menuManagerService.mergeMenu(chartMenuSchema);
     }
 
     private _initComponent() {

@@ -15,7 +15,7 @@
  */
 
 import type { IMenuButtonItem, IMenuSelectorItem } from '@univerjs/ui';
-import { getMenuHiddenObservable, MenuGroup, MenuItemType, MenuPosition } from '@univerjs/ui';
+import { getMenuHiddenObservable, MenuItemType } from '@univerjs/ui';
 import { type IAccessor, LocaleService, UniverInstanceType } from '@univerjs/core';
 import { CHART_SELECTOR_PANEL_COMPONENT } from '../../components/chart-selector-panel/interface';
 import {
@@ -29,9 +29,7 @@ export function ChartSelectorMenuItemFactory(accessor: IAccessor): IMenuSelector
     return {
         id: OpenChartEditPanelOperator.id,
         icon: 'ComboChart',
-        group: MenuGroup.TOOLBAR_OTHERS,
         tooltip: localeService.t('chart.panel.title'),
-        positions: [MenuPosition.TOOLBAR_START],
         type: MenuItemType.SELECTOR,
         selections: [
             {
@@ -52,6 +50,5 @@ export function ManageChartsMenuItemFactory(accessor: IAccessor): IMenuButtonIte
         id: OpenChartManagePanelOperator.id,
         type: MenuItemType.BUTTON,
         title: localeService.t('chart.panel.manage'),
-        positions: OpenChartEditPanelOperator.id,
     };
 }
